@@ -9,6 +9,7 @@ import {
   postsLast24h,
   recentBodies,
 } from "@/lib/db/repository";
+import { appConfig, channelConfig } from "@/config/app.config";
 
 /**
  * One full pipeline cycle for an organization:
@@ -43,13 +44,7 @@ export interface CycleReport {
   probesRecorded: number;
 }
 
-const ALL_ENGINES: AnswerEngine[] = [
-  "chatgpt",
-  "perplexity",
-  "google_ai_overviews",
-  "claude",
-  "gemini",
-];
+const ALL_ENGINES: AnswerEngine[] = [...appConfig.engines];
 
 export async function runCycle(input: CycleInput): Promise<CycleReport> {
   const report: CycleReport = {
@@ -65,8 +60,9 @@ export async function runCycle(input: CycleInput): Promise<CycleReport> {
 
   for (const gap of input.gaps) {
     const channel = await getChannel(input.orgId, gap.channelKind);
-    const autonomy = channel?.autonomyLevel ?? "approval_queue";
-    const capPerDay = channel?.rateCapPerDay ?? 3;
+    const cfg = channelConfig(gap.channelKind);
+    const autonomy = channel?.autonomyLevel ?? cfg.defaultAutonomy;
+    const capPerDay = channel?.rateCapPerDay ?? cfg.rateCapPerDay;
     const postsToday = channel ? await postsLast24h(input.orgId, channel.id) : 0;
 
     const drafted = await draftForGap(input, { ...gap, autonomy });

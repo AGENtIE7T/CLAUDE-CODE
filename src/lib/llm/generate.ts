@@ -1,8 +1,9 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { ContentType } from "@/lib/types";
 import { hasAnthropic } from "@/lib/env";
+import { appConfig } from "@/config/app.config";
 
-const MODEL = process.env.AEO_MODEL ?? "claude-sonnet-5";
+const MODEL = appConfig.llm.model;
 
 export interface GenerateInput {
   prompt: string; // the AI question we want to be cited for
@@ -52,7 +53,7 @@ export async function generateContent(input: GenerateInput): Promise<GeneratedCo
 
   const res = await client.messages.create({
     model: MODEL,
-    max_tokens: 4096,
+    max_tokens: appConfig.llm.maxTokens,
     system: SYSTEM,
     messages: [{ role: "user", content: user }],
   });

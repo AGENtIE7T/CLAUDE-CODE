@@ -1,4 +1,5 @@
 import type { ChannelKind } from "@/lib/types";
+import { appConfig } from "@/config/app.config";
 
 /**
  * Always-on safety layer. Every draft passes these before it can be
@@ -28,7 +29,11 @@ export function similarity(a: string, b: string): number {
 }
 
 /** Block a draft that is too close to something already published nearby. */
-export function dedupeGuard(body: string, recentBodies: string[], threshold = 0.85): GuardVerdict {
+export function dedupeGuard(
+  body: string,
+  recentBodies: string[],
+  threshold = appConfig.guards.dedupeThreshold,
+): GuardVerdict {
   const hit = recentBodies.find((prev) => similarity(body, prev) >= threshold);
   return hit
     ? { ok: false, reasons: [`Near-duplicate of recent content (>=${threshold} similarity).`] }

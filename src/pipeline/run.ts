@@ -1,6 +1,7 @@
 import type { AutonomyLevel, ChannelKind, ContentStatus, ContentType } from "@/lib/types";
 import { generateContent } from "@/lib/llm/generate";
 import { getConnector } from "@/lib/channels";
+import { channelConfig } from "@/config/app.config";
 
 /**
  * The core loop, as one runnable pass per organization.
@@ -26,11 +27,13 @@ export function resolveStatus(
   autonomy: AutonomyLevel,
   kind: ChannelKind,
 ): ContentStatus {
-  // Community + directory never auto-publish, regardless of autonomy level.
-  const restricted = kind === "community" || kind === "directory";
-  if (autonomy === "approval_queue" || restricted) return "pending_approval";
-  if (autonomy === "semi_auto") return kind === "owned_site" || kind === "social" ? "approved" : "pending_approval";
-  return "approved"; // fully_auto — still only reachable for owned_site / social
+  // A channel that may never auto-publish (config-driven; e.g. community,
+  // directory) always parks for review, regardless of autonomy level.
+  if (!channelConfig(kind).canAutoPublish) return "pending_approval";
+  // The approval-queue posture always requires a human.
+  if (autonomy === "approval_queue") return "pending_approval";
+  // semi_auto and fully_auto both auto-approve auto-publishable channels.
+  return "approved";
 }
 
 export interface DraftedItem {

@@ -1,6 +1,7 @@
 import { isDemo } from "@/lib/env";
 import { store } from "@/lib/demo/store";
 import { createClient } from "@/lib/supabase/server";
+import { channelConfig } from "@/config/app.config";
 import type { AnswerEngine, AutonomyLevel, ChannelKind, ContentStatus } from "@/lib/types";
 
 /** View models the dashboard screens render. Decouples pages from raw rows. */
@@ -11,12 +12,7 @@ export interface QueueRow { id: string; title: string; channel: ChannelKind; exc
 export interface ChannelRow { kind: ChannelKind; label: string; connected: boolean; autonomy: AutonomyLevel; note: string }
 export interface AuditRow { ts: string; who: string; action: string; detail: string }
 
-const CHANNEL_NOTE: Record<ChannelKind, string> = {
-  owned_site: "Your property — safe to auto-publish.",
-  social: "Auto with cadence limits once connected.",
-  directory: "Assisted, one-time, human-verified.",
-  community: "Draft-only. Auto-posting disabled by policy (ToS).",
-};
+const CHANNEL_NOTE = (kind: ChannelKind): string => channelConfig(kind).note;
 
 // ── visibility ───────────────────────────────────────────────────────────
 export async function getVisibility(): Promise<VisibilityRow[]> {
@@ -116,14 +112,14 @@ export async function getApprovalQueue(): Promise<QueueRow[]> {
 export async function getChannels(): Promise<ChannelRow[]> {
   if (isDemo()) {
     return store().channels.map((c) => ({
-      kind: c.kind, label: c.label, connected: c.connected, autonomy: c.autonomyLevel, note: CHANNEL_NOTE[c.kind],
+      kind: c.kind, label: c.label, connected: c.connected, autonomy: c.autonomyLevel, note: CHANNEL_NOTE(c.kind),
     }));
   }
   try {
     const supabase = createClient();
     const { data } = await supabase.from("channels").select("kind, label, connected, autonomy_level");
     return (data ?? []).map((c: { kind: ChannelKind; label: string; connected: boolean; autonomy_level: AutonomyLevel }) => ({
-      kind: c.kind, label: c.label, connected: c.connected, autonomy: c.autonomy_level, note: CHANNEL_NOTE[c.kind],
+      kind: c.kind, label: c.label, connected: c.connected, autonomy: c.autonomy_level, note: CHANNEL_NOTE(c.kind),
     }));
   } catch {
     return [];

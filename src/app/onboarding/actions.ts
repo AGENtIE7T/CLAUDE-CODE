@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { appConfig } from "@/config/app.config";
 import type { ChannelKind } from "@/lib/types";
 
 /**
@@ -33,20 +34,20 @@ export async function createOrg(formData: FormData): Promise<void> {
     .insert({ org_id: orgId, user_id: user.id, role: "owner" });
   if (memErr) throw new Error(memErr.message);
 
-  const channels: { kind: ChannelKind; label: string }[] = [
-    { kind: "owned_site", label: "Owned site / blog" },
-    { kind: "social", label: "LinkedIn / X" },
-    { kind: "directory", label: "Directories" },
-    { kind: "community", label: "Reddit / Quora" },
-  ];
+  // Channels and their safe defaults come straight from app.config.ts.
+  const kinds = Object.keys(appConfig.channels) as ChannelKind[];
   await supabase.from("channels").insert(
-    channels.map((c) => ({
-      org_id: orgId,
-      kind: c.kind,
-      label: c.label,
-      autonomy_level: "approval_queue", // safe default for every channel
-      connected: false,
-    })),
+    kinds.map((kind) => {
+      const cfg = appConfig.channels[kind];
+      return {
+        org_id: orgId,
+        kind,
+        label: cfg.label,
+        autonomy_level: cfg.defaultAutonomy,
+        rate_cap_per_day: cfg.rateCapPerDay,
+        connected: false,
+      };
+    }),
   );
 
   const seeds = [
