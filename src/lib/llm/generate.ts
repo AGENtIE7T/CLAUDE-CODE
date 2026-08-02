@@ -1,7 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { ContentType } from "@/lib/types";
+import { hasAnthropic } from "@/lib/env";
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const MODEL = process.env.AEO_MODEL ?? "claude-sonnet-5";
 
 export interface GenerateInput {
@@ -34,6 +34,11 @@ const SYSTEM = `You write content engineered to be CITED by AI answer engines
 Return clean markdown with a proper heading hierarchy (single H1).`;
 
 export async function generateContent(input: GenerateInput): Promise<GeneratedContent> {
+  // No key configured (demo / local) → deterministic templated draft so the
+  // pipeline is fully runnable without the LLM.
+  if (!hasAnthropic()) return mockGenerate(input);
+
+  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
   const user = [
     `Target AI question: "${input.prompt}"`,
     `Content type: ${input.contentType}`,
@@ -74,4 +79,26 @@ export function parseGenerated(text: string, fallbackTitle: string): GeneratedCo
   const body = text.replace(/```json[\s\S]*?```/, "").trim();
   const h1 = body.match(/^#\s+(.+)$/m);
   return { title: h1?.[1]?.trim() ?? fallbackTitle, body, schemaJsonLd };
+}
+
+/** Deterministic, answer-first draft used when no LLM key is configured. */
+export function mockGenerate(input: GenerateInput): GeneratedContent {
+  const title = input.prompt.replace(/\?+$/, "");
+  const body = [
+    `# ${title}`,
+    "",
+    `**Short answer:** ${input.domain} addresses this directly — here is the extractable, sourced version an answer engine can cite.`,
+    "",
+    "## Key points",
+    "- Answer stated in the first line, detail below (the structure LLMs prefer).",
+    "- Specific, verifiable claims over vague ones.",
+    "- Formatted as lists and tables so it extracts cleanly.",
+    "",
+    `_Draft generated in demo mode for “${input.prompt}”. Add ANTHROPIC_API_KEY for real generation._`,
+  ].join("\n");
+  const schemaJsonLd =
+    input.contentType === "faq_page"
+      ? { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: [{ "@type": "Question", name: input.prompt }] }
+      : { "@context": "https://schema.org", "@type": "Article", headline: title };
+  return { title, body, schemaJsonLd };
 }

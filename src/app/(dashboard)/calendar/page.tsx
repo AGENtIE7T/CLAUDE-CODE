@@ -1,20 +1,19 @@
 import { PageHeader } from "@/components/page-header";
+import { getCalendar } from "@/lib/data/queries";
+import type { ContentStatus } from "@/lib/types";
 
-const items = [
-  { title: "What is answer engine optimization?", channel: "owned_site", when: "Today", status: "scheduled" },
-  { title: "AEO vs SEO", channel: "owned_site", when: "Tomorrow", status: "approved" },
-  { title: "How we think about AI citations", channel: "social", when: "Wed", status: "pending_approval" },
-  { title: "Best AEO tools in 2026", channel: "owned_site", when: "Thu", status: "draft" },
-];
-
-const statusColor: Record<string, string> = {
+const statusColor: Record<ContentStatus, string> = {
   scheduled: "var(--teal)",
   approved: "var(--good)",
+  published: "var(--good)",
   pending_approval: "var(--warn)",
   draft: "var(--ink-faint)",
+  rejected: "var(--crit)",
+  failed: "var(--crit)",
 };
 
-export default function CalendarPage() {
+export default async function CalendarPage() {
+  const items = await getCalendar();
   return (
     <>
       <PageHeader
@@ -25,14 +24,14 @@ export default function CalendarPage() {
       <div className="flex flex-col gap-2">
         {items.map((it) => (
           <div
-            key={it.title}
+            key={it.id}
             className="flex items-center justify-between rounded-lg border px-4 py-3"
             style={{ borderColor: "var(--line)", background: "var(--card)" }}
           >
             <div>
               <p className="font-medium">{it.title}</p>
               <p className="text-xs" style={{ color: "var(--ink-faint)", fontFamily: "var(--font-mono)" }}>
-                {it.channel} · {it.when}
+                {it.channel}
               </p>
             </div>
             <span

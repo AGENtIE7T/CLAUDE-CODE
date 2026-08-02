@@ -2,14 +2,25 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { isDemo } from "@/lib/env";
+import { approveItem, rejectItem } from "@/lib/demo/store";
 import type { ContentStatus } from "@/lib/types";
 
 /**
  * Approval decisions. These run under the signed-in user's RLS session,
  * so a user can only ever act on content in their own org. Every decision
- * is written to the approvals audit trail.
+ * is written to the approvals audit trail. In demo mode they mutate the
+ * in-memory store instead.
  */
 async function decide(contentId: string, decision: "approved" | "rejected", note?: string) {
+  if (isDemo()) {
+    const ok = decision === "approved" ? approveItem(contentId) : rejectItem(contentId);
+    revalidatePath("/approvals");
+    revalidatePath("/audit");
+    revalidatePath("/calendar");
+    return { ok };
+  }
+
   const supabase = createClient();
   const {
     data: { user },

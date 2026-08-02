@@ -22,15 +22,30 @@ mine prompts → find gaps → draft → review → publish → measure → (rep
 
 ## Getting started
 
+### Fastest: demo mode (no keys, no database)
+
 ```bash
 npm install
-cp .env.example .env.local        # fill in Supabase + Anthropic keys
-supabase start                    # local Postgres, or `supabase link` to a hosted project
-npm run db:migrate                # applies supabase/migrations/0001_init.sql
-npm run dev                       # http://localhost:3000
+npm run dev            # http://localhost:3000  → open /dashboard
 ```
 
-Open `/dashboard` for the app shell (six screens with sample data).
+With no `.env.local`, the app runs in **demo mode**: seeded in-memory data,
+all six screens live and connected, auth bypassed, and content generation
+templated. Click **▶ Run a content cycle** on the dashboard to draft a new
+asset into the approval queue and watch the audit log update. Approve/reject
+in the queue and see the calendar and audit change.
+
+### Live mode (real data)
+
+```bash
+cp .env.example .env.local        # add Supabase + Anthropic keys (see SETUP.md)
+npm run db:migrate                # applies supabase/migrations/0001_init.sql
+npm run dev
+```
+
+When `NEXT_PUBLIC_SUPABASE_URL` is set, demo mode switches off: auth is
+enforced (`/login` → `/onboarding` → `/dashboard`) and every screen reads
+from Postgres. **`SETUP.md`** lists exactly which keys you provide.
 
 ## Project layout
 

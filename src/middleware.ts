@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { isDemo } from "@/lib/env";
 
 /** Routes reachable without a session. */
 const PUBLIC_PATHS = ["/", "/login", "/auth"];
@@ -13,6 +14,9 @@ function isPublic(pathname: string): boolean {
  * unauthenticated users away from protected routes to /login.
  */
 export async function middleware(request: NextRequest) {
+  // Demo mode: no Supabase configured, no auth to enforce.
+  if (isDemo()) return NextResponse.next({ request });
+
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(

@@ -1,18 +1,6 @@
 import { PageHeader } from "@/components/page-header";
-import type { AutonomyLevel, ChannelKind } from "@/lib/types";
-
-const channels: {
-  kind: ChannelKind;
-  label: string;
-  connected: boolean;
-  autonomy: AutonomyLevel;
-  note: string;
-}[] = [
-  { kind: "owned_site", label: "Owned site / blog", connected: true, autonomy: "fully_auto", note: "Your property — safe to auto-publish." },
-  { kind: "social", label: "LinkedIn / X", connected: false, autonomy: "approval_queue", note: "Auto with cadence limits once connected." },
-  { kind: "directory", label: "Directories (G2, Capterra)", connected: false, autonomy: "approval_queue", note: "Assisted, one-time, human-verified." },
-  { kind: "community", label: "Reddit / Quora", connected: false, autonomy: "approval_queue", note: "Draft-only. Auto-posting disabled by policy (ToS)." },
-];
+import { getChannels } from "@/lib/data/queries";
+import type { AutonomyLevel } from "@/lib/types";
 
 const autonomyLabel: Record<AutonomyLevel, string> = {
   approval_queue: "Approval queue",
@@ -20,7 +8,8 @@ const autonomyLabel: Record<AutonomyLevel, string> = {
   fully_auto: "Fully auto",
 };
 
-export default function ChannelsPage() {
+export default async function ChannelsPage() {
+  const channels = await getChannels();
   return (
     <>
       <PageHeader

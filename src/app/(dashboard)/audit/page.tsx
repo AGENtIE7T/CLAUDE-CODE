@@ -1,13 +1,8 @@
 import { PageHeader } from "@/components/page-header";
+import { getAuditLog } from "@/lib/data/queries";
 
-const log = [
-  { ts: "2026-08-02 09:14", who: "auto", action: "published", detail: "'What is AEO?' → owned_site (fully_auto)" },
-  { ts: "2026-08-02 08:50", who: "you@brand.com", action: "approved", detail: "'AEO vs SEO' → owned_site" },
-  { ts: "2026-08-01 17:22", who: "auto", action: "drafted", detail: "4 gaps found, 4 assets generated" },
-  { ts: "2026-08-01 17:20", who: "auto", action: "measured", detail: "5 engines probed · SoV 29% avg" },
-];
-
-export default function AuditPage() {
+export default async function AuditPage() {
+  const log = await getAuditLog();
   return (
     <>
       <PageHeader
@@ -22,7 +17,10 @@ export default function AuditPage() {
             className="flex gap-4 py-3"
             style={{ borderTop: i === 0 ? "none" : "1px solid var(--line)" }}
           >
-            <span className="text-xs" style={{ color: "var(--ink-faint)", fontFamily: "var(--font-mono)", minWidth: "9.5rem" }}>
+            <span
+              className="text-xs"
+              style={{ color: "var(--ink-faint)", fontFamily: "var(--font-mono)", minWidth: "9.5rem" }}
+            >
               {l.ts}
             </span>
             <span
