@@ -10,6 +10,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "check": "node scripts/check-env.mjs",
     "db:migrate": "supabase db push",
     "db:reset": "supabase db reset"
   },
