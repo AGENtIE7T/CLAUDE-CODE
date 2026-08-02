@@ -1,0 +1,14 @@
+# Minimal Supabase local config. Run `supabase start` for a local stack,
+# or link to a hosted project with `supabase link --project-ref <ref>`.
+project_id = "aeo-autopilot"
+
+[db]
+port = 54322
+major_version = 15
+
+[studio]
+port = 54323
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
