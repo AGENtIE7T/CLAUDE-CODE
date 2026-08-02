@@ -1,5 +1,9 @@
 import type { ChannelConnector, PublishResult } from "./index";
 import type { ContentItem } from "@/lib/types";
+import type { CmsAdapter } from "./adapters/types";
+import { wordpressAdapter } from "./adapters/wordpress";
+import { webflowAdapter } from "./adapters/webflow";
+import { ghostAdapter } from "./adapters/ghost";
 
 /**
  * Owned-site connector — the first channel we make excellent.
@@ -9,43 +13,29 @@ import type { ContentItem } from "@/lib/types";
  * fully control HTML structure + JSON-LD schema, the things answer engines
  * parse.
  *
- * This stub targets a headless CMS (WordPress REST / Webflow / Ghost).
- * Swap `publish` for the real API call once the customer connects a site.
+ * The connector dispatches to a per-CMS adapter chosen by `creds.cmsType`.
  */
+const adapters: Record<string, CmsAdapter> = {
+  wordpress: wordpressAdapter,
+  webflow: webflowAdapter,
+  ghost: ghostAdapter,
+};
+
 export const ownedSiteConnector: ChannelConnector = {
   kind: "owned_site",
   supportsAutoPublish: true,
 
   async publish(item: ContentItem, credentials): Promise<PublishResult> {
-    const { cmsType, endpoint, token } = credentials;
-    if (!endpoint || !token) {
-      return { ok: false, error: "Owned-site channel is not fully connected." };
+    const cmsType = credentials.cmsType;
+    const adapter = cmsType ? adapters[cmsType] : undefined;
+    if (!adapter) {
+      return {
+        ok: false,
+        error: cmsType
+          ? `Unsupported CMS: ${cmsType}`
+          : "Owned-site channel is not connected (no cmsType set).",
+      };
     }
-
-    // The engine always ships server-rendered HTML + JSON-LD so AI crawlers
-    // (many of which don't execute JS) can extract the answer.
-    const payload = {
-      title: item.title,
-      content: item.body,
-      schema: item.schemaJsonLd,
-      status: "publish",
-    };
-
-    try {
-      // TODO: replace with per-CMS adapter (WordPress REST, Webflow CMS API, Ghost Admin API).
-      const res = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) return { ok: false, error: `${cmsType} responded ${res.status}` };
-      const data = (await res.json()) as { url?: string; link?: string };
-      return { ok: true, url: data.url ?? data.link };
-    } catch (err) {
-      return { ok: false, error: err instanceof Error ? err.message : "publish failed" };
-    }
+    return adapter.publish(item, credentials);
   },
 };

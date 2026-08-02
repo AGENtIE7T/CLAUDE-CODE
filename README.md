@@ -70,15 +70,32 @@ supabase/
 
 ## Build roadmap
 
-1. **Foundation** (done in scaffold) — Next.js + Supabase, schema, RLS, app shell.
-2. **Generate + owned publishing** — wire real Anthropic generation to the
-   owned-site connector (WordPress/Webflow/Ghost adapters).
-3. **Measurement** — connect Ahrefs Brand Radar / Semrush to `probe.ts`.
+1. **Foundation** ✅ — Next.js + Supabase, schema, RLS, app shell.
+2. **Generate + owned publishing** ✅ — Anthropic generation wired to the
+   owned-site connector with **WordPress / Webflow / Ghost** adapters
+   (`src/lib/channels/adapters/`). Full cycle orchestration in
+   `src/pipeline/cycle.ts`; safety guards in `src/lib/safety/guards.ts`;
+   persistence in `src/lib/db/repository.ts`; interactive approval queue with
+   server actions + audit trail; auth middleware for session refresh.
+3. **Measurement** ✅ (data path) — Ahrefs Brand Radar client
+   (`src/lib/visibility/ahrefs.ts`) feeds the visibility probe; falls back to
+   baseline rows when unconfigured.
 4. **Social + directories** — cadence limits, Canva asset gen, form-assist.
 5. **Community (careful)** — draft-and-suggest flow with ToS guardrails.
 
-## What's a stub
+## The safety layer
 
-Generation, publishing, and probing return correct shapes but need real
-credentials/adapters wired in (marked `TODO`). Dashboard screens render sample
-data until the pipeline writes live rows.
+Every draft passes `runGuards()` before it can auto-publish. A trip forces the
+item to `pending_approval` regardless of the channel's autonomy level:
+
+- **dedupe** — Jaccard similarity vs. recently published bodies (blocks the
+  reposted-everywhere pattern that gets accounts flagged)
+- **rate cap** — per-channel posts-per-24h ceiling
+- **brand/fact guard** — flags unsourced statistics and unbacked superlatives
+
+## What still needs real credentials
+
+The generation, CMS-publish, and Brand Radar calls are complete but need live
+keys/tokens (`.env.local`) and a Supabase project to run end to end. Dashboard
+screens render sample data until the pipeline writes live rows. Connectors for
+social / directory / community channels are the next phase.
