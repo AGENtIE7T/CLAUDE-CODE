@@ -108,6 +108,44 @@ item to `pending_approval` regardless of the channel's autonomy level:
 - **rate cap** — per-channel posts-per-24h ceiling
 - **brand/fact guard** — flags unsourced statistics and unbacked superlatives
 
+## SEO Command Center (second product, same app)
+
+A separate, audit-first SEO product lives alongside AEO Autopilot in this app,
+sharing its auth, Supabase tenancy, and demo mode. It converts plain-English
+instructions into **safe, structured, reviewable** SEO tasks.
+
+**Posture:** read-only by default · preview-first · approval-based for any
+change · reversible · fully logged. Production writes and live crawling are
+**disabled by default** (`SEO_ENABLE_PRODUCTION_WRITES`, `SEO_ENABLE_LIVE_CRAWL`).
+
+**Screens**
+- `/command` — type an instruction; it becomes a validated plan (audit /
+  preview / execute), a clarification, or a refusal with a legitimate
+  alternative for prohibited tactics.
+- `/websites` — add sites, ownership starts UNVERIFIED so crawl/write stay
+  blocked until confirmed.
+
+**Library map** (`src/lib/`)
+| Module | Role |
+|---|---|
+| `rbac/` | 5 roles (OWNER/ADMIN/SEO_MANAGER/EDITOR/VIEWER); backend-enforced matrix; per-request resolver reads `memberships.seo_role`, never the client |
+| `ssrf/` | mandatory URL/IP validation — blocks non-HTTP, localhost, private/reserved ranges, cloud metadata, internal + single-label hosts, embedded creds |
+| `tasks/` | explicit registry: every task is read / preview / write / prohibited with a risk level |
+| `command/` | strict Zod task-plan schema + policy validator + NL parser + orchestrator |
+| `injection/` | prompt-injection defense — untrusted content is fenced data, never instructions |
+| `websites/` | onboarding validation, ownership verification, robots/sitemap parsing, protected-URL matcher |
+| `crawler/` | SSRF-guarded fetch (DNS-resolved-IP + redirect re-validation), URL normalization, HTML extraction, scoped BFS crawl engine (fixtures in demo) |
+| `audits/` | broken links, orphans, click-depth, metadata, canonical, headings, alt, sitemap/robots — findings labelled fact / inference / recommendation |
+| `linking/` | explainable internal-linking engine (Section-10 weighted score with components, natural anchors, technical validation, strict limits) |
+| `audit-log/` | structured logging with secret redaction + input hashing; append-only schema |
+
+**Schema:** `supabase/migrations/0002_seo_command_center.sql` (additive; 19
+workspace-scoped tables under RLS; adds `memberships.seo_role`).
+
+**Tests:** `npm test` — 154 pass, covering RBAC, SSRF (incl. bypass vectors),
+registry, plan/policy, crawler lifecycle, audits, NL parsing, injection, and
+the linking engine.
+
 ## What still needs real credentials
 
 The generation, CMS-publish, and Brand Radar calls are complete but need live
