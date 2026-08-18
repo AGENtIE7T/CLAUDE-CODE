@@ -10,6 +10,8 @@ const links = [
   { href: "/approvals", label: "Approvals" },
   { href: "/channels", label: "Channels" },
   { href: "/audit", label: "Audit Log" },
+  // SEO Command Center (separate product, shared shell)
+  { href: "/websites", label: "SEO · Websites" },
 ];
 
 export function Nav() {
