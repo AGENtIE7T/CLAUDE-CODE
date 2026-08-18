@@ -154,7 +154,13 @@ function isBlockedHostname(hostname: string): boolean {
   if (BLOCKED_HOSTNAMES.has(h)) return true;
   if (BLOCKED_HOST_SUFFIXES.some((s) => h.endsWith(s))) return true;
   // A hostname that is itself an IP literal must pass the IP checks.
+  // (The WHATWG URL parser normalizes integer/hex/octal IPv4 forms — e.g.
+  // http://2130706433/ → 127.0.0.1 — before we get here, so those are caught.)
   if (isBlockedIp(h)) return true;
+  // Single-label hostnames (no dot, no colon) are internal/non-public — a
+  // public registrable domain always contains a dot. This blocks intranet
+  // names like "jenkins" or "wiki". IPv6 literals contain ":" so are excluded.
+  if (!h.includes(".") && !h.includes(":")) return true;
   return false;
 }
 

@@ -48,6 +48,16 @@ describe("ssrf: hostname / IP blocking", () => {
     expect(isUrlAllowed("http://server.local/")).toBe(false);
     expect(isUrlAllowed("http://metadata.google.internal/")).toBe(false);
   });
+  it("blocks single-label (intranet) hostnames but allows public domains", () => {
+    expect(isUrlAllowed("http://intranetbox/")).toBe(false);
+    expect(isUrlAllowed("http://jenkins/")).toBe(false);
+    expect(isUrlAllowed("https://example.com/")).toBe(true);
+  });
+  it("normalizes and blocks integer/hex/octal IPv4 localhost forms", () => {
+    expect(isUrlAllowed("http://2130706433/")).toBe(false);
+    expect(isUrlAllowed("http://0x7f000001/")).toBe(false);
+    expect(isUrlAllowed("http://0177.0.0.1/")).toBe(false);
+  });
   it("blocks credentials embedded in the URL", () => {
     expect(isUrlAllowed("http://user:pass@example.com/")).toBe(false);
   });
