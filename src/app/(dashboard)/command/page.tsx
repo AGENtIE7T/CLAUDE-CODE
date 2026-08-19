@@ -1,5 +1,6 @@
 import { PageHeader } from "@/components/page-header";
 import { CommandBox } from "./command-box";
+import { AutopilotPanel } from "./autopilot-panel";
 
 export default function CommandPage() {
   return (
@@ -9,7 +10,10 @@ export default function CommandPage() {
         title="Tell the Command Center what to do"
         lead="Type an instruction in plain English. It becomes a structured, reviewable plan — audit by default, preview for changes, and explicit approval before anything is written. Prohibited SEO tactics are refused with a legitimate alternative."
       />
-      <CommandBox />
+      <div className="grid gap-6">
+        <CommandBox />
+        <AutopilotPanel />
+      </div>
     </>
   );
 }
