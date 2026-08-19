@@ -142,9 +142,14 @@ change · reversible · fully logged. Production writes and live crawling are
 **Schema:** `supabase/migrations/0002_seo_command_center.sql` (additive; 19
 workspace-scoped tables under RLS; adds `memberships.seo_role`).
 
-**Tests:** `npm test` — 154 pass, covering RBAC, SSRF (incl. bypass vectors),
-registry, plan/policy, crawler lifecycle, audits, NL parsing, injection, and
-the linking engine.
+**Tests:** `npm test` — full suite green, covering RBAC, SSRF (incl. bypass
+vectors + IP pinning), registry, plan/policy, crawler lifecycle, audits, NL
+parsing, injection, the linking engine, the execute/rollback loop, autopilot
+E2E, and external-SEO gating.
+
+**Docs:** `docs/seo-command-center/` — `OPERATIONS.md` (deploy, backup/restore,
+incident recovery), `USER_GUIDE.md`, and `DEFINITION_OF_DONE.md` (spec Section 24
+status + security-review outcomes).
 
 ## What still needs real credentials
 

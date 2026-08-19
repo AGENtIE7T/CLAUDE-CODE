@@ -38,15 +38,54 @@ export function liveCrawlEnabled(): boolean {
   return process.env.SEO_ENABLE_LIVE_CRAWL === "1";
 }
 
-/** Resolve a hostname to IPs and assert every one is allowed. */
-async function assertResolvedHostAllowed(hostname: string): Promise<void> {
-  // If it's an IP literal, assertUrlAllowed already checked it; lookup still
-  // returns it and we re-check to be safe.
+/**
+ * Resolve a hostname, assert every resolved IP is allowed, and RETURN one
+ * validated address to pin the connection to. Pinning is what closes the
+ * DNS-rebinding window: without it, fetch() would re-resolve independently and
+ * could connect to a different (private) IP than the one we validated.
+ */
+async function resolveAllowedIp(hostname: string): Promise<{ address: string; family: number }> {
   const records = await lookup(hostname, { all: true });
   if (records.length === 0) {
     throw new SsrfError("blocked_hostname", `Could not resolve host: ${hostname}`);
   }
   for (const r of records) assertIpAllowed(r.address);
+  return { address: records[0].address, family: records[0].family };
+}
+
+/**
+ * Build an undici dispatcher that forces the connection to the pre-validated
+ * IP (re-asserting inside the lookup callback), so the address we checked is
+ * the address we connect to. Falls back to null if undici's Agent isn't
+ * importable — in that case the pre-fetch validation still applies but the
+ * rebinding window is not fully closed (logged by the caller).
+ */
+type LookupCb = (err: NodeJS.ErrnoException | null, address: string, family: number) => void;
+interface UndiciAgentCtor {
+  new (opts: { connect: { lookup: (h: string, o: unknown, cb: LookupCb) => void } }): unknown;
+}
+
+async function pinnedDispatcher(pinned: { address: string; family: number }): Promise<unknown | null> {
+  try {
+    // `undici` backs Node's global fetch; import it by a computed specifier so
+    // the bundler/type-checker doesn't require static types for an optional dep.
+    const mod = (await import(/* webpackIgnore: true */ "undici" as string)) as { Agent?: UndiciAgentCtor };
+    if (!mod.Agent) return null;
+    return new mod.Agent({
+      connect: {
+        lookup: (_hostname: string, _opts: unknown, cb: LookupCb) => {
+          try {
+            assertIpAllowed(pinned.address); // re-assert at connect time
+            cb(null, pinned.address, pinned.family);
+          } catch (err) {
+            cb(err as NodeJS.ErrnoException, "", 0);
+          }
+        },
+      },
+    });
+  } catch {
+    return null;
+  }
 }
 
 function disabledResult(url: string): FetchResult {
@@ -78,11 +117,14 @@ export function createGuardedFetcher(options: GuardedFetchOptions = {}): Fetcher
       let current = startUrl;
 
       for (let hop = 0; hop <= opts.maxRedirects; hop++) {
-        // Guard 1 + 2 on every hop.
+        // Guard 1 + 2 on every hop: validate the URL, then resolve + validate
+        // the IP and PIN the connection to it (defeats DNS rebinding).
         let parsed: URL;
+        let dispatcher: unknown | null;
         try {
           parsed = assertUrlAllowed(current);
-          await assertResolvedHostAllowed(parsed.hostname);
+          const pinned = await resolveAllowedIp(parsed.hostname);
+          dispatcher = await pinnedDispatcher(pinned);
         } catch (e) {
           const msg = e instanceof SsrfError ? `SSRF blocked (${e.reason})` : "URL validation failed";
           return {
@@ -96,12 +138,14 @@ export function createGuardedFetcher(options: GuardedFetchOptions = {}): Fetcher
         const timer = setTimeout(() => controller.abort(), opts.timeoutMs);
         let res: Response;
         try {
-          res = await fetch(current, {
+          const init: RequestInit & { dispatcher?: unknown } = {
             method: "GET",
             redirect: "manual", // we follow manually to re-validate each hop
             signal: controller.signal,
             headers: { "user-agent": CRAWLER_USER_AGENT, accept: "text/html,application/xhtml+xml" },
-          });
+          };
+          if (dispatcher) init.dispatcher = dispatcher;
+          res = await fetch(current, init);
         } catch (e) {
           clearTimeout(timer);
           return {

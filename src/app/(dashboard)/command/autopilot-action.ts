@@ -43,15 +43,23 @@ export interface AutopilotReport {
 
 export async function runAutopilotAction(): Promise<AutopilotReport> {
   const membership = await resolveMembership(DEMO_WORKSPACE_ID);
+  // Fail closed: an unresolved principal must NOT be treated as OWNER. Without
+  // a resolved membership there is no authority to run the write path.
+  if (!membership) {
+    return {
+      stage: "failed", message: "Not authorized: no workspace membership.",
+      executed: false, candidateCount: 0, auditFindings: 0, before: null, after: null,
+    };
+  }
   const { pages, seedHtml, sources } = demoCorpus();
   const cms = createMockCms(seedHtml);
   const before = (await cms.getPage(sources[0]))?.html ?? null;
 
   const result = await runAutopilot({
-    workspaceId: membership?.workspaceId ?? DEMO_WORKSPACE_ID,
+    workspaceId: membership.workspaceId,
     websiteId: "web-demo-1",
-    userId: membership?.userId ?? null,
-    role: membership?.role ?? "OWNER",
+    userId: membership.userId,
+    role: membership.role,
     startUrl: `${FIXTURE_HOST}/`,
     linkingPages: pages,
     sourceUrls: sources,
