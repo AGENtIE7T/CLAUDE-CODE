@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { parseInstruction } from "./parser";
 import { parseTaskPlan } from "./schema";
+import { matchesPattern } from "@/lib/websites/protected";
 
 const ctx = { websiteId: "11111111-1111-4111-8111-111111111111" };
 
@@ -59,5 +60,85 @@ describe("nl parser", () => {
       const r = parseInstruction(s, ctx);
       expect(parseTaskPlan(r.plan).ok, s).toBe(true);
     }
+  });
+});
+
+describe("nl parser: extracted rules", () => {
+  it("extracts protected URLs from prose and covers their children", () => {
+    const r = parseInstruction(
+      "Add internal links across the blog. Never touch /checkout or /my-account.",
+      ctx,
+    );
+    expect(r.rules.protectedUrls).toEqual(
+      expect.arrayContaining(["/checkout**", "/my-account**"]),
+    );
+    expect(matchesPattern("https://x.test/checkout/thanks", r.rules.protectedUrls[0])).toBe(true);
+  });
+
+  it("keeps an explicit glob exactly as written", () => {
+    const r = parseInstruction("Exclude /cart/* from every run.", ctx);
+    expect(r.rules.protectedUrls).toEqual(["/cart/*"]);
+  });
+
+  it("extracts no protected URLs when the instruction names none", () => {
+    const r = parseInstruction("Suggest internal links for the blog.", ctx);
+    expect(r.rules.protectedUrls).toEqual([]);
+  });
+
+  it("detects an unattended request without granting anything", () => {
+    const r = parseInstruction("Apply the internal links automatically.", ctx);
+    expect(r.rules.autopilotRequested).toBe(true);
+    // It still needs an approval — detection never bypasses that.
+    expect(r.plan.requires_approval).toBe(true);
+  });
+
+  it("honours an explicit refusal of autopilot", () => {
+    const r = parseInstruction("Apply the links, but do not run automatically.", ctx);
+    expect(r.rules.autopilotRequested).toBe(false);
+  });
+
+  it("never flags autopilot on a prohibited request", () => {
+    const r = parseInstruction("Automatically buy backlinks for my homepage.", ctx);
+    expect(r.prohibitedHint).toBe("paid_link_manipulation");
+    expect(r.rules.autopilotRequested).toBe(false);
+  });
+
+  it("parses an explicit decimal confidence threshold", () => {
+    const r = parseInstruction(
+      "Suggest internal links with a confidence score of at least 0.85.",
+      ctx,
+    );
+    expect(r.plan.constraints.minimum_confidence).toBe(0.85);
+  });
+
+  it("parses a percentage confidence threshold", () => {
+    const r = parseInstruction("Only propose links above 90% confidence.", ctx);
+    expect(r.plan.constraints.minimum_confidence).toBe(0.9);
+  });
+
+  it("lets an explicit threshold beat a vague adjective", () => {
+    const r = parseInstruction("Be aggressive, but keep confidence >= 0.95.", ctx);
+    expect(r.plan.constraints.minimum_confidence).toBe(0.95);
+  });
+
+  it("does not mistake an unrelated number for a confidence threshold", () => {
+    const r = parseInstruction("Use high confidence, limit this task to 25 pages.", ctx);
+    expect(r.plan.constraints.minimum_confidence).toBe(0.9);
+    expect(r.plan.scope.page_limit).toBe(25);
+  });
+
+  it("parses a same-target link cap", () => {
+    const r = parseInstruction(
+      "Suggest links, no more than two links per page and only one link to the same target.",
+      ctx,
+    );
+    expect(r.plan.constraints.max_links_per_page).toBe(2);
+    expect(r.plan.constraints.max_links_to_same_target).toBe(1);
+    expect(parseTaskPlan(r.plan).ok).toBe(true);
+  });
+
+  it("omits the same-target cap when it was not requested", () => {
+    const r = parseInstruction("Suggest internal links for the blog.", ctx);
+    expect(r.plan.constraints.max_links_to_same_target).toBeUndefined();
   });
 });
