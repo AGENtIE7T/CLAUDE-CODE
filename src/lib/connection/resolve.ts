@@ -32,7 +32,7 @@
 import { createWordPressConnection } from "@/lib/cms/wordpress/client";
 import { createMockWordPress } from "@/lib/cms/wordpress/mock-server";
 import { WP_ORIGIN } from "@/lib/cms/wordpress/fixtures";
-import type { CmsConnection, CmsEnvironment } from "@/lib/cms/adapter";
+import { CmsError, type CmsConnection, type CmsEnvironment } from "@/lib/cms/adapter";
 import { readCapabilityEnv, usingMockWordPress } from "@/lib/status/capabilities";
 
 export type ConnectionKind = "real" | "mock" | "none";
@@ -42,6 +42,12 @@ export interface ResolvedConnection {
   connection: CmsConnection | null;
   /** Operator-facing description. Never contains a credential. */
   description: string;
+  /**
+   * Why there is no connection, when the reason is more specific than "none
+   * configured" — a non-HTTPS site URL, say. Surfaced by the connection test
+   * so the operator is told what to fix rather than just "not connected".
+   */
+  error?: { code: string; message: string };
 }
 
 /** Shared fixture server, so a mock write persists across requests in a session. */
@@ -84,19 +90,33 @@ export function resolveConnection(): ResolvedConnection {
   }
 
   if (baseUrl && username && appPassword) {
-    return {
-      kind: "real",
-      connection: createWordPressConnection({
-        baseUrl,
-        // Built here and immediately closed over; never stored or returned.
-        token: Buffer.from(`${username}:${appPassword}`).toString("base64"),
-        environment,
-        label: baseUrl,
-        access,
-        isMock: false,
-      }),
-      description: `WordPress at ${baseUrl} (${environment}, ${access === "read_write" ? "read/write" : "read-only"}).`,
-    };
+    try {
+      return {
+        kind: "real",
+        connection: createWordPressConnection({
+          baseUrl,
+          // Built here and immediately closed over; never stored or returned.
+          token: Buffer.from(`${username}:${appPassword}`).toString("base64"),
+          environment,
+          label: baseUrl,
+          access,
+          isMock: false,
+        }),
+        description: `WordPress at ${baseUrl} (${environment}, ${access === "read_write" ? "read/write" : "read-only"}).`,
+      };
+    } catch (e) {
+      // The client refuses to exist over plain HTTP (and other malformed site
+      // URLs). That is a configuration error, not a missing connection, so say
+      // what is wrong instead of reporting a bland "not connected".
+      const err = e instanceof CmsError ? e : null;
+      const message = err?.message ?? "The configured WordPress site URL is not usable.";
+      return {
+        kind: "none",
+        connection: null,
+        description: message,
+        error: { code: err?.code ?? "unsupported", message },
+      };
+    }
   }
 
   return {

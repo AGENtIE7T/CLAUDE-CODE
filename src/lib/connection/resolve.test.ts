@@ -123,3 +123,32 @@ describe("the browser suite cannot reach a real website", () => {
     expect(env?.SEO_ENABLE_PRODUCTION_WRITES).toBe("0");
   });
 });
+
+describe("a non-HTTPS site URL is a reported configuration error, not a connection", () => {
+  it("refuses http:// and explains why", () => {
+    set({ ...REAL, WORDPRESS_BASE_URL: "http://staging.example.com" });
+    const r = resolveConnection();
+    expect(r.kind).toBe("none");
+    expect(r.connection).toBeNull();
+    expect(r.error?.code).toBe("unsupported");
+    expect(r.error?.message).toContain("WordPress connection requires an HTTPS site URL.");
+  });
+
+  it("refuses a base URL that already ends in /wp-json", () => {
+    set({ ...REAL, WORDPRESS_BASE_URL: "https://staging.example.com/wp-json" });
+    const r = resolveConnection();
+    expect(r.kind).toBe("none");
+    expect(r.error?.message).toMatch(/must be the site root/);
+  });
+
+  it("refuses a malformed site URL rather than throwing out of resolveConnection", () => {
+    set({ ...REAL, WORDPRESS_BASE_URL: "staging.example.com" });
+    expect(() => resolveConnection()).not.toThrow();
+    expect(resolveConnection().kind).toBe("none");
+  });
+
+  it("never puts the Application Password in the reported error", () => {
+    set({ ...REAL, WORDPRESS_BASE_URL: "http://staging.example.com" });
+    expect(JSON.stringify(resolveConnection())).not.toContain(REAL.WORDPRESS_APP_PASSWORD);
+  });
+});

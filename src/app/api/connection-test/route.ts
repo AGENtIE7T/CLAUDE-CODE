@@ -36,7 +36,7 @@ export async function GET() {
       {
         kind: "none",
         ok: false,
-        error: { code: "not_connected", message: resolved.description },
+        error: resolved.error ?? { code: "not_connected", message: resolved.description },
         checkedAt,
       },
       { status: 200, headers: { "cache-control": "no-store" } },

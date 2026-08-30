@@ -5,7 +5,9 @@
  *  Applies an APPROVED revision, then verifies, with rollback ready. The order
  *  of checks is the safety contract:
  *
- *    1. production writes must be enabled (flag) OR we're in demo mode
+ *    0. the write TARGET must be unambiguous, writable, and — for production —
+ *       explicitly enabled and running outside demo mode
+ *    1. (see 0; the environment gate replaced the old demo-mode shortcut)
  *    2. caller must hold `revision.execute` permission
  *    3. approval must bind to THIS revision's revisionHash and not be expired
  *    4. no page in the revision may match a protected-URL pattern
@@ -32,6 +34,53 @@ export interface Approval {
   expiresAt: number; // epoch ms
 }
 
+/**
+ * Where this write actually lands.
+ *
+ * Derived from the CMS connection that will be written to, never from an
+ * environment variable read separately — so the gate below judges the thing
+ * being written to rather than a setting that might describe something else.
+ *
+ * Required. There is no default: a missing or malformed target is treated as
+ * ambiguous and refused, because "we could not tell what we were about to
+ * write to" is never a reason to proceed.
+ */
+export interface ExecuteTarget {
+  environment: "staging" | "production";
+  /** True when the CMS behind this store is the in-process fixture. */
+  isMock: boolean;
+  /** True when the connection is permitted to write at all. */
+  writable: boolean;
+}
+
+const ENVIRONMENTS = new Set(["staging", "production"]);
+
+/** Fail-closed validation of the target. Returns a refusal reason, or null. */
+function targetRefusal(t: ExecuteTarget | undefined): string | null {
+  if (!t || typeof t !== "object") return "no write target was supplied";
+  if (!ENVIRONMENTS.has(t.environment)) {
+    return `write target environment is ambiguous (${JSON.stringify(t.environment)})`;
+  }
+  if (typeof t.isMock !== "boolean" || typeof t.writable !== "boolean") {
+    return "write target is ambiguous (isMock/writable must be explicit)";
+  }
+  if (!t.writable) return "the CMS connection is read-only";
+  // A fixture may stand in for staging, never for production.
+  if (t.isMock && t.environment === "production") {
+    return "a mock connection can never be used against production";
+  }
+  if (t.environment === "production") {
+    if (process.env.SEO_ENABLE_PRODUCTION_WRITES !== "1") {
+      return "production writes are disabled (set SEO_ENABLE_PRODUCTION_WRITES=1)";
+    }
+    // Demo mode bypasses authentication, so it may never reach production.
+    if (isDemo()) {
+      return "production writes require the authenticated application; demo mode is not permitted";
+    }
+  }
+  return null;
+}
+
 export interface ExecuteContext {
   workspaceId: string;
   userId: string | null;
@@ -40,16 +89,14 @@ export interface ExecuteContext {
   approval: Approval;
   /** Idempotency key — a repeated key is treated as already-done. */
   idempotencyKey: string;
+  /** Where the write lands. Required; an absent or malformed target is refused. */
+  target: ExecuteTarget;
   dryRun?: boolean;
 }
 
 export type ExecuteResult =
   | { ok: true; applied: string[]; verified: true; cmsRevisions: Record<string, number>; dryRun: boolean }
   | { ok: false; reason: string; rolledBack?: string[] };
-
-function productionWritesEnabled(): boolean {
-  return process.env.SEO_ENABLE_PRODUCTION_WRITES === "1";
-}
 
 /** Keys already executed, for idempotency (demo/in-memory). */
 const DONE = new Set<string>();
@@ -77,10 +124,11 @@ export async function executeRevision(
     return { ok: false, reason: "idempotent replay: already executed" };
   }
 
-  // 1. Live writes require the flag; demo mode writes only to the mock CMS.
-  if (!isDemo() && !productionWritesEnabled()) {
-    return deny("production writes are disabled (set SEO_ENABLE_PRODUCTION_WRITES=1)");
-  }
+  // 1. The target must be unambiguous and permitted. This runs BEFORE every
+  //     other check and applies identically in demo mode: demo bypasses
+  //     authentication for local UI work, and nothing else.
+  const refusal = targetRefusal(ctx.target);
+  if (refusal) return deny(refusal);
 
   // 2. Permission.
   if (!can(ctx.role, "revision.execute")) {

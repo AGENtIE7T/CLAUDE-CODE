@@ -474,6 +474,11 @@ export async function runInternalLinking(opts: LinkingRunOptions): Promise<Linki
     protectedPatterns: guarded,
     approval,
     idempotencyKey: `${batchId}:${revision.revisionHash}`,
+    target: {
+      environment: conn.environment === "production" ? "production" : "staging",
+      isMock: conn.isMock,
+      writable: conn.capabilities.write,
+    },
   });
 
   if (!exec.ok) {
@@ -650,6 +655,11 @@ export async function applyApprovedRevision(
     protectedPatterns: opts.protectedUrls,
     approval: opts.approval,
     idempotencyKey: `${batchId}:${opts.revision.revisionHash}`,
+    target: {
+      environment: conn.environment === "production" ? "production" : "staging",
+      isMock: conn.isMock,
+      writable: conn.capabilities.write,
+    },
   });
 
   if (!exec.ok) {

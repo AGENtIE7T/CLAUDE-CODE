@@ -47,7 +47,10 @@ export async function testConnectionAction(): Promise<ConnectionTestResult> {
       access: null,
       isMock: false,
       contentCount: null,
-      error: { code: "not_connected", message: "No WordPress connection is configured." },
+      error: resolved.error ?? {
+        code: "not_connected",
+        message: "No WordPress connection is configured.",
+      },
       checkedAt,
       description: resolved.description,
     };

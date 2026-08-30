@@ -133,6 +133,10 @@ export async function runAutopilot(input: AutopilotInput): Promise<AutopilotResu
     protectedPatterns,
     approval,
     idempotencyKey: `autopilot:${revision.revisionHash}`,
+    // This loop only ever writes to the seeded in-memory CmsStore. Declaring
+    // it as a mock is the literal truth, and it is what stops this path from
+    // ever being pointed at a production site.
+    target: { environment: "staging", isMock: true, writable: true },
   });
 
   if (!result.ok) {
