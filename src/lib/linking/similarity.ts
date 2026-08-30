@@ -60,6 +60,24 @@ export function jaccard(a: string[], b: string[]): number {
 }
 
 /**
+ * Containment: what FRACTION of `needles` appears in `haystack`.
+ *
+ * Jaccard is the wrong measure when the two sides are wildly different sizes.
+ * A 400-word article and a three-word page title can never score above about
+ * 0.02 on Jaccard however perfectly they match, because the union is dominated
+ * by the article. The question worth asking is asymmetric — "does this article
+ * cover the destination's topic?" — and that is containment.
+ */
+export function containment(needles: string[], haystack: string[]): number {
+  const set = new Set(haystack);
+  const wanted = new Set(needles);
+  if (wanted.size === 0) return 0;
+  let found = 0;
+  for (const n of wanted) if (set.has(n)) found++;
+  return found / wanted.size;
+}
+
+/**
  * Naive entity extraction: capitalized multi-word phrases + notable nouns.
  * Deterministic stand-in for a real NER model. Returns lowercased entities.
  */
@@ -68,7 +86,11 @@ export function extractEntities(text: string): string[] {
   return Array.from(new Set(caps.map((s) => s.toLowerCase())));
 }
 
-/** Overlap of entity sets between two texts. Range 0..1. */
+/**
+ * How much of B's entity set appears in A. Asymmetric for the same reason as
+ * `containment`: a long source page will always mention more entities than a
+ * short destination, and that should not count against the match.
+ */
 export function entityOverlap(a: string, b: string): number {
-  return jaccard(extractEntities(a), extractEntities(b));
+  return containment(extractEntities(b), extractEntities(a));
 }

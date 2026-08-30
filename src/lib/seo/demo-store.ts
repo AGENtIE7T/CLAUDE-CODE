@@ -10,6 +10,9 @@
 import type { Website } from "@/lib/seo/types";
 import { DEMO_WORKSPACE_ID } from "@/lib/rbac/resolve";
 
+/** Fixed so demo data is stable across restarts. Must be a valid UUID. */
+export const DEMO_WEBSITE_ID = "9f1d2c3b-4a5e-4f60-9b7c-8d0e1f2a3b4c";
+
 interface SeoDemoState {
   websites: Website[];
 }
@@ -21,7 +24,10 @@ function seed(): SeoDemoState {
   return {
     websites: [
       {
-        id: "web-demo-1",
+        // A real UUID, because the TaskPlan schema requires website_id to be
+        // one. A demo-shaped id here fails validation and every command comes
+        // back as "I couldn't build a valid task from that".
+        id: DEMO_WEBSITE_ID,
         workspaceId: DEMO_WORKSPACE_ID,
         name: "Acme Law",
         url: "https://www.acmelaw.example",

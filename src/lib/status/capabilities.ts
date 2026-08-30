@@ -163,7 +163,7 @@ export function buildCapabilitySnapshot(input: CapabilityInput = {}): Capability
       status: "limited",
       value: "Mock (fixture)",
       detail:
-        "Connected to the in-process fixture WordPress, not a real site. Every change here is simulated and no real page can be reached.",
+        "Connected to the in-process fixture WordPress, not a real site. It is read/write so the whole flow can be exercised, but every change is simulated and no real page can be reached.",
       remedy: "Add real WORDPRESS_* environment variables to connect a staging site.",
     });
   } else if (configured) {
@@ -187,7 +187,11 @@ export function buildCapabilitySnapshot(input: CapabilityInput = {}): Capability
   }
 
   // ── access level ──────────────────────────────────────────────────────
-  const readWrite = (e.wordpressAccess ?? "read_only") === "read_write";
+  // The fixture connection genuinely is read/write — it is a sandbox. Report
+  // what the connection actually is rather than what WORDPRESS_ACCESS says
+  // about a real site that is not being used; the MOCK label carries the
+  // warning, and a mock can never reach production.
+  const readWrite = mock || (e.wordpressAccess ?? "read_only") === "read_write";
   const connected = mock || configured;
   cards.push({
     key: "access",

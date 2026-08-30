@@ -57,6 +57,10 @@ describe("capability snapshot", () => {
     expect(card(s, "wordpress").value).toBe("Mock (fixture)");
     expect(card(s, "wordpress").detail).toMatch(/not a real site/);
     expect(usingMockWordPress({ useMockWordPress: true })).toBe(true);
+    // The sandbox is genuinely writable, and the snapshot says so rather than
+    // reporting a read-only setting that is not the one in force.
+    expect(card(s, "access").value).toBe("Read / write");
+    expect(s.canWrite).toBe(true);
   });
 
   it("reports Semrush as not connected without inventing figures", () => {

@@ -63,7 +63,8 @@ export async function createWebsite(
 
   const ts = new Date().toISOString();
   const website: Website = {
-    id: isDemo() ? `web-${Math.random().toString(36).slice(2, 10)}` : crypto.randomUUID(),
+    // Always a UUID: the strict TaskPlan schema requires website_id to be one.
+    id: crypto.randomUUID(),
     workspaceId: isDemo() ? DEMO_WORKSPACE_ID : workspaceId,
     name: validated.value.name,
     url: validated.value.url,

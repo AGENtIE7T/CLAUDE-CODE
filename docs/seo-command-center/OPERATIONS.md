@@ -100,3 +100,26 @@ SSRF IP-pinning · fail-closed authorization.
   count of `revision.execute.*` events per day, and any
   `revision.execute.verify_failed` / `.denied` entries (should be ~0 in normal
   operation).
+
+## Running the test suites
+
+```bash
+npm test          # 333 unit and integration tests (vitest)
+npm run typecheck # tsc --noEmit
+npm run lint      # next lint
+npm run build     # production build
+npm run test:e2e  # 8 browser tests (Playwright, against a production build)
+```
+
+`npm run test:e2e` builds the app, starts it on port 3100 in demo mode with the
+fixture WordPress (`WORDPRESS_USE_MOCK=1`, `SEO_ENABLE_PRODUCTION_WRITES=0`),
+and drives the real screens in Chromium. It never touches a real website.
+
+If the machine already has a Chromium that Playwright did not install, point at
+it instead of downloading a second copy:
+
+```bash
+PLAYWRIGHT_CHROMIUM_PATH=/path/to/chrome npm run test:e2e
+```
+
+Otherwise `npx playwright install chromium` once is enough.

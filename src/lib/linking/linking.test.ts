@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { cosineSimilarity, entityOverlap, tokenize } from "./similarity";
+import { containment, cosineSimilarity, entityOverlap, jaccard, tokenize } from "./similarity";
 import { selectAnchor, isAcceptableAnchor } from "./anchor";
 import { scoreComponents, finalScore, WEIGHTS, type LinkingPage } from "./score";
 import { generateLinkingPreview } from "./engine";
@@ -123,5 +123,25 @@ describe("linking engine", () => {
       limits: { minConfidence: 0.99 },
     });
     expect(preview.candidates).toHaveLength(0);
+  });
+});
+
+describe("topic and entity matching are asymmetric on purpose", () => {
+  it("does not punish a long article for being long", () => {
+    const longArticle = `${"roofing storm damage tiles leak ".repeat(60)}emergency roof repair`;
+    // Every word of the destination's title appears in the article.
+    expect(containment(tokenize("Emergency Roof Repair"), tokenize(longArticle))).toBe(1);
+    // Jaccard, by contrast, is near zero purely because of the size difference.
+    expect(jaccard(tokenize("Emergency Roof Repair"), tokenize(longArticle))).toBeLessThan(0.5);
+  });
+
+  it("still returns 0 when the article does not cover the destination at all", () => {
+    expect(containment(tokenize("Emergency Roof Repair"), tokenize("cake recipes and baking"))).toBe(0);
+  });
+
+  it("scores a partially covered topic partially", () => {
+    expect(
+      containment(tokenize("Emergency Roof Repair"), tokenize("a guide to roof maintenance")),
+    ).toBeCloseTo(1 / 3, 5);
   });
 });

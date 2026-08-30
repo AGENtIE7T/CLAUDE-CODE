@@ -57,8 +57,23 @@ export const WP_FIXTURES: WpResource[] = [
     title: { rendered: "Emergency Roof Repair" },
     content: {
       rendered:
-        "<p>Our emergency roof repair team covers the whole county, with same-day " +
-        "callouts for storm damage, slipped tiles and leaks.</p>",
+        "<h2>Emergency Roof Repair in Fairhaven</h2>" +
+        "<p>Ridgeline Roofing runs an emergency roof repair team across Fairhaven, with same-day " +
+        "callouts for storm damage, slipped tiles and leaks. Most emergency roof " +
+        "repair jobs start as a single slipped tile after high winds.</p>" +
+        "<h2>Storm Damage and Slipped Tiles</h2>" +
+        "<p>We make the roof watertight the same day. That usually means a " +
+        "temporary cover over the damaged area, then a permanent repair once the " +
+        "weather clears. Storm damage to a ridge line, a cracked tile above a " +
+        "valley, or a leak around a chimney flashing are the three most common " +
+        "callouts we see after a storm.</p>" +
+        "<p>A leak that reaches the ceiling has usually been running through the " +
+        "roof for weeks. Catching slipped tiles early is the difference between a " +
+        "roof repair and a ceiling replacement. If you can see daylight through " +
+        "the loft, call us the same day.</p>" +
+        "<p>Every emergency roof repair is photographed before and after, and " +
+        "quoted before any permanent work starts. Ridgeline Roofing has worked on " +
+        "Fairhaven roofs for eighteen years.</p>",
     },
     modified_gmt: "2026-05-02T09:14:00",
   },
@@ -71,8 +86,17 @@ export const WP_FIXTURES: WpResource[] = [
     title: { rendered: "Gutter Cleaning" },
     content: {
       rendered:
-        "<p>Blocked gutters cause damp long before they cause a leak. We clear, " +
-        "flush and photograph every run.</p>",
+        "<h2>Gutter Cleaning in Fairhaven</h2>" +
+        "<p>Blocked gutters cause damp long before they cause a leak. The Ridgeline Roofing gutter " +
+        "cleaning service clears, flushes and photographs every run.</p>" +
+        "<p>Moss, leaf litter and nesting material build up through autumn until " +
+        "water runs down the wall instead of into the downpipe. That is how a " +
+        "blocked gutter becomes damp brickwork, and eventually a leak inside.</p>" +
+        "<p>We clear the gutters by hand, flush every downpipe, and check the " +
+        "joints and brackets while we are up there. Annual gutter cleaning is " +
+        "usually enough on a modern roof; a house under trees may need it twice a " +
+        "year. Debris left in a gutter after a storm is the most common reason a " +
+        "sound roof starts leaking.</p>",
     },
     modified_gmt: "2026-04-18T11:02:00",
   },
@@ -103,9 +127,20 @@ export const WP_FIXTURES: WpResource[] = [
     title: { rendered: "Storm damage: a homeowner's checklist" },
     content: {
       rendered:
-        "<p>After high winds, check the ridge line first. Slipped tiles are the " +
+        "<h2>Storm Damage and Slipped Tiles</h2>" +
+        "<p>After high winds across Fairhaven, check the ridge line first. Slipped tiles are the " +
         "most common cause of a leak, and emergency roof repair is usually cheaper " +
         "the sooner it happens.</p>" +
+        "<p>Storm damage rarely announces itself. Walk the perimeter of the house " +
+        "and look for tile fragments on the ground, then look up at the ridge and " +
+        "the valleys. A single slipped tile above a valley will put water into the " +
+        "roof every time it rains, and you will not see it inside for weeks.</p>" +
+        "<h2>Emergency Roof Repair, or Wait?</h2>" +
+        "<p>Check the loft on a bright day. Daylight through the roof means a tile " +
+        "is gone. Damp felt, dark staining on a rafter, or a drip near a chimney " +
+        "flashing all mean water is already getting in and the roof needs a repair " +
+        "rather than a watch-and-wait. Ridgeline Roofing quotes an emergency roof repair " +
+        "before any permanent work starts, and every callout is photographed.</p>" +
         "<p>Clear debris before it reaches the downpipes. See our " +
         '<a href="' + ORIGIN + '/services/gutter-cleaning">gutter cleaning</a> page ' +
         "for what that involves.</p>",
@@ -121,8 +156,18 @@ export const WP_FIXTURES: WpResource[] = [
     title: { rendered: "Why gutters block, and what it costs you" },
     content: {
       rendered:
-        "<p>Moss, leaf litter and nesting material build up over a single autumn. " +
-        "Gutter cleaning once a year is usually enough on a modern roof.</p>" +
+        "<h2>Gutter Cleaning in Fairhaven</h2>" +
+        "<p>Moss, leaf litter and nesting material build up over a single autumn across Fairhaven. " +
+        "Gutter cleaning once a year is usually enough on a modern roof, and twice " +
+        "a year under trees.</p>" +
+        "<p>A blocked gutter does not overflow neatly. Water runs down the wall, " +
+        "soaks the brickwork, and shows up inside as damp on a bedroom ceiling " +
+        "months later. By then the repair is plastering, not gutter cleaning.</p>" +
+        "<p>The other failure mode is weight. A full run of wet leaf litter is " +
+        "heavy enough to pull brackets out of the fascia, which drops the gutter " +
+        "and puts water straight onto the wall below. Downpipes block at the " +
+        "shoe first, so that is where to look. Ridgeline Roofing clears, flushes and " +
+        "photographs every downpipe on a gutter cleaning visit.</p>" +
         // A BROKEN internal link: /blog/old-guide does not exist in this site.
         '<p>Our older write-up is <a href="' + ORIGIN + '/blog/old-guide">still here</a>.</p>',
     },
@@ -141,7 +186,14 @@ export const WP_FIXTURES: WpResource[] = [
     content: {
       rendered:
         "<p>EPDM lasts longest on a large span. GRP is stiffer underfoot. Felt is " +
-        "cheapest and still fine on a shed.</p>",
+        "cheapest and still fine on a shed.</p>" +
+        "<p>Span decides most of it. Over about four metres the seams in felt " +
+        "become the weak point, and a single sheet of EPDM starts to look like the " +
+        "obvious answer. Under that, GRP gives a harder wearing surface if anyone " +
+        "will ever walk on it.</p>" +
+        "<p>Falls matter more than material. A flat roof that ponds will fail in " +
+        "any of the three, and standing water on a warm roof is what turns a small " +
+        "defect into a leak through the deck.</p>",
     },
     modified_gmt: "2026-05-01T13:20:00",
   },

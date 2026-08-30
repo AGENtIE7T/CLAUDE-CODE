@@ -398,3 +398,32 @@ describe("workflow: approving a work order later", () => {
     expect(out.message).toBe(WORDPRESS_CONNECTION_REQUIRED);
   });
 });
+
+describe("workflow: the default confidence floor is reachable on real content", () => {
+  it("finds at least one opportunity at the shipped 0.80 floor, with no threshold relaxation", async () => {
+    const r = await runInternalLinking(options({ mode: "audit", rules: rules() }));
+    expect(rules().minimumConfidence).toBe(0.8);
+    expect(r.candidates.length).toBeGreaterThan(0);
+    expect(r.candidates[0].confidence).toBeGreaterThanOrEqual(0.8);
+    // And it is the editorially obvious one: the storm-damage article should
+    // link to the emergency roof repair service.
+    expect(r.candidates[0].sourceUrl).toContain("/blog/storm-damage-checklist");
+    expect(r.candidates[0].targetUrl).toContain("/services/roof-repair");
+    expect(r.candidates[0].anchor.toLowerCase()).toBe("emergency roof repair");
+  });
+
+  it("scores every component, so the number is explainable rather than opaque", async () => {
+    const r = await runInternalLinking(options({ mode: "audit", rules: rules() }));
+    const c = r.candidates[0].components;
+    expect(Object.keys(c).sort()).toEqual([
+      "business_priority",
+      "destination_quality",
+      "entity_match",
+      "intent_match",
+      "page_type_compatibility",
+      "semantic_similarity",
+      "topic_match",
+    ]);
+    expect(r.candidates[0].reason).toBeTruthy();
+  });
+});

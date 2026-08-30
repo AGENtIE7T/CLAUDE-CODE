@@ -11,7 +11,7 @@
  *  dominate.
  */
 
-import { cosineSimilarity, entityOverlap, jaccard, tokenize } from "@/lib/linking/similarity";
+import { containment, cosineSimilarity, entityOverlap, tokenize } from "@/lib/linking/similarity";
 
 export type PageType = "home" | "blog" | "product" | "service" | "category" | "other";
 
@@ -81,7 +81,12 @@ function destinationQuality(target: LinkingPage): number {
 
 export function scoreComponents(source: LinkingPage, target: LinkingPage): ScoreComponents {
   const semantic_similarity = cosineSimilarity(source.text, target.text);
-  const topic_match = jaccard(tokenize(source.title + " " + source.text), tokenize(target.title));
+  // Asymmetric on purpose: how much of the DESTINATION's topic does this
+  // source page cover? Jaccard here would punish long articles for being long.
+  const topic_match = containment(
+    tokenize(target.title),
+    tokenize(`${source.title} ${source.text}`),
+  );
   const entity_match = entityOverlap(source.text, target.text);
   const intent_match = intentMatch(source.type, target.type);
   const page_type_compatibility = pageTypeCompatibility(source.type, target.type);

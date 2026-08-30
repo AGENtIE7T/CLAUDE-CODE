@@ -5,6 +5,7 @@ import { createMockCms } from "@/lib/cms/mock";
 import { fixtureFetcher, FIXTURE_HOST } from "@/lib/crawler/fixtures";
 import { resolveMembership, DEMO_WORKSPACE_ID } from "@/lib/rbac/resolve";
 import type { LinkingPage } from "@/lib/linking/score";
+import { DEMO_WEBSITE_ID } from "@/lib/seo/demo-store";
 
 /**
  * Demo autopilot: seeds a small site and runs the full autonomous loop
@@ -57,7 +58,7 @@ export async function runAutopilotAction(): Promise<AutopilotReport> {
 
   const result = await runAutopilot({
     workspaceId: membership.workspaceId,
-    websiteId: "web-demo-1",
+    websiteId: DEMO_WEBSITE_ID,
     userId: membership.userId,
     role: membership.role,
     startUrl: `${FIXTURE_HOST}/`,
