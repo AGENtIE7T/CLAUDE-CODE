@@ -198,13 +198,46 @@ describe("autopilot: per-candidate rules", () => {
 
   it("honours excluded URL patterns", () => {
     const r = evaluateAutopilotBatch(
-      [candidate({ sourceUrl: "https://s.com/legal/terms" })],
-      revisionFor(["https://s.com/legal/terms"]),
-      soft({ excludedPatterns: ["/legal/**"] }),
+      [candidate({ sourceUrl: "https://s.com/archive/old-post" })],
+      revisionFor(["https://s.com/archive/old-post"]),
+      soft({ excludedPatterns: ["/archive/**"] }),
       ctx(),
     );
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.skipped[0].reason).toMatch(/excluded URL pattern/);
+  });
+
+  it("refuses legal, medical, financial and compliance pages by default", () => {
+    for (const url of [
+      "https://s.com/legal/terms",
+      "https://s.com/medical/dosage",
+      "https://s.com/finance/rates",
+      "https://s.com/compliance/gdpr",
+    ]) {
+      const r = evaluateAutopilotBatch(
+        [candidate({ sourceUrl: url })],
+        revisionFor([url]),
+        soft(),
+        ctx(),
+      );
+      expect(r.ok, url).toBe(false);
+      if (!r.ok) expect(r.skipped[0].reason).toMatch(/requires human approval/);
+    }
+  });
+
+  it("refuses an edit that would remove an existing link", () => {
+    const r = evaluateAutopilotBatch(
+      [candidate({ removesExistingLink: true })],
+      revisionFor(["https://s.com/blog/a"]),
+      soft(),
+      ctx(),
+    );
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.skipped[0].reason).toMatch(/remove an existing link/);
+  });
+
+  it("cannot be configured into allowing link removal", () => {
+    expect(normalizeRules({ allowLinkRemoval: true } as never).allowLinkRemoval).toBe(false);
   });
 
   it("stops the whole batch on the first violation when configured to", () => {

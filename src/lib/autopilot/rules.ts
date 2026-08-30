@@ -53,6 +53,17 @@ export interface AutopilotRules {
   excludedPatterns: string[];
   /** Page types (e.g. "product") excluded as SOURCES of edits. */
   excludedPageTypes: string[];
+  /**
+   * Content a mistake would be expensive on — legal, medical, financial,
+   * compliance. Autopilot never touches these; they always route to a human
+   * approval instead. Matching is on the URL path, either end of the link.
+   */
+  sensitiveUrlPatterns: string[];
+  /**
+   * Autopilot only ADDS links. Removing an existing link is a destructive,
+   * hard-to-notice edit, so it is refused rather than configured away.
+   */
+  allowLinkRemoval: boolean;
   allowedCms: string[];
   allowedEnvironments: Environment[];
   requireBackup: boolean;
@@ -78,6 +89,19 @@ export const DEFAULT_AUTOPILOT_RULES: AutopilotRules = {
   protectedUrls: [],
   excludedPatterns: [],
   excludedPageTypes: ["product"],
+  sensitiveUrlPatterns: [
+    "/legal**",
+    "/terms**",
+    "/privacy**",
+    "/disclaimer**",
+    "/compliance**",
+    "/medical**",
+    "/health**",
+    "/finance**",
+    "/financial**",
+    "/pricing**",
+  ],
+  allowLinkRemoval: false,
   allowedCms: ["wordpress"],
   allowedEnvironments: ["staging"],
   requireBackup: true,
@@ -103,6 +127,8 @@ export interface AutopilotCandidate {
   targetIsRedirect?: boolean;
   /** True when the anchor was not found naturally and needs a human. */
   needsEditorialReview: boolean;
+  /** True when applying this edit would remove or replace an existing link. */
+  removesExistingLink?: boolean;
 }
 
 export interface AutopilotContext {
@@ -187,6 +213,16 @@ function candidateBlocker(
   if (!c.targetCanonical) return "destination is not the canonical URL";
   if (rules.excludedPageTypes.includes(c.sourceType)) {
     return `source page type "${c.sourceType}" is excluded`;
+  }
+  if (c.removesExistingLink && !rules.allowLinkRemoval) {
+    return "the edit would remove an existing link";
+  }
+  if (
+    rules.sensitiveUrlPatterns.some(
+      (p) => matchesPattern(c.sourceUrl, p) || matchesPattern(c.targetUrl, p),
+    )
+  ) {
+    return "legal, medical, financial or compliance content requires human approval";
   }
   const guarded = [...rules.protectedUrls];
   if (guarded.length && (isProtected(c.sourceUrl, guarded) || isProtected(c.targetUrl, guarded))) {
@@ -333,6 +369,8 @@ export function normalizeRules(input: Partial<AutopilotRules>): AutopilotRules {
     maxLinksToSameTarget: clamp(r.maxLinksToSameTarget, 1, 5, 2),
     maxTotalChanges: clamp(r.maxTotalChanges, 1, 500, 60),
     approvalTtlMinutes: clamp(r.approvalTtlMinutes, 1, 240, 30),
+    // Autopilot may never be configured into removing links.
+    allowLinkRemoval: false,
     // Confidence floor can be raised but never dropped below 0.5.
     minimumConfidence: Number.isFinite(r.minimumConfidence)
       ? Math.min(1, Math.max(0.5, r.minimumConfidence))

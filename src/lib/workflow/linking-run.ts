@@ -1,0 +1,576 @@
+/**
+ * ─────────────────────────────────────────────────────────────────────────
+ *  Internal-linking run — the end-to-end workflow, CMS-agnostic.
+ * ─────────────────────────────────────────────────────────────────────────
+ *  One function performs the whole product: connect, read, find opportunities,
+ *  score them, build a preview, bind an approval to that exact preview, apply
+ *  it, verify it landed, and (for a controlled test) undo it and verify the
+ *  undo. Every step is recorded, in order, with what actually happened.
+ *
+ *  Two properties make this safe to point at a real site later:
+ *
+ *   · It is written against `CmsConnection` / `CmsStore`, not against
+ *     WordPress. The mocked fixture and a real staging site run the SAME code,
+ *     so a green mocked run is evidence about the real path, not a rehearsal
+ *     of a different one.
+ *
+ *   · It never reports an outcome it did not observe. `applied` is true only
+ *     after the execute engine re-read the live page and the content hashed to
+ *     the approved revision. If a step did not run, it is recorded as skipped
+ *     with the reason — not omitted, and never coloured green.
+ *
+ *  Page content read from the CMS is UNTRUSTED. It is scanned for injection
+ *  and used only as text to link within; nothing in it can change what runs.
+ */
+
+import { assertUsable, CmsError, type CmsConnection } from "@/lib/cms/adapter";
+import { createWordPressCmsStore, rollbackFromBackups } from "@/lib/cms/wordpress/store";
+import type { BackupStore } from "@/lib/backups/snapshot";
+import { extractPage } from "@/lib/crawler/extract";
+import { normalizeUrl } from "@/lib/crawler/normalize";
+import { classifyInjection } from "@/lib/injection/classify";
+import { applyLinks } from "@/lib/linking/apply";
+import {
+  generateLinkingPreview,
+  type LinkCandidate,
+  type LinkingLimits,
+} from "@/lib/linking/engine";
+import type { LinkingPage } from "@/lib/linking/score";
+import { buildRevision, type Revision } from "@/lib/revisions/revision";
+import { executeRevision, type Approval } from "@/lib/execute/engine";
+import {
+  evaluateAutopilotBatch,
+  type AutopilotCandidate,
+  type AutopilotRules,
+} from "@/lib/autopilot/rules";
+import { isProtected } from "@/lib/websites/protected";
+import { WORDPRESS_CONNECTION_REQUIRED, WORK_ORDER_ONLY } from "@/lib/status/capabilities";
+import type { Role } from "@/lib/seo/types";
+
+export type RunMode = "audit" | "preview" | "execute";
+export type StepStatus = "ok" | "skipped" | "failed";
+
+export interface WorkflowStep {
+  n: number;
+  key: string;
+  label: string;
+  status: StepStatus;
+  /** What actually happened, in plain language. */
+  detail: string;
+  at: string;
+}
+
+export interface LinkingRunOptions {
+  websiteId: string;
+  workspaceId: string;
+  userId: string | null;
+  role: Role;
+  connection: CmsConnection | null;
+  backups: BackupStore;
+  rules: AutopilotRules;
+  /** Website-level protected URL globs. Enforced on top of the rules'. */
+  protectedUrls: string[];
+  mode: RunMode;
+  /** Use Autopilot to issue the approval instead of asking a human. */
+  useAutopilot?: boolean;
+  /** A human-issued approval, when the operator already approved a revision. */
+  approval?: Approval | null;
+  limits?: Partial<LinkingLimits>;
+  /** Only source links from pages whose URL contains one of these. */
+  includePatterns?: string[];
+  /**
+   * Apply, verify, then undo and verify the undo. This is the controlled
+   * single-change test — never a production behaviour.
+   */
+  undoAfterVerify?: boolean;
+  now?: () => number;
+}
+
+export interface LinkingRunResult {
+  steps: WorkflowStep[];
+  mode: RunMode;
+  /** True only when a change was written AND verified on the CMS. */
+  applied: boolean;
+  /** True only when a rollback ran and the prior bytes were restored. */
+  rolledBack: boolean;
+  /** True when a work order exists but nothing was written. */
+  workOrderOnly: boolean;
+  approvalSource: "none" | "human" | "autopilot";
+  message: string;
+  pagesRead: number;
+  candidates: LinkCandidate[];
+  chosen: LinkCandidate | null;
+  revisionHash: string | null;
+  batchId: string;
+  /** True when the CMS behind this run is the fixture, not a real site. */
+  mock: boolean;
+  injectionFlags: { url: string; score: number }[];
+}
+
+// ── helpers ────────────────────────────────────────────────────────────────
+
+function htmlToText(html: string): string {
+  return html
+    .replace(/<(script|style)[\s\S]*?<\/\1>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function pageTypeFor(url: string): LinkingPage["type"] {
+  const path = (() => {
+    try {
+      return new URL(url).pathname;
+    } catch {
+      return url;
+    }
+  })().toLowerCase();
+  if (/\/(blog|news|articles?|posts?)\//.test(path)) return "blog";
+  if (/\/(products?|shop|store)\//.test(path)) return "product";
+  if (/\/(services?|solutions?|practice-areas?)\//.test(path)) return "service";
+  if (/\/(category|categories|collections?)\//.test(path)) return "category";
+  if (path === "/" || path === "") return "home";
+  return "other";
+}
+
+function businessPriorityFor(type: LinkingPage["type"]): number {
+  if (type === "service" || type === "product") return 0.9;
+  if (type === "category") return 0.75;
+  if (type === "blog") return 0.5;
+  return 0.6;
+}
+
+function toAutopilotCandidate(c: LinkCandidate): AutopilotCandidate {
+  return {
+    sourceUrl: c.sourceUrl,
+    targetUrl: c.targetUrl,
+    sourceType: c.sourceType,
+    targetType: c.targetType,
+    anchor: c.anchor,
+    confidence: c.confidence,
+    targetIndexable: c.targetIndexable,
+    targetCanonical: c.targetCanonical,
+    targetStatus: 200,
+    needsEditorialReview: c.needsEditorialReview,
+    removesExistingLink: false,
+  };
+}
+
+/** Build the recorder that every step goes through. */
+function recorder(now: () => number) {
+  const steps: WorkflowStep[] = [];
+  let n = 0;
+  return {
+    steps,
+    step(key: string, label: string, status: StepStatus, detail: string): WorkflowStep {
+      const s: WorkflowStep = {
+        n: ++n,
+        key,
+        label,
+        status,
+        detail,
+        at: new Date(now()).toISOString(),
+      };
+      steps.push(s);
+      return s;
+    },
+    /** Mark every remaining step as skipped so the list stays complete. */
+    skipRest(remaining: [string, string][], reason: string) {
+      for (const [key, label] of remaining) this.step(key, label, "skipped", reason);
+    },
+  };
+}
+
+/** The full step list, so a short run still shows what it did not do. */
+const ALL_STEPS: [string, string][] = [
+  ["website", "Select website"],
+  ["connection", "Test CMS connection"],
+  ["list", "List pages and posts"],
+  ["read", "Read page content"],
+  ["detect", "Detect internal-link opportunities"],
+  ["preview", "Generate preview"],
+  ["select", "Select one proposed link"],
+  ["approval", "Create hash-bound approval"],
+  ["apply", "Apply the update"],
+  ["reread", "Re-read the page"],
+  ["verify", "Verify the link exists"],
+  ["rollback", "Roll the change back"],
+  ["reread2", "Re-read the page again"],
+  ["verify2", "Verify the link was removed"],
+  ["audit", "Record the audit trail"],
+];
+
+function remainingFrom(key: string): [string, string][] {
+  const i = ALL_STEPS.findIndex(([k]) => k === key);
+  return i === -1 ? [] : ALL_STEPS.slice(i);
+}
+
+// ── the run ────────────────────────────────────────────────────────────────
+
+export async function runInternalLinking(opts: LinkingRunOptions): Promise<LinkingRunResult> {
+  const now = opts.now ?? Date.now;
+  const rec = recorder(now);
+  const batchId = `batch-${new Date(now()).toISOString()}-${opts.websiteId}`;
+  const guarded = [...opts.protectedUrls, ...opts.rules.protectedUrls];
+
+  const base: LinkingRunResult = {
+    steps: rec.steps,
+    mode: opts.mode,
+    applied: false,
+    rolledBack: false,
+    workOrderOnly: false,
+    approvalSource: "none",
+    message: "",
+    pagesRead: 0,
+    candidates: [],
+    chosen: null,
+    revisionHash: null,
+    batchId,
+    mock: opts.connection?.isMock === true,
+    injectionFlags: [],
+  };
+
+  // 1. Website.
+  rec.step("website", "Select website", "ok", `Website ${opts.websiteId} selected.`);
+
+  // 2. Connection.
+  const conn = opts.connection;
+  if (!conn) {
+    rec.skipRest(remainingFrom("connection"), "No CMS connection is configured.");
+    return { ...base, message: WORDPRESS_CONNECTION_REQUIRED };
+  }
+  try {
+    assertUsable(conn);
+  } catch (e) {
+    const msg = e instanceof CmsError ? e.message : "The connection may not be used.";
+    rec.skipRest(remainingFrom("connection"), msg);
+    return { ...base, message: msg };
+  }
+  const verified = await conn.verify();
+  if (!verified.ok) {
+    const msg = `Connection test failed: ${verified.error?.message ?? "unknown error"}`;
+    rec.step("connection", "Test CMS connection", "failed", msg);
+    rec.skipRest(remainingFrom("list"), "The connection is not usable.");
+    return { ...base, message: msg };
+  }
+  rec.step(
+    "connection",
+    "Test CMS connection",
+    "ok",
+    `Connected to ${verified.siteName ?? conn.label} (${conn.environment}${conn.isMock ? ", MOCK" : ""}); access is ${conn.capabilities.write ? "read/write" : "read-only"}.`,
+  );
+
+  // 3. List.
+  let refs;
+  try {
+    refs = await conn.list();
+  } catch (e) {
+    const msg = e instanceof CmsError ? e.message : "Could not list content.";
+    rec.step("list", "List pages and posts", "failed", msg);
+    rec.skipRest(remainingFrom("read"), "Nothing could be listed.");
+    return { ...base, message: msg };
+  }
+  rec.step("list", "List pages and posts", "ok", `${refs.length} item(s) listed from the CMS.`);
+
+  // 4. Read. Protected URLs are never even fetched into the candidate set.
+  const pages: LinkingPage[] = [];
+  const htmlByUrl = new Map<string, string>();
+  const injectionFlags: LinkingRunResult["injectionFlags"] = [];
+  for (const ref of refs) {
+    if (isProtected(ref.url, guarded)) continue;
+    let content;
+    try {
+      content = await conn.get(ref.id);
+    } catch {
+      continue; // a single unreadable page must not abort the run
+    }
+    const ex = extractPage(content.html);
+    const verdict = classifyInjection(content.html);
+    if (verdict.suspicious) injectionFlags.push({ url: content.url, score: verdict.score });
+
+    const type = pageTypeFor(content.url);
+    htmlByUrl.set(content.url, content.html);
+    pages.push({
+      url: content.url,
+      title: content.title ?? "",
+      text: `${content.title ?? ""}. ${htmlToText(content.html)}`,
+      type,
+      indexable: ex.indexable && !content.noindex,
+      canonicalIsSelf: !ex.canonical || normalizeUrl(ex.canonical) === normalizeUrl(content.url),
+      status: 200,
+      existingTargets: new Set(
+        ex.links.map((l) => normalizeUrl(l.href)).filter((u): u is string => Boolean(u)),
+      ),
+      businessPriority: businessPriorityFor(type),
+    });
+  }
+  rec.step(
+    "read",
+    "Read page content",
+    "ok",
+    `${pages.length} page(s) read${injectionFlags.length ? `; ${injectionFlags.length} flagged as containing instruction-like text (treated as data)` : ""}.`,
+  );
+
+  // 5. Detect.
+  const sourceUrls = pages
+    .filter((p) =>
+      opts.includePatterns?.length
+        ? opts.includePatterns.some((pat) => p.url.includes(pat))
+        : p.type === "blog",
+    )
+    .map((p) => p.url);
+
+  const preview = generateLinkingPreview({
+    pages,
+    sourceUrls: sourceUrls.length ? sourceUrls : pages.map((p) => p.url),
+    protectedPatterns: guarded,
+    limits: {
+      maxLinksPerPage: opts.rules.maxLinksPerPage,
+      maxLinksToSameTarget: opts.rules.maxLinksToSameTarget,
+      maxPagesPerBatch: opts.rules.maxPagesPerRun,
+      minConfidence: opts.rules.minimumConfidence,
+      ...(opts.limits ?? {}),
+    },
+  });
+  rec.step(
+    "detect",
+    "Detect internal-link opportunities",
+    preview.candidates.length ? "ok" : "skipped",
+    preview.candidates.length
+      ? `${preview.candidates.length} candidate(s) above the ${opts.rules.minimumConfidence} confidence floor, from ${preview.pagesConsidered} source page(s).`
+      : `No candidate cleared the ${opts.rules.minimumConfidence} confidence floor (${preview.rejected.length} rejected).`,
+  );
+
+  const result: LinkingRunResult = {
+    ...base,
+    pagesRead: pages.length,
+    candidates: preview.candidates,
+    injectionFlags,
+  };
+
+  if (!preview.candidates.length) {
+    rec.skipRest(remainingFrom("preview"), "There is nothing to propose.");
+    return { ...result, message: "No internal-link opportunities met your rules. Nothing was changed." };
+  }
+
+  // AUDIT stops here: it reports, it never builds an edit.
+  if (opts.mode === "audit") {
+    rec.skipRest(remainingFrom("preview"), "Audit mode reports findings only.");
+    return {
+      ...result,
+      message: `Audit complete. ${preview.candidates.length} internal-link opportunity(ies) found. No website was modified.`,
+    };
+  }
+
+  // 6-7. Preview + select exactly one candidate.
+  const chosen = preview.candidates[0];
+  const sourceHtml = htmlByUrl.get(chosen.sourceUrl) ?? "";
+  const applyResult = applyLinks(sourceHtml, [{ anchor: chosen.anchor, targetUrl: chosen.targetUrl }]);
+  if (!applyResult.applied.length) {
+    rec.step(
+      "preview",
+      "Generate preview",
+      "failed",
+      `The anchor "${chosen.anchor}" could not be linked safely in the page body.`,
+    );
+    rec.skipRest(remainingFrom("select"), "No safe edit could be produced.");
+    return { ...result, message: "No safe edit could be produced for the best candidate." };
+  }
+  rec.step("preview", "Generate preview", "ok", `Preview built for ${chosen.sourceUrl}.`);
+  rec.step(
+    "select",
+    "Select one proposed link",
+    "ok",
+    `"${chosen.anchor}" → ${chosen.targetUrl} (confidence ${chosen.confidence.toFixed(2)}).`,
+  );
+
+  const revision: Revision = buildRevision(opts.websiteId, [
+    { url: chosen.sourceUrl, beforeHtml: sourceHtml, afterHtml: applyResult.html },
+  ]);
+  result.chosen = chosen;
+  result.revisionHash = revision.revisionHash;
+
+  // 8. Approval — human-issued, Autopilot-issued, or none.
+  let approval: Approval | null = opts.approval ?? null;
+  let approvalSource: LinkingRunResult["approvalSource"] = approval ? "human" : "none";
+
+  if (!approval && opts.useAutopilot) {
+    const decision = evaluateAutopilotBatch(
+      [toAutopilotCandidate(chosen)],
+      revision,
+      opts.rules,
+      {
+        task: "insert_internal_links",
+        cms: conn.kind,
+        environment: conn.environment === "production" ? "production" : "staging",
+        backupPresent: opts.rules.requireBackup,
+        verificationAvailable: true,
+        productionWritesEnabled: process.env.SEO_ENABLE_PRODUCTION_WRITES === "1",
+        now: now(),
+      },
+    );
+    if (decision.ok) {
+      approval = decision.approval;
+      approvalSource = "autopilot";
+      rec.step(
+        "approval",
+        "Create hash-bound approval",
+        "ok",
+        `Autopilot issued an approval bound to revision ${revision.revisionHash.slice(0, 12)}.`,
+      );
+    } else {
+      rec.step(
+        "approval",
+        "Create hash-bound approval",
+        "skipped",
+        `Autopilot refused: ${decision.reason} ${decision.violations.join("; ")}`,
+      );
+    }
+  }
+
+  if (!approval) {
+    if (approvalSource === "none" && !opts.useAutopilot) {
+      rec.step(
+        "approval",
+        "Create hash-bound approval",
+        "skipped",
+        "Autopilot is off, so this needs your approval before anything is written.",
+      );
+    }
+    rec.skipRest(remainingFrom("apply"), "No approval exists, so nothing was written.");
+    return {
+      ...result,
+      workOrderOnly: true,
+      approvalSource,
+      message: WORK_ORDER_ONLY,
+    };
+  }
+
+  // PREVIEW mode never writes, even holding a valid approval.
+  if (opts.mode !== "execute") {
+    rec.skipRest(remainingFrom("apply"), "Preview mode never writes.");
+    return { ...result, workOrderOnly: true, approvalSource, message: WORK_ORDER_ONLY };
+  }
+
+  // 9. Apply through the unchanged execute engine.
+  const cms = createWordPressCmsStore(conn, opts.backups, {
+    websiteId: opts.websiteId,
+    batchId,
+    requireBackup: opts.rules.requireBackup,
+  });
+  const exec = await executeRevision(revision, cms, {
+    workspaceId: opts.workspaceId,
+    userId: opts.userId,
+    role: opts.role,
+    protectedPatterns: guarded,
+    approval,
+    idempotencyKey: `${batchId}:${revision.revisionHash}`,
+  });
+
+  if (!exec.ok) {
+    rec.step("apply", "Apply the update", "failed", exec.reason);
+    const rolled = exec.rolledBack?.length ?? 0;
+    rec.step(
+      "reread",
+      "Re-read the page",
+      "skipped",
+      "The write did not complete, so there is nothing to re-read.",
+    );
+    rec.step("verify", "Verify the link exists", "skipped", "Nothing was applied.");
+    rec.step(
+      "rollback",
+      "Roll the change back",
+      rolled ? "ok" : "skipped",
+      rolled ? `The engine rolled back ${rolled} page(s).` : "Nothing needed rolling back.",
+    );
+    rec.step("reread2", "Re-read the page again", "skipped", "Nothing was applied.");
+    rec.step("verify2", "Verify the link was removed", "skipped", "Nothing was applied.");
+    rec.step("audit", "Record the audit trail", "ok", "The failed attempt was recorded.");
+    return {
+      ...result,
+      approvalSource,
+      rolledBack: rolled > 0,
+      message: `The change was NOT applied: ${exec.reason}`,
+    };
+  }
+
+  rec.step("apply", "Apply the update", "ok", `Applied to ${exec.applied.join(", ")}.`);
+
+  // 10-11. Independent re-read and verification, on top of the engine's own.
+  const after = await conn.getByUrl(chosen.sourceUrl);
+  rec.step("reread", "Re-read the page", "ok", `Re-read ${chosen.sourceUrl} from the CMS.`);
+  const present = after.html.includes(`href="${chosen.targetUrl}"`);
+  rec.step(
+    "verify",
+    "Verify the link exists",
+    present ? "ok" : "failed",
+    present
+      ? `The live page now contains a link to ${chosen.targetUrl}.`
+      : "The live page does NOT contain the link. Treating this as a failed write.",
+  );
+  if (!present) {
+    const undo = await rollbackFromBackups(conn, opts.backups, batchId);
+    rec.step(
+      "rollback",
+      "Roll the change back",
+      undo.failed.length ? "failed" : "ok",
+      undo.failed.length
+        ? `Restored ${undo.restored.length}; FAILED to restore ${undo.failed.map((f) => f.url).join(", ")}.`
+        : `Restored ${undo.restored.length} page(s) from backup.`,
+    );
+    rec.skipRest(remainingFrom("reread2"), "Verification failed; the run stopped.");
+    return {
+      ...result,
+      approvalSource,
+      rolledBack: undo.failed.length === 0,
+      message: "The write did not verify on the live page and was rolled back.",
+    };
+  }
+
+  if (!opts.undoAfterVerify) {
+    rec.step("rollback", "Roll the change back", "skipped", "Not requested; the change stands.");
+    rec.step("reread2", "Re-read the page again", "skipped", "No rollback was requested.");
+    rec.step("verify2", "Verify the link was removed", "skipped", "No rollback was requested.");
+    rec.step("audit", "Record the audit trail", "ok", `Batch ${batchId} recorded with a backup for undo.`);
+    return {
+      ...result,
+      applied: true,
+      approvalSource,
+      message: `Applied and verified 1 internal link on ${chosen.sourceUrl}.`,
+    };
+  }
+
+  // 12-14. Controlled test: undo it, then prove the undo.
+  const undo = await rollbackFromBackups(conn, opts.backups, batchId);
+  rec.step(
+    "rollback",
+    "Roll the change back",
+    undo.failed.length ? "failed" : "ok",
+    undo.failed.length
+      ? `Restored ${undo.restored.length}; FAILED to restore ${undo.failed.map((f) => f.url).join(", ")}.`
+      : `Restored ${undo.restored.length} page(s) from the pre-write backup.`,
+  );
+  const afterUndo = await conn.getByUrl(chosen.sourceUrl);
+  rec.step("reread2", "Re-read the page again", "ok", `Re-read ${chosen.sourceUrl} after the rollback.`);
+  const gone = !afterUndo.html.includes(`href="${chosen.targetUrl}"`);
+  rec.step(
+    "verify2",
+    "Verify the link was removed",
+    gone ? "ok" : "failed",
+    gone
+      ? "The live page is back to its original content."
+      : "The link is STILL present after the rollback.",
+  );
+  rec.step("audit", "Record the audit trail", "ok", `Batch ${batchId} recorded: applied, verified, rolled back.`);
+
+  return {
+    ...result,
+    applied: false,
+    rolledBack: gone && undo.failed.length === 0,
+    approvalSource,
+    message: gone
+      ? "Applied, verified, rolled back, and the rollback was verified. The site is unchanged."
+      : "Applied and verified, but the rollback did not fully restore the page.",
+  };
+}
