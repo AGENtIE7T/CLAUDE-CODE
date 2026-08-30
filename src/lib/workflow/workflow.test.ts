@@ -13,7 +13,12 @@ import { createMemoryBackupStore } from "@/lib/backups/snapshot";
 import { DEFAULT_AUTOPILOT_RULES, normalizeRules, type AutopilotRules } from "@/lib/autopilot/rules";
 import { __resetExecuteLedger } from "@/lib/execute/engine";
 import { WORDPRESS_CONNECTION_REQUIRED, WORK_ORDER_ONLY } from "@/lib/status/capabilities";
-import { runInternalLinking, type LinkingRunOptions, type LinkingRunResult } from "./linking-run";
+import {
+  applyApprovedRevision,
+  runInternalLinking,
+  type LinkingRunOptions,
+  type LinkingRunResult,
+} from "./linking-run";
 
 let wp: MockWordPress;
 
@@ -252,5 +257,144 @@ describe("workflow: safety", () => {
     );
     expect(r.applied).toBe(false);
     expect(r.message).toMatch(/NOT applied|did not verify/i);
+  });
+});
+
+describe("workflow: approving a work order later", () => {
+  async function previewed() {
+    const backups = createMemoryBackupStore();
+    const c = conn();
+    const preview = await runInternalLinking(
+      options({ connection: c, backups, mode: "preview", rules: rules({ minimumConfidence: 0.5 }) }),
+    );
+    expect(preview.revision).not.toBeNull();
+    return { c, backups, preview };
+  }
+
+  it("applies the exact revision that was previewed, then verifies it", async () => {
+    const { c, backups, preview } = await previewed();
+    const out = await applyApprovedRevision({
+      websiteId: "site-1",
+      workspaceId: "ws-1",
+      userId: "u",
+      role: "OWNER",
+      connection: c,
+      backups,
+      revision: preview.revision!,
+      approval: {
+        approvedRevisionHash: preview.revision!.revisionHash,
+        expiresAt: Date.now() + 60_000,
+      },
+      protectedUrls: [],
+      expectTargetUrl: preview.chosen!.targetUrl,
+    });
+    expect(out.applied).toBe(true);
+    const live = await c.getByUrl(preview.chosen!.sourceUrl);
+    expect(live.html).toContain(`href="${preview.chosen!.targetUrl}"`);
+  });
+
+  it("refuses when the page changed between the preview and the approval", async () => {
+    const { c, backups, preview } = await previewed();
+    // Someone edits the page after the operator looked at the diff.
+    const sourceId = (await c.getByUrl(preview.chosen!.sourceUrl)).id as number;
+    wp.setContent(sourceId, "<p>an editor rewrote this page</p>");
+
+    const out = await applyApprovedRevision({
+      websiteId: "site-1",
+      workspaceId: "ws-1",
+      userId: "u",
+      role: "OWNER",
+      connection: c,
+      backups,
+      revision: preview.revision!,
+      approval: {
+        approvedRevisionHash: preview.revision!.revisionHash,
+        expiresAt: Date.now() + 60_000,
+      },
+      protectedUrls: [],
+      expectTargetUrl: preview.chosen!.targetUrl,
+    });
+    expect(out.applied).toBe(false);
+    expect(out.message).toMatch(/stale/i);
+    // The editor's version is untouched.
+    expect(wp.contentOf(sourceId)).toBe("<p>an editor rewrote this page</p>");
+  });
+
+  it("refuses an approval bound to a different revision", async () => {
+    const { c, backups, preview } = await previewed();
+    const out = await applyApprovedRevision({
+      websiteId: "site-1",
+      workspaceId: "ws-1",
+      userId: "u",
+      role: "OWNER",
+      connection: c,
+      backups,
+      revision: preview.revision!,
+      approval: { approvedRevisionHash: "not-the-right-hash", expiresAt: Date.now() + 60_000 },
+      protectedUrls: [],
+    });
+    expect(out.applied).toBe(false);
+    expect(out.message).toMatch(/does not match/i);
+  });
+
+  it("refuses an expired approval", async () => {
+    const { c, backups, preview } = await previewed();
+    const out = await applyApprovedRevision({
+      websiteId: "site-1",
+      workspaceId: "ws-1",
+      userId: "u",
+      role: "OWNER",
+      connection: c,
+      backups,
+      revision: preview.revision!,
+      approval: {
+        approvedRevisionHash: preview.revision!.revisionHash,
+        expiresAt: Date.now() - 1,
+      },
+      protectedUrls: [],
+    });
+    expect(out.applied).toBe(false);
+    expect(out.message).toMatch(/expired/i);
+  });
+
+  it("refuses to write a protected URL even with a valid approval", async () => {
+    const { c, backups, preview } = await previewed();
+    const out = await applyApprovedRevision({
+      websiteId: "site-1",
+      workspaceId: "ws-1",
+      userId: "u",
+      role: "OWNER",
+      connection: c,
+      backups,
+      revision: preview.revision!,
+      approval: {
+        approvedRevisionHash: preview.revision!.revisionHash,
+        expiresAt: Date.now() + 60_000,
+      },
+      // Protect the very page the approved revision touches.
+      protectedUrls: [new URL(preview.chosen!.sourceUrl).pathname],
+    });
+    expect(out.applied).toBe(false);
+    expect(out.message).toMatch(/protected/i);
+  });
+
+  it("says a connection is required rather than silently doing nothing", async () => {
+    const { backups, preview } = await previewed();
+    const out = await applyApprovedRevision({
+      websiteId: "site-1",
+      workspaceId: "ws-1",
+      userId: "u",
+      role: "OWNER",
+      connection: null,
+      backups,
+      revision: preview.revision!,
+      approval: {
+        approvedRevisionHash: preview.revision!.revisionHash,
+        expiresAt: Date.now() + 60_000,
+      },
+      protectedUrls: [],
+    });
+    expect(out.applied).toBe(false);
+    expect(out.message).toBe(WORDPRESS_CONNECTION_REQUIRED);
   });
 });

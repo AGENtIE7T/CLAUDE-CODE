@@ -101,6 +101,12 @@ export interface LinkingRunResult {
   candidates: LinkCandidate[];
   chosen: LinkCandidate | null;
   revisionHash: string | null;
+  /**
+   * The exact revision an approval would bind to. Kept so a work order can be
+   * approved LATER and applied unchanged — re-deriving it at approval time
+   * would silently approve a different edit.
+   */
+  revision: Revision | null;
   batchId: string;
   /** True when the CMS behind this run is the fixture, not a real site. */
   mock: boolean;
@@ -226,6 +232,7 @@ export async function runInternalLinking(opts: LinkingRunOptions): Promise<Linki
     candidates: [],
     chosen: null,
     revisionHash: null,
+    revision: null,
     batchId,
     mock: opts.connection?.isMock === true,
     injectionFlags: [],
@@ -390,6 +397,7 @@ export async function runInternalLinking(opts: LinkingRunOptions): Promise<Linki
   ]);
   result.chosen = chosen;
   result.revisionHash = revision.revisionHash;
+  result.revision = revision;
 
   // 8. Approval — human-issued, Autopilot-issued, or none.
   let approval: Approval | null = opts.approval ?? null;
@@ -572,5 +580,129 @@ export async function runInternalLinking(opts: LinkingRunOptions): Promise<Linki
     message: gone
       ? "Applied, verified, rolled back, and the rollback was verified. The site is unchanged."
       : "Applied and verified, but the rollback did not fully restore the page.",
+  };
+}
+
+// ── applying a previously-approved work order ──────────────────────────────
+
+export interface ApplyApprovedOptions {
+  websiteId: string;
+  workspaceId: string;
+  userId: string | null;
+  role: Role;
+  connection: CmsConnection | null;
+  backups: BackupStore;
+  revision: Revision;
+  approval: Approval;
+  protectedUrls: string[];
+  requireBackup?: boolean;
+  /** The link the operator approved, so verification can look for it. */
+  expectTargetUrl?: string;
+  undoAfterVerify?: boolean;
+  now?: () => number;
+}
+
+export interface ApplyApprovedResult {
+  steps: WorkflowStep[];
+  applied: boolean;
+  rolledBack: boolean;
+  message: string;
+}
+
+/**
+ * Apply a work order the operator approved earlier.
+ *
+ * The revision is the one that was previewed — it is NOT recomputed here. If
+ * the page changed in the meantime the execute engine's freshness check
+ * rejects it, which is the entire point of approving a specific revision
+ * rather than approving an intention.
+ */
+export async function applyApprovedRevision(
+  opts: ApplyApprovedOptions,
+): Promise<ApplyApprovedResult> {
+  const now = opts.now ?? Date.now;
+  const rec = recorder(now);
+  const conn = opts.connection;
+  const batchId = `batch-${new Date(now()).toISOString()}-${opts.websiteId}`;
+
+  if (!conn) {
+    rec.step("apply", "Apply the update", "skipped", "No CMS connection is configured.");
+    return { steps: rec.steps, applied: false, rolledBack: false, message: WORDPRESS_CONNECTION_REQUIRED };
+  }
+  try {
+    assertUsable(conn, { write: true });
+  } catch (e) {
+    const msg = e instanceof CmsError ? e.message : "The connection may not be written to.";
+    rec.step("apply", "Apply the update", "failed", msg);
+    return { steps: rec.steps, applied: false, rolledBack: false, message: msg };
+  }
+
+  const cms = createWordPressCmsStore(conn, opts.backups, {
+    websiteId: opts.websiteId,
+    batchId,
+    requireBackup: opts.requireBackup ?? true,
+  });
+
+  const exec = await executeRevision(opts.revision, cms, {
+    workspaceId: opts.workspaceId,
+    userId: opts.userId,
+    role: opts.role,
+    protectedPatterns: opts.protectedUrls,
+    approval: opts.approval,
+    idempotencyKey: `${batchId}:${opts.revision.revisionHash}`,
+  });
+
+  if (!exec.ok) {
+    rec.step("apply", "Apply the update", "failed", exec.reason);
+    const rolled = exec.rolledBack?.length ?? 0;
+    if (rolled) rec.step("rollback", "Roll the change back", "ok", `Rolled back ${rolled} page(s).`);
+    return {
+      steps: rec.steps,
+      applied: false,
+      rolledBack: rolled > 0,
+      message: `The change was NOT applied: ${exec.reason}`,
+    };
+  }
+  rec.step("apply", "Apply the update", "ok", `Applied to ${exec.applied.join(", ")}.`);
+
+  const url = opts.revision.items[0]?.url ?? "";
+  const after = await conn.getByUrl(url);
+  rec.step("reread", "Re-read the page", "ok", `Re-read ${url} from the CMS.`);
+  const present = opts.expectTargetUrl
+    ? after.html.includes(`href="${opts.expectTargetUrl}"`)
+    : after.html === opts.revision.items[0]?.afterHtml;
+  rec.step(
+    "verify",
+    "Verify the change exists",
+    present ? "ok" : "failed",
+    present ? "The live page carries the approved change." : "The live page does NOT carry the change.",
+  );
+
+  if (!present || opts.undoAfterVerify) {
+    const undo = await rollbackFromBackups(conn, opts.backups, batchId);
+    rec.step(
+      "rollback",
+      "Roll the change back",
+      undo.failed.length ? "failed" : "ok",
+      undo.failed.length
+        ? `Restored ${undo.restored.length}; FAILED on ${undo.failed.map((f) => f.url).join(", ")}.`
+        : `Restored ${undo.restored.length} page(s) from the pre-write backup.`,
+    );
+    return {
+      steps: rec.steps,
+      applied: false,
+      rolledBack: undo.failed.length === 0,
+      message: present
+        ? "Applied, verified, and rolled back as requested. The site is unchanged."
+        : "The write did not verify on the live page and was rolled back.",
+    };
+  }
+
+  rec.step("audit", "Record the audit trail", "ok", `Batch ${batchId} recorded with a backup for undo.`);
+  return {
+    steps: rec.steps,
+    applied: true,
+    rolledBack: false,
+    message: `Applied and verified on ${url}.`,
   };
 }

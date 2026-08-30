@@ -12,7 +12,7 @@
  */
 
 import type { Role } from "@/lib/seo/types";
-import { parseInstruction } from "@/lib/command/parser";
+import { parseInstruction, type ExtractedRules } from "@/lib/command/parser";
 import { parseTaskPlan, type TaskPlan } from "@/lib/command/schema";
 import { validatePlan } from "@/lib/command/policy";
 import { getTask, isProhibited } from "@/lib/tasks/registry";
@@ -20,7 +20,18 @@ import { getTask, isProhibited } from "@/lib/tasks/registry";
 export type CommandDecision =
   | { kind: "refused"; reason: string; alternative?: string; plan: TaskPlan }
   | { kind: "clarify"; questions: string[]; plan: TaskPlan }
-  | { kind: "ready"; plan: TaskPlan; summary: string; warnings: string[]; requiresApproval: boolean };
+  | {
+      kind: "ready";
+      plan: TaskPlan;
+      summary: string;
+      warnings: string[];
+      requiresApproval: boolean;
+      /**
+       * Rules the operator stated in prose that the TaskPlan (which is strict)
+       * has no field for. Advisory input to the run — they can only narrow it.
+       */
+      rules: ExtractedRules;
+    };
 
 export interface ProcessContext {
   role: Role;
@@ -84,5 +95,6 @@ export function processCommand(instruction: string, ctx: ProcessContext): Comman
     summary: summarize(schemaCheck.plan),
     warnings: [...parsed.notes, ...policy.warnings],
     requiresApproval,
+    rules: parsed.rules,
   };
 }
