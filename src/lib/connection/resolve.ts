@@ -19,6 +19,14 @@
  *  A mock is chosen ONLY when explicitly requested (WORDPRESS_USE_MOCK=1) or
  *  in demo mode with no real credentials. It is never a fallback for a real
  *  connection that failed — a broken real connection stays broken and visible.
+ *
+ *  Order matters. The mock check runs FIRST, so WORDPRESS_USE_MOCK=1 wins even
+ *  when real credentials are also present. Two reasons: it fails safe (the
+ *  explicit "use the fixture" instruction can never be quietly overridden into
+ *  touching a live site), and it keeps the UI honest — the capability card
+ *  derives "Mock (fixture)" from the same flag, so the label and the adapter
+ *  can never disagree. Demo mode alone does NOT force the mock: demo plus real
+ *  credentials is the supported way to exercise a staging site locally.
  */
 
 import { createWordPressConnection } from "@/lib/cms/wordpress/client";
@@ -58,22 +66,6 @@ export function resolveConnection(): ResolvedConnection {
   const environment: CmsEnvironment =
     process.env.WORDPRESS_ENVIRONMENT === "production" ? "production" : "staging";
 
-  if (baseUrl && username && appPassword) {
-    return {
-      kind: "real",
-      connection: createWordPressConnection({
-        baseUrl,
-        // Built here and immediately closed over; never stored or returned.
-        token: Buffer.from(`${username}:${appPassword}`).toString("base64"),
-        environment,
-        label: baseUrl,
-        access,
-        isMock: false,
-      }),
-      description: `WordPress at ${baseUrl} (${environment}, ${access === "read_write" ? "read/write" : "read-only"}).`,
-    };
-  }
-
   if (usingMockWordPress(env)) {
     return {
       kind: "mock",
@@ -88,6 +80,22 @@ export function resolveConnection(): ResolvedConnection {
       }),
       description:
         "Fixture WordPress — an in-process mock. Changes here are simulated and no real website is reachable.",
+    };
+  }
+
+  if (baseUrl && username && appPassword) {
+    return {
+      kind: "real",
+      connection: createWordPressConnection({
+        baseUrl,
+        // Built here and immediately closed over; never stored or returned.
+        token: Buffer.from(`${username}:${appPassword}`).toString("base64"),
+        environment,
+        label: baseUrl,
+        access,
+        isMock: false,
+      }),
+      description: `WordPress at ${baseUrl} (${environment}, ${access === "read_write" ? "read/write" : "read-only"}).`,
     };
   }
 

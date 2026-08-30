@@ -115,6 +115,14 @@ npm run test:e2e  # 8 browser tests (Playwright, against a production build)
 fixture WordPress (`WORDPRESS_USE_MOCK=1`, `SEO_ENABLE_PRODUCTION_WRITES=0`),
 and drives the real screens in Chromium. It never touches a real website.
 
+That last sentence is enforced, not assumed. `next start` loads `.env.local`,
+so a developer holding real staging credentials would otherwise hand them to
+this server — and the suite contains a test that approves and applies a link.
+`playwright.config.ts` therefore blanks `WORDPRESS_BASE_URL`,
+`WORDPRESS_USERNAME` and `WORDPRESS_APP_PASSWORD` for its server, and
+`src/lib/connection/resolve.test.ts` asserts those three stay blank. It is safe
+to run the suite with staging credentials on disk.
+
 If the machine already has a Chromium that Playwright did not install, point at
 it instead of downloading a second copy:
 

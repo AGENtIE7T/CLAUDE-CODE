@@ -46,6 +46,17 @@ export default defineConfig({
       NEXT_PUBLIC_DEMO_MODE: "1",
       WORDPRESS_USE_MOCK: "1",
       SEO_ENABLE_PRODUCTION_WRITES: "0",
+      // Blank the real-connection variables explicitly.
+      //
+      // Next loads .env.local for `next start`, so a developer who has real
+      // staging credentials on disk would otherwise hand them to this server —
+      // and the suite includes a test that APPROVES AND APPLIES a link. That
+      // would write to their live site. Empty strings make
+      // resolveConnection()'s `baseUrl && username && appPassword` check fail,
+      // so the fixture is the only reachable CMS here. Never remove these.
+      WORDPRESS_BASE_URL: "",
+      WORDPRESS_USERNAME: "",
+      WORDPRESS_APP_PASSWORD: "",
     },
   },
 });

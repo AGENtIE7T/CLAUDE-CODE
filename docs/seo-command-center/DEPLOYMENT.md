@@ -25,10 +25,11 @@ scheduler calls every ten minutes; each invocation does as much as fits in a
 ## 1. Supabase
 
 1. Create a project. Note the project URL and the two keys.
-2. Apply the migrations, in order, from `supabase/`:
+2. Apply the migrations, in order, from `supabase/migrations/`:
    ```bash
-   supabase link --project-ref <ref>
-   supabase db push          # applies 0001_init.sql then 0002_seo_command_center.sql
+   npx supabase link --project-ref <ref>
+   npx supabase db diff --linked   # SHOWS what would change — read this first
+   npx supabase db push            # applies 0001_init.sql then 0002_seo_command_center.sql
    ```
    Or paste each file into the SQL editor in numeric order. `0002` adds the SEO
    Command Center tables (websites, memberships.seo_role, audit entries).
