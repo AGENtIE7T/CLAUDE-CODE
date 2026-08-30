@@ -18,13 +18,18 @@
  */
 
 import { isDemo } from "@/lib/env";
+import { ahrefsFromEnv } from "@/lib/external/providers/ahrefs";
+import { semrushFromEnv } from "@/lib/external/providers/semrush";
+import { describeResult, type ProviderResult } from "@/lib/external/providers/state";
 
 export interface BacklinkRow {
   sourceDomain: string;
   targetUrl: string;
   anchor: string;
-  domainRating: number; // 0..100
-  firstSeen: string;
+  /** 0..100, or null when the source does not supply a per-link figure. */
+  domainRating: number | null;
+  /** ISO date, or null when the source does not report one. */
+  firstSeen: string | null;
   nofollow: boolean;
 }
 
@@ -43,6 +48,11 @@ export interface DomainMetrics {
   referringDomains: number | null;
   backlinks: number | null;
   source: "demo" | "ahrefs" | "semrush" | "unavailable";
+  /**
+   * Operator-facing explanation of anything that is null — "semrush: partial
+   * — backlinks_overview (plan_insufficient)". Present only in live mode.
+   */
+  notes?: string[];
 }
 
 export interface SeoDataProvider {
@@ -77,36 +87,99 @@ function demoProvider(): SeoDataProvider {
   };
 }
 
-// ── live provider (Ahrefs/Semrush via API token) ────────────────────────────
+// ── live provider (Ahrefs / Semrush) ────────────────────────────────────────
 /**
- * Live provider skeleton. It is intentionally conservative: if no token is
- * configured it reports metrics as `unavailable` rather than throwing, so a
- * report degrades gracefully. Real endpoint wiring is added per-vendor; the
- * shape above is the contract the UI/report renders against.
+ * The live provider delegates to the typed provider clients in
+ * `external/providers/`, which distinguish "not connected", "plan does not
+ * cover this", "rate limited" and "no data for this domain" from one another.
+ *
+ * This wrapper flattens those states back onto the legacy shape the reports
+ * render against, under one rule: a value we did not receive stays `null` and
+ * `source` becomes "unavailable". Nothing here ever substitutes a zero for an
+ * unknown, and nothing falls back to the demo figures.
+ *
+ * `notes` carries the operator-facing explanation so a screen can say WHY a
+ * field is blank instead of showing an unexplained dash.
  */
 function liveProvider(): SeoDataProvider {
-  const ahrefs = process.env.AHREFS_API_TOKEN;
-  const semrush = process.env.SEMRUSH_API_KEY;
-  const configured = Boolean(ahrefs || semrush);
-  const source: DomainMetrics["source"] = ahrefs ? "ahrefs" : semrush ? "semrush" : "unavailable";
+  const semrush = semrushFromEnv();
+  const ahrefs = ahrefsFromEnv();
+  const configured = semrush.isConfigured() || ahrefs.isConfigured();
+  const name = semrush.isConfigured() ? "semrush" : ahrefs.isConfigured() ? "ahrefs" : "unavailable";
+
+  const blank = (domain: string): DomainMetrics => ({
+    domain,
+    domainRating: null,
+    referringDomains: null,
+    backlinks: null,
+    source: "unavailable",
+  });
 
   return {
-    name: source,
+    name,
     async getDomainMetrics(domain) {
-      if (!configured) {
-        return { domain, domainRating: null, referringDomains: null, backlinks: null, source: "unavailable" };
+      if (!configured) return blank(domain);
+
+      const notes: string[] = [];
+      const metrics = blank(domain);
+
+      if (semrush.isConfigured()) {
+        const r = await semrush.domainAuthority(domain);
+        notes.push(describeResult(r as ProviderResult<unknown>));
+        if (r.ok) {
+          // Semrush Authority Score is not Ahrefs DR, but it is the same
+          // 0..100 authority axis and is labelled by `source`.
+          metrics.domainRating = r.data.authorityScore;
+          metrics.referringDomains = r.data.referringDomains;
+          metrics.backlinks = r.data.backlinks;
+          if (r.data.authorityScore !== null || r.data.backlinks !== null) metrics.source = "semrush";
+        }
       }
-      // Real HTTP call is added here per vendor; kept out of the default build
-      // so no network I/O happens unless a token is present and wired.
-      return { domain, domainRating: null, referringDomains: null, backlinks: null, source };
+
+      // Ahrefs is only consulted for a value Semrush could not supply, and the
+      // provider itself refuses to call out while the plan gate is closed.
+      if (metrics.domainRating === null && ahrefs.isConfigured()) {
+        const r = await ahrefs.domainRating(domain);
+        notes.push(describeResult(r as ProviderResult<unknown>));
+        if (r.ok && r.data.domainRating !== null) {
+          metrics.domainRating = r.data.domainRating;
+          metrics.source = "ahrefs";
+        }
+      }
+
+      return { ...metrics, notes };
     },
-    async getBacklinks() {
-      return [];
+
+    async getBacklinks(domain, limit = 25) {
+      if (!semrush.isConfigured()) return [];
+      const r = await semrush.backlinks(domain, limit);
+      if (!r.ok) return [];
+      return r.data.slice(0, limit).map((b) => ({
+        sourceDomain: hostOf(b.sourceUrl),
+        targetUrl: b.targetUrl,
+        anchor: b.anchor,
+        // Semrush's backlink rows carry no per-link authority figure. A 0
+        // here would read as "worthless link", so the unknown stays null.
+        domainRating: null,
+        firstSeen: b.firstSeen,
+        nofollow: b.nofollow,
+      }));
     },
+
     async getSearchConsole() {
+      // Search Console needs the website's own OAuth connection, which is not
+      // wired yet. Return nothing rather than anything that looks like data.
       return [];
     },
   };
+}
+
+function hostOf(url: string): string {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return url;
+  }
 }
 
 /** Resolve the provider for the current environment. */
