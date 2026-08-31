@@ -18,7 +18,7 @@ import { requirePermission, resolveMembership, DEMO_WORKSPACE_ID } from "@/lib/r
 import { AuthorizationError } from "@/lib/rbac/roles";
 import { validateWebsite, type WebsiteInput } from "@/lib/websites/validate";
 import { seoStore, addDemoWebsite } from "@/lib/seo/demo-store";
-import type { Website } from "@/lib/seo/types";
+import type { OwnershipMethod, Website } from "@/lib/seo/types";
 
 export interface CreateWebsiteResult {
   ok: boolean;
@@ -110,4 +110,54 @@ export async function createWebsite(
   });
 
   return { ok: true, website, warnings: validated.warnings };
+}
+
+/**
+ * Record that a website's ownership has been proven.
+ *
+ * Callers must have already gathered and checked the evidence — this only
+ * persists the outcome, so there is exactly one place that decides ownership
+ * (the verification module) and exactly one that records it (here).
+ */
+export async function markWebsiteVerified(
+  workspaceId: string,
+  websiteId: string,
+  method: OwnershipMethod,
+): Promise<{ ok: boolean; error?: string }> {
+  let membership;
+  try {
+    membership = await requirePermission(workspaceId, "website.update");
+  } catch (e) {
+    if (e instanceof AuthorizationError) return { ok: false, error: "Not permitted." };
+    throw e;
+  }
+
+  const verifiedAt = new Date().toISOString();
+  if (isDemo()) {
+    const site = seoStore().websites.find((w) => w.id === websiteId);
+    if (!site) return { ok: false, error: "Website not found." };
+    site.ownershipVerifiedAt = verifiedAt;
+    site.ownershipMethod = method;
+    site.updatedAt = verifiedAt;
+  } else {
+    const { createClient } = await import("@/lib/supabase/server");
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("websites")
+      .update({ ownership_verified_at: verifiedAt, ownership_method: method })
+      .eq("id", websiteId)
+      .eq("workspace_id", workspaceId);
+    if (error) return { ok: false, error: error.message };
+  }
+
+  await audit({
+    workspaceId,
+    userId: membership.userId,
+    action: "website.verified",
+    resourceType: "website",
+    resourceId: websiteId,
+    input: { method },
+    resultSummary: `Ownership verified via ${method}.`,
+  });
+  return { ok: true };
 }

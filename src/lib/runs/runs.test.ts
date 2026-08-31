@@ -37,11 +37,12 @@ beforeEach(() => {
 });
 
 describe("work orders", () => {
-  const base = { websiteId: "site-1", workspaceId: "ws-1", instruction: "add links", revision, candidate };
+  const base = { websiteId: "site-1", workspaceId: "ws-1", instruction: "add links", revision, candidates: [candidate] };
 
   it("stores the exact revision so approval binds to what was previewed", () => {
     const o = createWorkOrder(base);
     expect(o.status).toBe("pending");
+    expect(o.candidates).toHaveLength(1);
     expect(o.revision.revisionHash).toBe(revision.revisionHash);
     expect(o.revision.items[0].afterHtml).toBe("<p>after</p>");
   });
@@ -81,6 +82,7 @@ describe("run history", () => {
       message: "",
       pagesRead: 3,
       candidates: [],
+      selected: [],
       chosen: null,
       revisionHash: null,
       revision: null,

@@ -148,7 +148,8 @@ function toContent(r: WpResourceJson): CmsContent {
 
 export function createWordPressConnection(cfg: WordPressConfig): CmsConnection {
   // Throws before anything can be sent if the site URL is not HTTPS.
-  const base = normalizeWordPressBaseUrl(cfg.baseUrl) + "/wp-json";
+  const siteUrl = normalizeWordPressBaseUrl(cfg.baseUrl);
+  const base = `${siteUrl}/wp-json`;
   const doFetch = cfg.fetchImpl ?? fetch;
   const timeoutMs = cfg.timeoutMs ?? 15_000;
   const capabilities: CmsCapabilities =
@@ -282,6 +283,7 @@ export function createWordPressConnection(cfg: WordPressConfig): CmsConnection {
     isMock: cfg.isMock === true,
     capabilities,
     label: cfg.label,
+    siteUrl,
 
     async verify(): Promise<VerifyResult> {
       const checkedAt = new Date().toISOString();

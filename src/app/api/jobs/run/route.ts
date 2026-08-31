@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { runWorker, sharedJobQueue, type Job } from "@/lib/jobs/queue";
+import { runWorker, sharedJobQueue } from "@/lib/jobs/queue";
+import { handleJob } from "@/lib/jobs/handlers";
 import { reportError } from "@/lib/observability/report";
 
 export const dynamic = "force-dynamic";
@@ -25,28 +26,14 @@ function authorized(request: Request): boolean {
   return diff === 0;
 }
 
-/** Handlers are registered per job kind. Unknown kinds fail loudly. */
-async function handle(job: Job): Promise<void> {
-  switch (job.kind) {
-    case "crawl":
-    case "audit":
-    case "linking_preview":
-    case "verify":
-      // Wired to the crawl/audit/linking pipeline when a website is connected.
-      // Until then a job is a no-op rather than a fabricated success — the
-      // queue records it as done, and nothing claims data was produced.
-      return;
-    default:
-      throw new Error(`no handler for job kind "${job.kind}"`);
-  }
-}
-
 export async function POST(request: Request) {
   if (!authorized(request)) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
   try {
-    const result = await runWorker(sharedJobQueue(), handle, { budgetMs: 25_000 });
+    const result = await runWorker(sharedJobQueue(), (job) => handleJob(job).then(() => undefined), {
+      budgetMs: 25_000,
+    });
     return NextResponse.json(result, { headers: { "cache-control": "no-store" } });
   } catch (e) {
     reportError(e, { kind: "jobs.worker_failed", severity: "error" });

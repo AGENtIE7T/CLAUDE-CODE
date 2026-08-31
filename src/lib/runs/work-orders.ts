@@ -18,6 +18,14 @@
 import type { Revision } from "@/lib/revisions/revision";
 import type { LinkCandidate } from "@/lib/linking/engine";
 
+export interface WorkOrderCandidate {
+  sourceUrl: string;
+  targetUrl: string;
+  anchor: string;
+  confidence: number;
+  reason: string;
+}
+
 export type WorkOrderStatus = "pending" | "approved" | "applied" | "rejected" | "expired" | "failed";
 
 export interface WorkOrder {
@@ -27,13 +35,8 @@ export interface WorkOrder {
   instruction: string;
   /** The precise bytes an approval binds to. */
   revision: Revision;
-  candidate: {
-    sourceUrl: string;
-    targetUrl: string;
-    anchor: string;
-    confidence: number;
-    reason: string;
-  };
+  /** Every link this work order would add. Always at least one. */
+  candidates: WorkOrderCandidate[];
   status: WorkOrderStatus;
   createdAt: string;
   expiresAt: number;
@@ -60,7 +63,7 @@ export function createWorkOrder(input: {
   workspaceId: string;
   instruction: string;
   revision: Revision;
-  candidate: LinkCandidate;
+  candidates: LinkCandidate[];
   ttlMinutes?: number;
   now?: () => number;
 }): WorkOrder {
@@ -72,13 +75,13 @@ export function createWorkOrder(input: {
     workspaceId: input.workspaceId,
     instruction: input.instruction,
     revision: input.revision,
-    candidate: {
-      sourceUrl: input.candidate.sourceUrl,
-      targetUrl: input.candidate.targetUrl,
-      anchor: input.candidate.anchor,
-      confidence: input.candidate.confidence,
-      reason: input.candidate.reason,
-    },
+    candidates: input.candidates.map((c) => ({
+      sourceUrl: c.sourceUrl,
+      targetUrl: c.targetUrl,
+      anchor: c.anchor,
+      confidence: c.confidence,
+      reason: c.reason,
+    })),
     status: "pending",
     createdAt: new Date(now()).toISOString(),
     expiresAt: now() + ttl,

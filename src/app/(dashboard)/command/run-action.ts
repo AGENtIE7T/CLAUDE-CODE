@@ -64,18 +64,27 @@ export interface CommandRunResult {
  * policy layer, the capability snapshot decides what is possible, and the
  * execute engine decides what is written.
  */
-export async function runCommandAction(instruction: string): Promise<CommandRunResult> {
+export async function runCommandAction(
+  instruction: string,
+  websiteId?: string,
+): Promise<CommandRunResult> {
   const membership = await resolveMembership(DEMO_WORKSPACE_ID);
   const workspaceId = membership?.workspaceId ?? DEMO_WORKSPACE_ID;
   const role = membership?.role ?? "VIEWER";
 
   const websites = await listWebsites(workspaceId);
-  const website = websites.length === 1 ? websites[0] : null;
+  // An explicit choice wins; otherwise a single website is unambiguous and
+  // anything more asks the operator which one, rather than guessing.
+  const website =
+    (websiteId ? websites.find((w) => w.id === websiteId) : undefined) ??
+    (websites.length === 1 ? websites[0] : null);
 
   const capabilities = buildCapabilitySnapshot({
     websiteCount: websites.length,
-    websiteLabel: website?.name ?? null,
-    websiteVerified: Boolean(website?.ownershipVerifiedAt),
+    websiteLabel: website?.name ?? (websites.length === 1 ? websites[0].name : null),
+    websiteVerified: website
+      ? Boolean(website.ownershipVerifiedAt)
+      : websites.length > 0 && websites.every((w) => w.ownershipVerifiedAt),
   });
 
   const decision = processCommand(instruction, {
@@ -144,13 +153,13 @@ export async function runCommandAction(instruction: string): Promise<CommandRunR
   // Something was previewed but not applied → it becomes a work order the
   // operator can approve. The revision is stored as-is, never re-derived.
   let workOrder: WorkOrder | null = null;
-  if (!result.applied && result.revision && result.chosen && decision.plan.mode !== "audit") {
+  if (!result.applied && result.revision && result.selected.length && decision.plan.mode !== "audit") {
     workOrder = createWorkOrder({
       websiteId: website.id,
       workspaceId,
       instruction,
       revision: result.revision,
-      candidate: result.chosen,
+      candidates: result.selected,
       ttlMinutes: config.rules.approvalTtlMinutes,
     });
   }
@@ -236,7 +245,10 @@ export async function approveWorkOrderAction(id: string): Promise<ApprovalResult
     },
     protectedUrls: [...config.protectedUrls, ...config.rules.protectedUrls],
     requireBackup: config.rules.requireBackup,
-    expectTargetUrl: order.candidate.targetUrl,
+    expectLinks: order.candidates.map((c) => ({
+      sourceUrl: c.sourceUrl,
+      targetUrl: c.targetUrl,
+    })),
   });
 
   settleWorkOrder(id, outcome.applied ? "applied" : "failed", outcome.message);

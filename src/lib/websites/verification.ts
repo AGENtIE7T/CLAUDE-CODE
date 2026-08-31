@@ -93,3 +93,37 @@ export function checkVerification(
         : { verified: false, reason: "Integration did not confirm ownership." };
   }
 }
+
+/**
+ * Does an authenticated CMS connection actually prove ownership of THIS site?
+ *
+ * Only if it points at the same registered domain. Without this check,
+ * connecting to any WordPress you control would "verify" every website in the
+ * workspace — including one belonging to someone else. Registrable-suffix
+ * comparison is deliberately avoided: `staging.example.com` and `example.com`
+ * are different sites and a connection to one does not prove the other, so an
+ * exact host match (bar a leading `www.`) is required.
+ */
+export function connectionProvesOwnership(
+  canonicalDomain: string,
+  connectionBaseUrl: string | null | undefined,
+): { proves: boolean; reason: string } {
+  const wanted = canonicalDomain.trim().toLowerCase().replace(/^www\./, "");
+  if (!wanted) return { proves: false, reason: "The website has no canonical domain recorded." };
+  if (!connectionBaseUrl) {
+    return { proves: false, reason: "There is no CMS connection to verify against." };
+  }
+  let host: string;
+  try {
+    host = new URL(connectionBaseUrl).hostname.toLowerCase().replace(/^www\./, "");
+  } catch {
+    return { proves: false, reason: "The CMS connection's site URL could not be read." };
+  }
+  if (host !== wanted) {
+    return {
+      proves: false,
+      reason: `The CMS connection points at ${host}, not ${wanted}. Connecting to one site never verifies another.`,
+    };
+  }
+  return { proves: true, reason: `The authenticated CMS connection is for ${wanted}.` };
+}

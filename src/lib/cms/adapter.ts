@@ -144,6 +144,13 @@ export interface CmsConnection {
   readonly capabilities: CmsCapabilities;
   /** Human label for the connection card. */
   readonly label: string;
+  /**
+   * The normalised site root this connection talks to, e.g.
+   * "https://staging.example.com". Not a secret — it is the address, not the
+   * credential — and callers need it to check that a connection actually
+   * belongs to the website they are about to act on.
+   */
+  readonly siteUrl: string;
 
   verify(): Promise<VerifyResult>;
   list(): Promise<CmsContentRef[]>;

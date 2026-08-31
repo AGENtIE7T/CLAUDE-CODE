@@ -36,7 +36,7 @@ import {
   type LinkingLimits,
 } from "@/lib/linking/engine";
 import type { LinkingPage } from "@/lib/linking/score";
-import { buildRevision, type Revision } from "@/lib/revisions/revision";
+import { buildRevision, type Revision, type RevisionItem } from "@/lib/revisions/revision";
 import { executeRevision, type Approval } from "@/lib/execute/engine";
 import {
   evaluateAutopilotBatch,
@@ -76,6 +76,12 @@ export interface LinkingRunOptions {
   /** A human-issued approval, when the operator already approved a revision. */
   approval?: Approval | null;
   limits?: Partial<LinkingLimits>;
+  /**
+   * Cap on how many candidates this run may apply. Defaults to the rule set's
+   * `maxTotalChanges`. The controlled first real-site test passes 1, which is
+   * the only reason this is separate from the rules.
+   */
+  maxCandidates?: number;
   /** Only source links from pages whose URL contains one of these. */
   includePatterns?: string[];
   /**
@@ -98,7 +104,15 @@ export interface LinkingRunResult {
   approvalSource: "none" | "human" | "autopilot";
   message: string;
   pagesRead: number;
+  /** Everything that cleared the confidence floor and the rules. */
   candidates: LinkCandidate[];
+  /**
+   * The subset this run actually turned into an edit — a candidate whose
+   * anchor could not be linked safely in the page body is dropped here rather
+   * than forced, so `selected` is always what the revision contains.
+   */
+  selected: LinkCandidate[];
+  /** `selected[0]`, kept because most runs propose exactly one. */
   chosen: LinkCandidate | null;
   revisionHash: string | null;
   /**
@@ -230,6 +244,7 @@ export async function runInternalLinking(opts: LinkingRunOptions): Promise<Linki
     message: "",
     pagesRead: 0,
     candidates: [],
+    selected: [],
     chosen: null,
     revisionHash: null,
     revision: null,
@@ -370,32 +385,76 @@ export async function runInternalLinking(opts: LinkingRunOptions): Promise<Linki
     };
   }
 
-  // 6-7. Preview + select exactly one candidate.
-  const chosen = preview.candidates[0];
-  const sourceHtml = htmlByUrl.get(chosen.sourceUrl) ?? "";
-  const applyResult = applyLinks(sourceHtml, [{ anchor: chosen.anchor, targetUrl: chosen.targetUrl }]);
-  if (!applyResult.applied.length) {
+  // 6-7. Build the edits, grouped by page.
+  //
+  // Every candidate for one page is applied in a single pass, because
+  // `applyLinks` needs to see the edits together to avoid linking inside a
+  // link it just inserted. A candidate whose anchor cannot be placed safely is
+  // dropped and reported, never forced into unnatural copy.
+  const cap = Math.max(1, Math.min(opts.maxCandidates ?? opts.rules.maxTotalChanges, 500));
+  const shortlist = preview.candidates.slice(0, cap);
+
+  const byPage = new Map<string, LinkCandidate[]>();
+  for (const c of shortlist) {
+    const list = byPage.get(c.sourceUrl) ?? [];
+    list.push(c);
+    byPage.set(c.sourceUrl, list);
+  }
+
+  const items: RevisionItem[] = [];
+  const selected: LinkCandidate[] = [];
+  const unplaceable: { candidate: LinkCandidate; reason: string }[] = [];
+
+  for (const [url, forPage] of byPage) {
+    const beforeHtml = htmlByUrl.get(url) ?? "";
+    const applyResult = applyLinks(
+      beforeHtml,
+      forPage.map((c) => ({ anchor: c.anchor, targetUrl: c.targetUrl })),
+    );
+    const placed = new Set(applyResult.applied.map((a) => `${a.anchor}\u0000${a.targetUrl}`));
+    for (const c of forPage) {
+      if (placed.has(`${c.anchor}\u0000${c.targetUrl}`)) selected.push(c);
+      else {
+        const skip = applyResult.skipped.find(
+          (sk) => sk.anchor === c.anchor && sk.targetUrl === c.targetUrl,
+        );
+        unplaceable.push({ candidate: c, reason: skip?.reason ?? "no safe place in the body text" });
+      }
+    }
+    if (applyResult.applied.length) {
+      items.push({ url, beforeHtml, afterHtml: applyResult.html });
+    }
+  }
+
+  if (!items.length) {
     rec.step(
       "preview",
       "Generate preview",
       "failed",
-      `The anchor "${chosen.anchor}" could not be linked safely in the page body.`,
+      `None of the ${shortlist.length} candidate(s) could be linked safely in the page body.`,
     );
     rec.skipRest(remainingFrom("select"), "No safe edit could be produced.");
-    return { ...result, message: "No safe edit could be produced for the best candidate." };
+    return { ...result, message: "No safe edit could be produced from the candidates found." };
   }
-  rec.step("preview", "Generate preview", "ok", `Preview built for ${chosen.sourceUrl}.`);
+
+  rec.step(
+    "preview",
+    "Generate preview",
+    "ok",
+    `Preview built for ${items.length} page(s)${unplaceable.length ? `; ${unplaceable.length} candidate(s) had no natural anchor and were dropped` : ""}.`,
+  );
   rec.step(
     "select",
-    "Select one proposed link",
+    selected.length === 1 ? "Select one proposed link" : `Select ${selected.length} proposed links`,
     "ok",
-    `"${chosen.anchor}" → ${chosen.targetUrl} (confidence ${chosen.confidence.toFixed(2)}).`,
+    selected
+      .map((c) => `"${c.anchor}" → ${c.targetUrl} (${c.confidence.toFixed(2)})`)
+      .join("; "),
   );
 
-  const revision: Revision = buildRevision(opts.websiteId, [
-    { url: chosen.sourceUrl, beforeHtml: sourceHtml, afterHtml: applyResult.html },
-  ]);
-  result.chosen = chosen;
+  const revision: Revision = buildRevision(opts.websiteId, items);
+  result.selected = selected;
+  result.chosen = selected[0] ?? null;
   result.revisionHash = revision.revisionHash;
   result.revision = revision;
 
@@ -405,7 +464,7 @@ export async function runInternalLinking(opts: LinkingRunOptions): Promise<Linki
 
   if (!approval && opts.useAutopilot) {
     const decision = evaluateAutopilotBatch(
-      [toAutopilotCandidate(chosen)],
+      selected.map(toAutopilotCandidate),
       revision,
       opts.rules,
       {
@@ -511,16 +570,32 @@ export async function runInternalLinking(opts: LinkingRunOptions): Promise<Linki
   rec.step("apply", "Apply the update", "ok", `Applied to ${exec.applied.join(", ")}.`);
 
   // 10-11. Independent re-read and verification, on top of the engine's own.
-  const after = await conn.getByUrl(chosen.sourceUrl);
-  rec.step("reread", "Re-read the page", "ok", `Re-read ${chosen.sourceUrl} from the CMS.`);
-  const present = after.html.includes(`href="${chosen.targetUrl}"`);
+  //
+  // Every edited page is re-read and every approved link looked for by hand.
+  // The engine already compared hashes; this asks the narrower question the
+  // operator actually cares about — "is the link on the page?" — and one
+  // missing link fails the whole run.
+  const liveByUrl = new Map<string, string>();
+  for (const item of revision.items) {
+    liveByUrl.set(item.url, (await conn.getByUrl(item.url)).html);
+  }
+  rec.step(
+    "reread",
+    "Re-read the page",
+    "ok",
+    `Re-read ${revision.items.length} page(s) from the CMS.`,
+  );
+  const missing = selected.filter(
+    (c) => !(liveByUrl.get(c.sourceUrl) ?? "").includes(`href="${c.targetUrl}"`),
+  );
+  const present = missing.length === 0;
   rec.step(
     "verify",
-    "Verify the link exists",
+    selected.length === 1 ? "Verify the link exists" : "Verify the links exist",
     present ? "ok" : "failed",
     present
-      ? `The live page now contains a link to ${chosen.targetUrl}.`
-      : "The live page does NOT contain the link. Treating this as a failed write.",
+      ? `All ${selected.length} link(s) are present on the live page(s).`
+      : `${missing.length} of ${selected.length} link(s) are NOT on the live page(s). Treating this as a failed write.`,
   );
   if (!present) {
     const undo = await rollbackFromBackups(conn, opts.backups, batchId);
@@ -550,7 +625,7 @@ export async function runInternalLinking(opts: LinkingRunOptions): Promise<Linki
       ...result,
       applied: true,
       approvalSource,
-      message: `Applied and verified 1 internal link on ${chosen.sourceUrl}.`,
+      message: `Applied and verified ${selected.length} internal link(s) across ${revision.items.length} page(s).`,
     };
   }
 
@@ -564,16 +639,27 @@ export async function runInternalLinking(opts: LinkingRunOptions): Promise<Linki
       ? `Restored ${undo.restored.length}; FAILED to restore ${undo.failed.map((f) => f.url).join(", ")}.`
       : `Restored ${undo.restored.length} page(s) from the pre-write backup.`,
   );
-  const afterUndo = await conn.getByUrl(chosen.sourceUrl);
-  rec.step("reread2", "Re-read the page again", "ok", `Re-read ${chosen.sourceUrl} after the rollback.`);
-  const gone = !afterUndo.html.includes(`href="${chosen.targetUrl}"`);
+  const restoredByUrl = new Map<string, string>();
+  for (const item of revision.items) {
+    restoredByUrl.set(item.url, (await conn.getByUrl(item.url)).html);
+  }
+  rec.step(
+    "reread2",
+    "Re-read the page again",
+    "ok",
+    `Re-read ${revision.items.length} page(s) after the rollback.`,
+  );
+  // Byte-for-byte, not just "the link is gone" — a rollback that leaves the
+  // page subtly different is a failed rollback.
+  const notRestored = revision.items.filter((i) => restoredByUrl.get(i.url) !== i.beforeHtml);
+  const gone = notRestored.length === 0;
   rec.step(
     "verify2",
-    "Verify the link was removed",
+    selected.length === 1 ? "Verify the link was removed" : "Verify the links were removed",
     gone ? "ok" : "failed",
     gone
-      ? "The live page is back to its original content."
-      : "The link is STILL present after the rollback.",
+      ? "Every page is byte-identical to its pre-write content."
+      : `${notRestored.length} page(s) did NOT return to their original content: ${notRestored.map((i) => i.url).join(", ")}.`,
   );
   rec.step("audit", "Record the audit trail", "ok", `Batch ${batchId} recorded: applied, verified, rolled back.`);
 
@@ -601,8 +687,11 @@ export interface ApplyApprovedOptions {
   approval: Approval;
   protectedUrls: string[];
   requireBackup?: boolean;
-  /** The link the operator approved, so verification can look for it. */
-  expectTargetUrl?: string;
+  /**
+   * The links the operator approved, so verification can look for each one by
+   * name. Absent falls back to byte-equality against the revision.
+   */
+  expectLinks?: { sourceUrl: string; targetUrl: string }[];
   undoAfterVerify?: boolean;
   now?: () => number;
 }
@@ -675,17 +764,28 @@ export async function applyApprovedRevision(
   }
   rec.step("apply", "Apply the update", "ok", `Applied to ${exec.applied.join(", ")}.`);
 
-  const url = opts.revision.items[0]?.url ?? "";
-  const after = await conn.getByUrl(url);
-  rec.step("reread", "Re-read the page", "ok", `Re-read ${url} from the CMS.`);
-  const present = opts.expectTargetUrl
-    ? after.html.includes(`href="${opts.expectTargetUrl}"`)
-    : after.html === opts.revision.items[0]?.afterHtml;
+  const liveByUrl = new Map<string, string>();
+  for (const item of opts.revision.items) {
+    liveByUrl.set(item.url, (await conn.getByUrl(item.url)).html);
+  }
+  rec.step(
+    "reread",
+    "Re-read the page",
+    "ok",
+    `Re-read ${opts.revision.items.length} page(s) from the CMS.`,
+  );
+  const present = opts.expectLinks?.length
+    ? opts.expectLinks.every((l) =>
+        (liveByUrl.get(l.sourceUrl) ?? "").includes(`href="${l.targetUrl}"`),
+      )
+    : opts.revision.items.every((i) => liveByUrl.get(i.url) === i.afterHtml);
   rec.step(
     "verify",
     "Verify the change exists",
     present ? "ok" : "failed",
-    present ? "The live page carries the approved change." : "The live page does NOT carry the change.",
+    present
+      ? `All ${opts.expectLinks?.length ?? opts.revision.items.length} approved change(s) are live.`
+      : "At least one live page does NOT carry the approved change.",
   );
 
   if (!present || opts.undoAfterVerify) {
@@ -713,6 +813,6 @@ export async function applyApprovedRevision(
     steps: rec.steps,
     applied: true,
     rolledBack: false,
-    message: `Applied and verified on ${url}.`,
+    message: `Applied and verified on ${opts.revision.items.map((i) => i.url).join(", ")}.`,
   };
 }

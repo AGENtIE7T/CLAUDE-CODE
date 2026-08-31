@@ -241,8 +241,12 @@ describe("workflow: safety", () => {
       }),
     );
     const snaps = await backups.byBatch(r.batchId);
-    expect(snaps.length).toBe(1);
-    expect(snaps[0].html).toBeTruthy();
+    // One backup per page the revision touches, taken before that page's write.
+    expect(snaps.length).toBe(r.revision!.items.length);
+    expect(snaps.every((sn) => sn.html.length > 0)).toBe(true);
+    expect(new Set(snaps.map((sn) => sn.url))).toEqual(
+      new Set(r.revision!.items.map((i) => i.url)),
+    );
   });
 
   it("rolls back and reports failure when the CMS silently ignores the write", async () => {
@@ -286,7 +290,9 @@ describe("workflow: approving a work order later", () => {
         expiresAt: Date.now() + 60_000,
       },
       protectedUrls: [],
-      expectTargetUrl: preview.chosen!.targetUrl,
+      expectLinks: [
+        { sourceUrl: preview.chosen!.sourceUrl, targetUrl: preview.chosen!.targetUrl },
+      ],
     });
     expect(out.applied).toBe(true);
     const live = await c.getByUrl(preview.chosen!.sourceUrl);
@@ -312,7 +318,9 @@ describe("workflow: approving a work order later", () => {
         expiresAt: Date.now() + 60_000,
       },
       protectedUrls: [],
-      expectTargetUrl: preview.chosen!.targetUrl,
+      expectLinks: [
+        { sourceUrl: preview.chosen!.sourceUrl, targetUrl: preview.chosen!.targetUrl },
+      ],
     });
     expect(out.applied).toBe(false);
     expect(out.message).toMatch(/stale/i);
@@ -425,5 +433,93 @@ describe("workflow: the default confidence floor is reachable on real content", 
       "topic_match",
     ]);
     expect(r.candidates[0].reason).toBeTruthy();
+  });
+});
+
+describe("workflow: applying more than one link", () => {
+  const permissive = () => rules({ enabled: true, minimumConfidence: 0.5 });
+
+  it("applies every candidate the rules allow, grouped by page", async () => {
+    const r = await runInternalLinking(
+      options({ mode: "execute", useAutopilot: true, rules: permissive() }),
+    );
+    expect(r.applied).toBe(true);
+    expect(r.selected.length).toBeGreaterThan(1);
+    // One revision item per edited page, never one per link.
+    const pages = new Set(r.selected.map((c) => c.sourceUrl));
+    expect(r.revision!.items).toHaveLength(pages.size);
+
+    // Every approved link is genuinely on its live page.
+    for (const c of r.selected) {
+      const live = await conn().getByUrl(c.sourceUrl);
+      expect(live.html).toContain(`href="${c.targetUrl}"`);
+    }
+  });
+
+  it("honours maxCandidates, which is how the controlled test stays to one link", async () => {
+    const r = await runInternalLinking(
+      options({ mode: "preview", rules: permissive(), maxCandidates: 1 }),
+    );
+    expect(r.selected).toHaveLength(1);
+    expect(r.revision!.items).toHaveLength(1);
+    // The one it picks is the highest-scoring one.
+    expect(r.selected[0].confidence).toBe(Math.max(...r.candidates.map((c) => c.confidence)));
+  });
+
+  it("caps the run at the rule set's maxTotalChanges", async () => {
+    const r = await runInternalLinking(
+      options({ mode: "preview", rules: rules({ minimumConfidence: 0.5, maxTotalChanges: 2 }) }),
+    );
+    expect(r.selected.length).toBeLessThanOrEqual(2);
+  });
+
+  it("respects the per-page link cap", async () => {
+    const r = await runInternalLinking(
+      options({ mode: "preview", rules: rules({ minimumConfidence: 0.4, maxLinksPerPage: 1 }) }),
+    );
+    const perPage = new Map<string, number>();
+    for (const c of r.selected) perPage.set(c.sourceUrl, (perPage.get(c.sourceUrl) ?? 0) + 1);
+    expect([...perPage.values()].every((n) => n <= 1)).toBe(true);
+  });
+
+  it("drops a candidate with no natural anchor rather than forcing it", async () => {
+    const r = await runInternalLinking(
+      options({ mode: "preview", rules: rules({ minimumConfidence: 0.4 }) }),
+    );
+    // Whatever survived, every selected candidate really is in the revision.
+    for (const c of r.selected) {
+      const item = r.revision!.items.find((i) => i.url === c.sourceUrl);
+      expect(item, c.sourceUrl).toBeDefined();
+      expect(item!.afterHtml).toContain(`href="${c.targetUrl}"`);
+    }
+    expect(r.selected.length).toBeLessThanOrEqual(r.candidates.length);
+  });
+
+  it("rolls a multi-page batch back to byte-identical content", async () => {
+    const before = new Map<number, string | null>();
+    for (const id of [20, 21, 22]) before.set(id, wp.contentOf(id));
+
+    const r = await runInternalLinking(
+      options({
+        mode: "execute",
+        useAutopilot: true,
+        rules: permissive(),
+        undoAfterVerify: true,
+      }),
+    );
+    expect(r.revision!.items.length).toBeGreaterThan(1);
+    expect(r.rolledBack).toBe(true);
+    expect(r.applied).toBe(false);
+    for (const id of [20, 21, 22]) expect(wp.contentOf(id)).toBe(before.get(id));
+  });
+
+  it("fails verification when any single link is missing from a live page", async () => {
+    // The server accepts writes to post 21 and silently ignores them.
+    wp.faults.verifyFailIds = [21];
+    const r = await runInternalLinking(
+      options({ mode: "execute", useAutopilot: true, rules: permissive() }),
+    );
+    expect(r.applied).toBe(false);
+    expect(r.message).toMatch(/NOT applied|did not verify/i);
   });
 });

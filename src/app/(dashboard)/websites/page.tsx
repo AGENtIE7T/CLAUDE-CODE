@@ -6,6 +6,7 @@ import { DEMO_WORKSPACE_ID } from "@/lib/rbac/resolve";
 import { buildCapabilitySnapshot } from "@/lib/status/capabilities";
 import { getWebsiteConfig } from "@/lib/websites/config-store";
 import { AddWebsiteForm } from "./add-website-form";
+import { VerifyViaCmsButton } from "./verify-button";
 
 export const dynamic = "force-dynamic";
 
@@ -13,8 +14,10 @@ export default async function WebsitesPage() {
   const websites = await listWebsites(DEMO_WORKSPACE_ID);
   const snapshot = buildCapabilitySnapshot({
     websiteCount: websites.length,
-    websiteLabel: websites[0]?.name ?? null,
-    websiteVerified: Boolean(websites[0]?.ownershipVerifiedAt),
+    websiteLabel: websites.length === 1 ? websites[0].name : null,
+    // "Verified" only when EVERY registered site is — one unverified site is
+    // still a site the system must not write to.
+    websiteVerified: websites.length > 0 && websites.every((w) => w.ownershipVerifiedAt),
   });
 
   return (
@@ -82,6 +85,8 @@ export default async function WebsitesPage() {
                     {config.protectedUrls.length > 6 && <li>+{config.protectedUrls.length - 6} more</li>}
                   </ul>
                 )}
+                <VerifyViaCmsButton websiteId={w.id} verified={verified} />
+
                 <p className="mt-3 text-xs">
                   <Link href="/autopilot" style={{ color: "var(--teal)" }}>
                     Configure protected URLs and Autopilot rules →

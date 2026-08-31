@@ -25,8 +25,21 @@ const EXAMPLES = [
   "Buy 500 backlinks for my homepage",
 ];
 
-export function CommandCenter({ initial }: { initial: CapabilitySnapshot }) {
+export interface WebsiteChoice {
+  id: string;
+  name: string;
+  url: string;
+}
+
+export function CommandCenter({
+  initial,
+  websites,
+}: {
+  initial: CapabilitySnapshot;
+  websites: WebsiteChoice[];
+}) {
   const [text, setText] = useState("");
+  const [websiteId, setWebsiteId] = useState(websites[0]?.id ?? "");
   const [pending, start] = useTransition();
   const [result, setResult] = useState<CommandRunResult | null>(null);
   const [approval, setApproval] = useState<ApprovalResult | null>(null);
@@ -34,7 +47,7 @@ export function CommandCenter({ initial }: { initial: CapabilitySnapshot }) {
   function run(instruction: string) {
     setText(instruction);
     setApproval(null);
-    start(async () => setResult(await runCommandAction(instruction)));
+    start(async () => setResult(await runCommandAction(instruction, websiteId || undefined)));
   }
 
   const caps = result?.capabilities ?? initial;
@@ -51,6 +64,25 @@ export function CommandCenter({ initial }: { initial: CapabilitySnapshot }) {
         className="rounded-xl border p-5"
         style={{ borderColor: "var(--line)", background: "var(--card)" }}
       >
+        {websites.length > 1 && (
+          <label htmlFor="website" className="mb-3 block">
+            <span className="text-sm font-medium">Which website?</span>
+            <select
+              id="website"
+              value={websiteId}
+              onChange={(e) => setWebsiteId(e.target.value)}
+              className="mt-1 block w-full rounded-md border px-3 py-2 text-sm"
+              style={{ borderColor: "var(--line)", background: "var(--card)", color: "var(--ink)" }}
+            >
+              {websites.map((w) => (
+                <option key={w.id} value={w.id}>
+                  {w.name} — {w.url}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
+
         <label htmlFor="instruction" className="text-sm font-medium">
           Tell it what to do, in your own words
         </label>
@@ -98,7 +130,7 @@ export function CommandCenter({ initial }: { initial: CapabilitySnapshot }) {
           {result.workOrder && result.workOrder.status === "pending" && !approval && (
             <WorkOrderPanel
               id={result.workOrder.id}
-              candidate={result.workOrder.candidate}
+              candidates={result.workOrder.candidates}
               revisionHash={result.workOrder.revision.revisionHash}
               expiresAt={result.workOrder.expiresAt}
               canWrite={caps.canWrite}
@@ -303,7 +335,7 @@ function Recommendations({ candidates }: { candidates: LinkCandidate[] }) {
 
 function WorkOrderPanel({
   id,
-  candidate,
+  candidates,
   revisionHash,
   expiresAt,
   canWrite,
@@ -312,7 +344,7 @@ function WorkOrderPanel({
   pending,
 }: {
   id: string;
-  candidate: { sourceUrl: string; targetUrl: string; anchor: string; confidence: number };
+  candidates: { sourceUrl: string; targetUrl: string; anchor: string; confidence: number }[];
   revisionHash: string;
   expiresAt: number;
   canWrite: boolean;
@@ -325,17 +357,39 @@ function WorkOrderPanel({
       <div className="mb-2 flex flex-wrap items-center gap-2">
         <h3 className="font-semibold">Work order — awaiting your approval</h3>
         <StatusChip status="limited">nothing written yet</StatusChip>
+        <StatusChip status="limited">
+          {candidates.length === 1 ? "1 link" : `${candidates.length} links`} ·{" "}
+          {new Set(candidates.map((c) => c.sourceUrl)).size} page(s)
+        </StatusChip>
       </div>
       <p className="mb-3 text-sm" style={{ color: "var(--ink-soft)" }}>
-        Approving this approves these exact bytes. If the page changes before you
+        Approving this approves these exact bytes. If any page changes before you
         approve, the write is refused rather than applied to different content.
       </p>
 
+      <ul className="mb-3 grid gap-2">
+        {candidates.map((c, i) => (
+          <li
+            key={`${c.sourceUrl}-${c.targetUrl}-${i}`}
+            className="rounded-lg border p-3 text-sm"
+            style={{ borderColor: "var(--line)" }}
+          >
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <span>
+                <strong>“{c.anchor}”</strong> → <span style={{ color: "var(--teal)" }}>{c.targetUrl}</span>
+              </span>
+              <StatusChip status={c.confidence >= 0.9 ? "ok" : "limited"}>
+                {c.confidence.toFixed(2)}
+              </StatusChip>
+            </div>
+            <p className="text-xs" style={{ color: "var(--ink-faint)", fontFamily: "var(--font-mono)" }}>
+              on {c.sourceUrl}
+            </p>
+          </li>
+        ))}
+      </ul>
+
       <dl className="grid gap-2 text-sm sm:grid-cols-2">
-        <Row k="Page" v={candidate.sourceUrl} />
-        <Row k="Links to" v={candidate.targetUrl} />
-        <Row k="Anchor text" v={`“${candidate.anchor}”`} />
-        <Row k="Confidence" v={candidate.confidence.toFixed(2)} />
         <Row k="Revision" v={revisionHash.slice(0, 16)} />
         <Row k="Approval expires" v={new Date(expiresAt).toLocaleString()} />
       </dl>

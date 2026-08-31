@@ -11,8 +11,8 @@ export default async function ConnectionPage() {
   const websites = await listWebsites(DEMO_WORKSPACE_ID);
   const snapshot = buildCapabilitySnapshot({
     websiteCount: websites.length,
-    websiteLabel: websites[0]?.name ?? null,
-    websiteVerified: Boolean(websites[0]?.ownershipVerifiedAt),
+    websiteLabel: websites.length === 1 ? websites[0].name : null,
+    websiteVerified: websites.length > 0 && websites.every((w) => w.ownershipVerifiedAt),
   });
 
   return (

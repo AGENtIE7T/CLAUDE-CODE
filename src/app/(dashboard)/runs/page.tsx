@@ -44,13 +44,32 @@ export default async function RunsPage() {
                 >
                   <div className="mb-1 flex flex-wrap items-center justify-between gap-2">
                     <span className="text-sm">
-                      <strong>“{o.candidate.anchor}”</strong> → {o.candidate.targetUrl}
+                      {o.candidates.length === 1 ? (
+                        <>
+                          <strong>“{o.candidates[0].anchor}”</strong> → {o.candidates[0].targetUrl}
+                        </>
+                      ) : (
+                        <strong>
+                          {o.candidates.length} links across{" "}
+                          {new Set(o.candidates.map((c) => c.sourceUrl)).size} page(s)
+                        </strong>
+                      )}
                     </span>
                     <StatusChip status={ORDER_TONE[o.status]}>{o.status}</StatusChip>
                   </div>
+                  {o.candidates.length > 1 && (
+                    <ul className="mb-1 grid gap-0.5 text-xs" style={{ color: "var(--ink-soft)" }}>
+                      {o.candidates.map((c, i) => (
+                        <li key={`${c.sourceUrl}-${c.targetUrl}-${i}`}>
+                          “{c.anchor}” → {c.targetUrl}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                   <p className="text-xs" style={{ color: "var(--ink-faint)", fontFamily: "var(--font-mono)" }}>
-                    on {o.candidate.sourceUrl} · revision {o.revision.revisionHash.slice(0, 16)} ·
-                    created {new Date(o.createdAt).toLocaleString()}
+                    {o.candidates.length === 1 ? `on ${o.candidates[0].sourceUrl} · ` : ""}revision{" "}
+                    {o.revision.revisionHash.slice(0, 16)} · created{" "}
+                    {new Date(o.createdAt).toLocaleString()}
                   </p>
                   {o.outcome && (
                     <p className="mt-1 text-sm" style={{ color: "var(--ink-soft)" }}>
