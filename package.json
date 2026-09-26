@@ -13,7 +13,8 @@
     "check": "node scripts/check-env.mjs",
     "db:migrate": "supabase db push",
     "db:reset": "supabase db reset",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "seed:staging": "node scripts/make-staging-content.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",

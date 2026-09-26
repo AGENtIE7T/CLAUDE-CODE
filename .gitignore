@@ -37,3 +37,6 @@ yarn-error.log*
 .idea
 test-results/
 playwright-report/
+
+# Generated staging content pack (regenerate with: npm run seed:staging)
+staging-content.xml

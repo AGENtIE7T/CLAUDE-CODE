@@ -29,13 +29,40 @@ to get an HTTPS address the app can reach.
 
 Requirements the site must meet:
 
-- Reachable over **HTTPS** from the internet (the app calls it server-side).
+- Reachable over **HTTPS** from the internet. The adapter now rejects `http://`
+  before it sends anything, so this is not optional.
 - The REST API is enabled at `https://<site>/wp-json` — open that URL in a
   browser; you should see JSON, not a 404. Some security plugins disable it.
-- It contains at least **three or four posts and two or three pages** with real
-  sentences in them. Internal linking works on text: a site of empty "Hello
-  world" posts will correctly produce zero suggestions. Import a theme's demo
-  content, or paste a few hundred words into each.
+- It contains **real content** — see below.
+
+## 1a. Put real content on it
+
+This is the step most likely to make the first test look like a failure when it
+is not. Internal linking runs on text. A site of empty "Hello world" posts
+correctly produces **zero** suggestions, and the system then looks broken while
+behaving perfectly.
+
+The repository ships a content pack for exactly this:
+
+```bash
+npm run seed:staging -- --site https://your-staging-site.example
+```
+
+That writes `staging-content.xml` — a WordPress import file containing three
+service pages and four blog posts of genuine prose, in two overlapping topic
+clusters. Import it with **wp-admin → Tools → Import → WordPress → Upload file
+and import**. Everything is published, so the REST API sees it immediately.
+
+`src/lib/cms/wordpress/staging-seed.test.ts` runs the shipped scoring engine
+over that exact content, at the shipped 0.80 confidence floor and the shipped
+Autopilot limits, and asserts it produces real opportunities across several
+posts. So the pack is known to work before you import it, rather than hoped to.
+
+If you would rather use your own content, it needs to look like a real site:
+150+ words per page, blog posts about what the service pages sell, and a
+business name and place name used consistently (entity overlap is 15% of the
+score). Anchor phrases must appear in **paragraphs**, not only in headings —
+the link applier refuses to edit inside a heading.
 
 **Do not use your production website for this.**
 

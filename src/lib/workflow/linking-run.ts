@@ -161,6 +161,37 @@ function businessPriorityFor(type: LinkingPage["type"]): number {
   return 0.6;
 }
 
+/**
+ * Turn a piece of CMS content into a page the scorer can reason about.
+ *
+ * Exported because it is the single definition of how raw CMS content becomes
+ * a scoreable page. Anything that wants to predict what a run will find — a
+ * test, a content pack, a dry-run tool — must go through this, or it is
+ * measuring something the product does not actually do.
+ */
+export function toLinkingPage(content: {
+  url: string;
+  title: string | null;
+  html: string;
+  noindex?: boolean;
+}): LinkingPage {
+  const ex = extractPage(content.html);
+  const type = pageTypeFor(content.url);
+  return {
+    url: content.url,
+    title: content.title ?? "",
+    text: `${content.title ?? ""}. ${htmlToText(content.html)}`,
+    type,
+    indexable: ex.indexable && !content.noindex,
+    canonicalIsSelf: !ex.canonical || normalizeUrl(ex.canonical) === normalizeUrl(content.url),
+    status: 200,
+    existingTargets: new Set(
+      ex.links.map((l) => normalizeUrl(l.href)).filter((u): u is string => Boolean(u)),
+    ),
+    businessPriority: businessPriorityFor(type),
+  };
+}
+
 function toAutopilotCandidate(c: LinkCandidate): AutopilotCandidate {
   return {
     sourceUrl: c.sourceUrl,
@@ -307,25 +338,11 @@ export async function runInternalLinking(opts: LinkingRunOptions): Promise<Linki
     } catch {
       continue; // a single unreadable page must not abort the run
     }
-    const ex = extractPage(content.html);
     const verdict = classifyInjection(content.html);
     if (verdict.suspicious) injectionFlags.push({ url: content.url, score: verdict.score });
 
-    const type = pageTypeFor(content.url);
     htmlByUrl.set(content.url, content.html);
-    pages.push({
-      url: content.url,
-      title: content.title ?? "",
-      text: `${content.title ?? ""}. ${htmlToText(content.html)}`,
-      type,
-      indexable: ex.indexable && !content.noindex,
-      canonicalIsSelf: !ex.canonical || normalizeUrl(ex.canonical) === normalizeUrl(content.url),
-      status: 200,
-      existingTargets: new Set(
-        ex.links.map((l) => normalizeUrl(l.href)).filter((u): u is string => Boolean(u)),
-      ),
-      businessPriority: businessPriorityFor(type),
-    });
+    pages.push(toLinkingPage(content));
   }
   rec.step(
     "read",

@@ -19,7 +19,13 @@ export interface LinkEdit {
 
 export interface ApplyResult {
   html: string;
-  applied: { anchor: string; targetUrl: string }[];
+  applied: {
+    /** The anchor as REQUESTED, so a caller can match an edit to its candidate. */
+    anchor: string;
+    /** The text actually wrapped, preserving the page's own casing and spacing. */
+    text: string;
+    targetUrl: string;
+  }[];
   skipped: { anchor: string; targetUrl: string; reason: string }[];
 }
 
@@ -44,6 +50,21 @@ function inProtected(pos: number, ranges: [number, number][]): boolean {
 
 function escapeRegExp(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/**
+ * Build a matcher for an anchor phrase that tolerates the whitespace real
+ * content actually contains.
+ *
+ * A stored WordPress paragraph wraps wherever the editor happened to wrap it,
+ * so "Probate Administration" may sit in the HTML as "Probate\nAdministration".
+ * Matching the phrase literally would miss it, and the link would be silently
+ * skipped on exactly the pages most worth linking. Every run of whitespace
+ * between words therefore matches any run of whitespace.
+ */
+function anchorMatcher(anchor: string): RegExp {
+  const parts = anchor.trim().split(/\s+/).map(escapeRegExp);
+  return new RegExp(`\\b${parts.join("\\s+")}\\b`, "i");
 }
 
 function escapeAttr(s: string): string {
@@ -73,22 +94,25 @@ export function applyLinks(html: string, edits: LinkEdit[]): ApplyResult {
     }
 
     const ranges = protectedRanges(out);
-    // Match the anchor phrase on a word boundary, case-insensitive.
-    const phraseRe = new RegExp(`\\b${escapeRegExp(anchor)}\\b`, "i");
+    const phraseRe = anchorMatcher(anchor);
 
     let found = -1;
+    let matched = "";
     let searchFrom = 0;
     // Find the first occurrence that is NOT inside a protected block.
     for (;;) {
-      const slice = out.slice(searchFrom);
-      const rel = slice.search(phraseRe);
-      if (rel === -1) break;
-      const abs = searchFrom + rel;
+      const hit = phraseRe.exec(out.slice(searchFrom));
+      if (!hit) break;
+      const abs = searchFrom + hit.index;
       if (!inProtected(abs, ranges)) {
         found = abs;
+        matched = hit[0];
         break;
       }
-      searchFrom = abs + anchor.length;
+      // Advance past THIS match, not past the requested anchor's length — with
+      // flexible whitespace the two can differ, and stepping by the wrong
+      // amount would re-examine text already rejected.
+      searchFrom = abs + hit[0].length;
     }
 
     if (found === -1) {
@@ -96,11 +120,11 @@ export function applyLinks(html: string, edits: LinkEdit[]): ApplyResult {
       continue;
     }
 
-    const matched = out.slice(found).match(phraseRe)![0]; // preserve original casing
     const relAttr = edit.rel ? ` rel="${escapeAttr(edit.rel)}"` : "";
     const link = `<a href="${escapeAttr(edit.targetUrl)}"${relAttr}>${matched}</a>`;
     out = out.slice(0, found) + link + out.slice(found + matched.length);
-    applied.push({ anchor: matched, targetUrl: edit.targetUrl });
+    // `anchor` is what was asked for; `text` is what the page actually said.
+    applied.push({ anchor, text: matched, targetUrl: edit.targetUrl });
   }
 
   return { html: out, applied, skipped };
