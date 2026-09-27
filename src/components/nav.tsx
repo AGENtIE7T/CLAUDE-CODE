@@ -10,6 +10,12 @@ const links = [
   { href: "/approvals", label: "Approvals" },
   { href: "/channels", label: "Channels" },
   { href: "/audit", label: "Audit Log" },
+  // SEO Command Center (separate product, shared shell)
+  { href: "/command", label: "SEO · Command" },
+  { href: "/websites", label: "SEO · Websites" },
+  { href: "/connection", label: "SEO · Connection" },
+  { href: "/autopilot", label: "SEO · Autopilot" },
+  { href: "/runs", label: "SEO · History" },
 ];
 
 export function Nav() {
