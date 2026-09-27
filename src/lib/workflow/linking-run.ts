@@ -710,6 +710,13 @@ export interface ApplyApprovedOptions {
    */
   expectLinks?: { sourceUrl: string; targetUrl: string }[];
   undoAfterVerify?: boolean;
+  /**
+   * Run every gate — approval binding, expiry, protected URLs, freshness — and
+   * stop before writing a single byte. The rehearsal you want before the first
+   * write to a real site: it answers "would this have worked?" without
+   * answering it destructively.
+   */
+  dryRun?: boolean;
   now?: () => number;
 }
 
@@ -717,6 +724,10 @@ export interface ApplyApprovedResult {
   steps: WorkflowStep[];
   applied: boolean;
   rolledBack: boolean;
+  /** True when this was a rehearsal; `applied` is then always false. */
+  dryRun: boolean;
+  /** Names the backups taken for this write. Undo needs it. */
+  batchId: string;
   message: string;
 }
 
@@ -736,16 +747,25 @@ export async function applyApprovedRevision(
   const conn = opts.connection;
   const batchId = `batch-${new Date(now()).toISOString()}-${opts.websiteId}`;
 
+  const dryRun = opts.dryRun === true;
+
   if (!conn) {
     rec.step("apply", "Apply the update", "skipped", "No CMS connection is configured.");
-    return { steps: rec.steps, applied: false, rolledBack: false, message: WORDPRESS_CONNECTION_REQUIRED };
+    return {
+      steps: rec.steps,
+      applied: false,
+      rolledBack: false,
+      dryRun,
+      batchId,
+      message: WORDPRESS_CONNECTION_REQUIRED,
+    };
   }
   try {
     assertUsable(conn, { write: true });
   } catch (e) {
     const msg = e instanceof CmsError ? e.message : "The connection may not be written to.";
     rec.step("apply", "Apply the update", "failed", msg);
-    return { steps: rec.steps, applied: false, rolledBack: false, message: msg };
+    return { steps: rec.steps, applied: false, rolledBack: false, dryRun, batchId, message: msg };
   }
 
   const cms = createWordPressCmsStore(conn, opts.backups, {
@@ -761,6 +781,7 @@ export async function applyApprovedRevision(
     protectedPatterns: opts.protectedUrls,
     approval: opts.approval,
     idempotencyKey: `${batchId}:${opts.revision.revisionHash}`,
+    dryRun,
     target: {
       environment: conn.environment === "production" ? "production" : "staging",
       isMock: conn.isMock,
@@ -769,16 +790,47 @@ export async function applyApprovedRevision(
   });
 
   if (!exec.ok) {
-    rec.step("apply", "Apply the update", "failed", exec.reason);
+    rec.step(
+      "apply",
+      dryRun ? "Validate the update" : "Apply the update",
+      "failed",
+      exec.reason,
+    );
     const rolled = exec.rolledBack?.length ?? 0;
     if (rolled) rec.step("rollback", "Roll the change back", "ok", `Rolled back ${rolled} page(s).`);
     return {
       steps: rec.steps,
       applied: false,
       rolledBack: rolled > 0,
-      message: `The change was NOT applied: ${exec.reason}`,
+      dryRun,
+      batchId,
+      message: dryRun
+        ? `This would NOT have worked: ${exec.reason}`
+        : `The change was NOT applied: ${exec.reason}`,
     };
   }
+
+  if (dryRun) {
+    // Everything that could be checked without writing, was.
+    rec.step(
+      "apply",
+      "Validate the update",
+      "ok",
+      "Approval, expiry, protected URLs and revision freshness all pass. Nothing was written.",
+    );
+    rec.step("reread", "Re-read the page", "skipped", "Nothing was written, so there is nothing to re-read.");
+    rec.step("verify", "Verify the change exists", "skipped", "This was a rehearsal.");
+    rec.step("audit", "Record the audit trail", "ok", "The dry run was recorded.");
+    return {
+      steps: rec.steps,
+      applied: false,
+      rolledBack: false,
+      dryRun: true,
+      batchId,
+      message: `Every check passed. ${opts.revision.items.length} page(s) would be updated. ${WORK_ORDER_ONLY}`,
+    };
+  }
+
   rec.step("apply", "Apply the update", "ok", `Applied to ${exec.applied.join(", ")}.`);
 
   const liveByUrl = new Map<string, string>();
@@ -819,6 +871,8 @@ export async function applyApprovedRevision(
       steps: rec.steps,
       applied: false,
       rolledBack: undo.failed.length === 0,
+      dryRun: false,
+      batchId,
       message: present
         ? "Applied, verified, and rolled back as requested. The site is unchanged."
         : "The write did not verify on the live page and was rolled back.",
@@ -830,6 +884,8 @@ export async function applyApprovedRevision(
     steps: rec.steps,
     applied: true,
     rolledBack: false,
+    dryRun: false,
+    batchId,
     message: `Applied and verified on ${opts.revision.items.map((i) => i.url).join(", ")}.`,
   };
 }

@@ -1,6 +1,7 @@
 import { PageHeader } from "@/components/page-header";
 import { StatusChip, StepList } from "@/components/seo/status";
-import { listRuns, outcomeLabel } from "@/lib/runs/history";
+import { UndoRunButton } from "./undo-button";
+import { isUndoable, listRuns, outcomeLabel } from "@/lib/runs/history";
 import { listWorkOrders } from "@/lib/runs/work-orders";
 import { DEMO_WORKSPACE_ID } from "@/lib/rbac/resolve";
 
@@ -105,7 +106,9 @@ export default async function RunsPage() {
                   <summary className="cursor-pointer">
                     <span className="mr-2 text-sm font-medium">{r.instruction.slice(0, 90)}</span>
                     <span className="inline-flex flex-wrap gap-2 align-middle">
-                      <StatusChip status={r.applied ? "ok" : r.rolledBack ? "limited" : "off"}>
+                      <StatusChip
+                        status={r.applied && !r.undoneAt ? "ok" : r.rolledBack ? "limited" : "off"}
+                      >
                         {outcomeLabel(r)}
                       </StatusChip>
                       <StatusChip status="limited">{r.mode}</StatusChip>
@@ -123,6 +126,16 @@ export default async function RunsPage() {
                       {r.rolledBack ? " · ROLLED BACK" : ""}
                     </p>
                     <StepList steps={r.steps} />
+
+                    {isUndoable(r) && <UndoRunButton runId={r.id} />}
+                    {r.undoOutcome && !isUndoable(r) && (
+                      <p
+                        className="text-xs"
+                        style={{ color: r.undoneAt ? "var(--ink-faint)" : "var(--crit)" }}
+                      >
+                        Undo: {r.undoOutcome}
+                      </p>
+                    )}
                   </div>
                 </details>
               ))}

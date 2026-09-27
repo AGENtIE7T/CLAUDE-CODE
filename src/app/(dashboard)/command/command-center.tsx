@@ -127,7 +127,11 @@ export function CommandCenter({
         <>
           <DecisionPanel result={result} />
           {result.run && <RunPanel result={result} />}
-          {result.workOrder && result.workOrder.status === "pending" && !approval && (
+          {result.workOrder &&
+            result.workOrder.status === "pending" &&
+            // A rehearsal decided nothing, so the panel stays: the whole point
+            // is to check first and then approve for real.
+            (!approval || approval.dryRun) && (
             <WorkOrderPanel
               id={result.workOrder.id}
               candidates={result.workOrder.candidates}
@@ -141,13 +145,32 @@ export function CommandCenter({
           )}
           {approval && (
             <div className="grid gap-3">
-              <OutcomeBanner
-                applied={approval.applied}
-                rolledBack={approval.rolledBack}
-                workOrderOnly={!approval.applied && !approval.rolledBack}
-                message={approval.message}
-                mock={result.run?.mock ?? false}
-              />
+              {approval.dryRun ? (
+                <div
+                  className="rounded-xl border p-4"
+                  style={{
+                    borderColor: approval.ok ? "var(--good)" : "var(--crit)",
+                    background: "var(--card)",
+                  }}
+                >
+                  <div className="mb-1">
+                    <StatusChip status={approval.ok ? "ok" : "off"}>
+                      Rehearsal — nothing written
+                    </StatusChip>
+                  </div>
+                  <p className="text-sm" style={{ color: "var(--ink-soft)" }}>
+                    {approval.message}
+                  </p>
+                </div>
+              ) : (
+                <OutcomeBanner
+                  applied={approval.applied}
+                  rolledBack={approval.rolledBack}
+                  workOrderOnly={!approval.applied && !approval.rolledBack}
+                  message={approval.message}
+                  mock={result.run?.mock ?? false}
+                />
+              )}
               {approval.steps.length > 0 && (
                 <div className="rounded-xl border p-5" style={{ borderColor: "var(--line)", background: "var(--card)" }}>
                   <StepList steps={approval.steps} />
@@ -400,7 +423,16 @@ function WorkOrderPanel({
         </p>
       )}
 
-      <div className="mt-4 flex gap-3">
+      <div className="mt-4 flex flex-wrap gap-3">
+        <button
+          onClick={() => onDecide(() => approveWorkOrderAction(id, { dryRun: true }))}
+          disabled={pending || !canWrite}
+          title={canWrite ? undefined : (writeBlockedMessage ?? undefined)}
+          className="rounded-md border px-4 py-2 text-sm"
+          style={{ borderColor: "var(--line)", color: "var(--ink-soft)" }}
+        >
+          Check without writing
+        </button>
         <button
           onClick={() => onDecide(() => approveWorkOrderAction(id))}
           disabled={pending || !canWrite}
@@ -424,6 +456,11 @@ function WorkOrderPanel({
           Reject
         </button>
       </div>
+      <p className="mt-2 text-xs" style={{ color: "var(--ink-faint)" }}>
+        &ldquo;Check without writing&rdquo; runs every gate — approval, expiry, protected URLs,
+        revision freshness — and stops before the first byte. Use it before the
+        first write to a real site.
+      </p>
     </div>
   );
 }

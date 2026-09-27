@@ -523,3 +523,116 @@ describe("workflow: applying more than one link", () => {
     expect(r.message).toMatch(/NOT applied|did not verify/i);
   });
 });
+
+describe("workflow: the dry run", () => {
+  async function previewedOrder() {
+    const backups = createMemoryBackupStore();
+    const c = conn();
+    const preview = await runInternalLinking(
+      options({
+        connection: c,
+        backups,
+        mode: "preview",
+        rules: rules({ minimumConfidence: 0.5 }),
+        maxCandidates: 1,
+      }),
+    );
+    return { c, backups, preview };
+  }
+
+  function approvalFor(hash: string) {
+    return { approvedRevisionHash: hash, expiresAt: Date.now() + 60_000 };
+  }
+
+  it("passes every gate and writes nothing", async () => {
+    const { c, backups, preview } = await previewedOrder();
+    const before = wp.contentOf((await c.getByUrl(preview.chosen!.sourceUrl)).id as number);
+
+    const out = await applyApprovedRevision({
+      websiteId: "site-1",
+      workspaceId: "ws-1",
+      userId: "u",
+      role: "OWNER",
+      connection: c,
+      backups,
+      revision: preview.revision!,
+      approval: approvalFor(preview.revision!.revisionHash),
+      protectedUrls: [],
+      dryRun: true,
+    });
+
+    expect(out.dryRun).toBe(true);
+    expect(out.applied).toBe(false);
+    expect(out.message).toMatch(/Every check passed/);
+    expect(out.message).toContain("No website was modified.");
+    // The page is byte-identical.
+    expect(wp.contentOf((await c.getByUrl(preview.chosen!.sourceUrl)).id as number)).toBe(before);
+  });
+
+  it("reports a failing gate as 'would not have worked', still without writing", async () => {
+    const { c, backups, preview } = await previewedOrder();
+    const sourceId = (await c.getByUrl(preview.chosen!.sourceUrl)).id as number;
+    wp.setContent(sourceId, "<p>an editor rewrote this page</p>");
+
+    const out = await applyApprovedRevision({
+      websiteId: "site-1",
+      workspaceId: "ws-1",
+      userId: "u",
+      role: "OWNER",
+      connection: c,
+      backups,
+      revision: preview.revision!,
+      approval: approvalFor(preview.revision!.revisionHash),
+      protectedUrls: [],
+      dryRun: true,
+    });
+
+    expect(out.dryRun).toBe(true);
+    expect(out.applied).toBe(false);
+    expect(out.message).toMatch(/would NOT have worked/);
+    expect(out.message).toMatch(/stale/i);
+    expect(wp.contentOf(sourceId)).toBe("<p>an editor rewrote this page</p>");
+  });
+
+  it("takes no backup, because there was no write to back out of", async () => {
+    const { c, backups, preview } = await previewedOrder();
+    await applyApprovedRevision({
+      websiteId: "site-1",
+      workspaceId: "ws-1",
+      userId: "u",
+      role: "OWNER",
+      connection: c,
+      backups,
+      revision: preview.revision!,
+      approval: approvalFor(preview.revision!.revisionHash),
+      protectedUrls: [],
+      dryRun: true,
+    });
+    expect(await backups.urls("site-1")).toEqual([]);
+  });
+
+  it("a dry run does not consume the idempotency key, so the real write can follow", async () => {
+    const { c, backups, preview } = await previewedOrder();
+    const common = {
+      websiteId: "site-1",
+      workspaceId: "ws-1",
+      userId: "u",
+      role: "OWNER" as const,
+      connection: c,
+      backups,
+      revision: preview.revision!,
+      approval: approvalFor(preview.revision!.revisionHash),
+      protectedUrls: [],
+      expectLinks: [
+        { sourceUrl: preview.chosen!.sourceUrl, targetUrl: preview.chosen!.targetUrl },
+      ],
+    };
+    const rehearsal = await applyApprovedRevision({ ...common, dryRun: true });
+    expect(rehearsal.applied).toBe(false);
+
+    const real = await applyApprovedRevision(common);
+    expect(real.applied).toBe(true);
+    const live = await c.getByUrl(preview.chosen!.sourceUrl);
+    expect(live.html).toContain(`href="${preview.chosen!.targetUrl}"`);
+  });
+});

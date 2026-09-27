@@ -6,7 +6,14 @@ import {
   listWorkOrders,
   settleWorkOrder,
 } from "./work-orders";
-import { __resetRunHistory, listRuns, outcomeLabel, recordRun } from "./history";
+import {
+  __resetRunHistory,
+  isUndoable,
+  listRuns,
+  markRunUndone,
+  outcomeLabel,
+  recordRun,
+} from "./history";
 import {
   __resetWebsiteConfig,
   getWebsiteConfig,
@@ -162,5 +169,75 @@ describe("website config", () => {
   it("keeps enabling Autopilot an explicit act", () => {
     expect(getWebsiteConfig("site-1").rules.enabled).toBe(false);
     expect(saveAutopilotRules("site-1", { enabled: true }).rules.enabled).toBe(true);
+  });
+});
+
+describe("undoing a run", () => {
+  function result(over: Partial<LinkingRunResult> = {}): LinkingRunResult {
+    return {
+      steps: [],
+      mode: "execute",
+      applied: true,
+      rolledBack: false,
+      workOrderOnly: false,
+      approvalSource: "human",
+      message: "Applied and verified.",
+      pagesRead: 3,
+      candidates: [],
+      selected: [],
+      chosen: null,
+      revisionHash: "hash",
+      revision: null,
+      batchId: "b1",
+      mock: false,
+      injectionFlags: [],
+      ...over,
+    };
+  }
+
+  it("marks an applied run undoable, and a work order not", () => {
+    const applied = recordRun({ websiteId: "s", workspaceId: "ws-1", instruction: "i" }, result());
+    expect(isUndoable(applied)).toBe(true);
+
+    const order = recordRun(
+      { websiteId: "s", workspaceId: "ws-1", instruction: "i" },
+      result({ applied: false, workOrderOnly: true }),
+    );
+    expect(isUndoable(order)).toBe(false);
+  });
+
+  it("records a successful undo as a new fact, without erasing that it applied", () => {
+    const run = recordRun({ websiteId: "s", workspaceId: "ws-1", instruction: "i" }, result());
+    markRunUndone(run.id, "Undone. 1 page(s) restored.", true);
+
+    const after = listRuns("ws-1")[0];
+    // It DID apply — the history records what happened, not the current state.
+    expect(after.applied).toBe(true);
+    expect(after.undoneAt).toBeTruthy();
+    expect(after.rolledBack).toBe(true);
+    expect(outcomeLabel(after)).toBe("Applied, then undone");
+    // And it cannot be undone twice.
+    expect(isUndoable(after)).toBe(false);
+  });
+
+  it("records a FAILED undo without marking the run undone", () => {
+    const run = recordRun({ websiteId: "s", workspaceId: "ws-1", instruction: "i" }, result());
+    markRunUndone(run.id, "Partly undone: restored 1, FAILED on /blog/b.", false);
+
+    const after = listRuns("ws-1")[0];
+    expect(after.undoneAt).toBeNull();
+    expect(after.undoOutcome).toMatch(/FAILED/);
+    // Still undoable, because it still needs undoing.
+    expect(isUndoable(after)).toBe(true);
+    expect(outcomeLabel(after)).not.toBe("Applied, then undone");
+  });
+
+  it("a mock run is still labelled a mock after being undone", () => {
+    const run = recordRun(
+      { websiteId: "s", workspaceId: "ws-1", instruction: "i" },
+      result({ mock: true }),
+    );
+    markRunUndone(run.id, "Undone.", true);
+    expect(listRuns("ws-1")[0].mock).toBe(true);
   });
 });

@@ -80,6 +80,23 @@ test("a prohibited request is refused with a legitimate alternative", async ({ p
   await expect(page.getByRole("heading", { name: /what happened, step by step/i })).toHaveCount(0);
 });
 
+test("a rehearsal checks every gate and writes nothing", async ({ page }) => {
+  await page.goto("/command");
+  await page
+    .getByLabel(/tell it what to do/i)
+    .fill("Find relevant links from blog articles to service pages. Show a preview only.");
+  await page.getByRole("button", { name: /run it/i }).click();
+  await expect(page.getByRole("heading", { name: /awaiting your approval/i })).toBeVisible();
+
+  await page.getByRole("button", { name: /check without writing/i }).click();
+  await expect(page.getByText("Rehearsal — nothing written")).toBeVisible();
+  await expect(page.getByText(/Every check passed/)).toBeVisible();
+  await expect(page.getByText("No website was modified.").first()).toBeVisible();
+
+  // The work order is still pending, so it can still be approved for real.
+  await expect(page.getByRole("button", { name: /approve and apply/i })).toBeVisible();
+});
+
 test("a preview creates a work order, and approving it applies and verifies one link", async ({
   page,
 }) => {
@@ -100,6 +117,18 @@ test("a preview creates a work order, and approving it applies and verifies one 
 
   await expect(page.getByText(/Applied and verified on/i)).toBeVisible();
   await expect(page.getByText("Verify the change exists")).toBeVisible();
+});
+
+test("an applied change can be undone from the history", async ({ page }) => {
+  await page.goto("/runs");
+  // Newest first: the applied approval, not the preview that preceded it.
+  const applied = page.locator("details").first();
+  await expect(applied).toContainText("Applied and verified");
+  await applied.click();
+  const undo = page.getByRole("button", { name: /undo this change/i }).first();
+  await expect(undo).toBeVisible();
+  await undo.click();
+  await expect(page.getByText(/Undone\. \d+ page\(s\) restored/)).toBeVisible();
 });
 
 test("history records what actually happened, labelled as a mock", async ({ page }) => {

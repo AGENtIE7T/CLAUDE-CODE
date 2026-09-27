@@ -10,11 +10,21 @@ import { resolveConnection } from "@/lib/connection/resolve";
 import { createMemoryBackupStore } from "@/lib/backups/snapshot";
 import {
   buildCapabilitySnapshot,
+  WORDPRESS_CONNECTION_REQUIRED,
   WORK_ORDER_ONLY,
   type CapabilitySnapshot,
 } from "@/lib/status/capabilities";
 import { runInternalLinking, applyApprovedRevision, type LinkingRunResult } from "@/lib/workflow/linking-run";
-import { recordRun, type RunRecord } from "@/lib/runs/history";
+import {
+  getRun,
+  isUndoable,
+  markRunUndone,
+  recordApplication,
+  recordRun,
+  type RunRecord,
+} from "@/lib/runs/history";
+import { rollbackFromBackups } from "@/lib/cms/wordpress/store";
+import { CmsError } from "@/lib/cms/adapter";
 import {
   createWorkOrder,
   getWorkOrder,
@@ -192,6 +202,8 @@ export interface ApprovalResult {
   ok: boolean;
   applied: boolean;
   rolledBack: boolean;
+  /** True when this was a rehearsal. `applied` is then always false. */
+  dryRun: boolean;
   message: string;
   steps: WorkflowStep[];
   status: WorkOrder["status"];
@@ -205,20 +217,33 @@ export interface ApprovalResult {
  * operator is told to regenerate rather than being silently given a different
  * edit than the one they looked at.
  */
-export async function approveWorkOrderAction(id: string): Promise<ApprovalResult> {
+export async function approveWorkOrderAction(
+  id: string,
+  opts: { dryRun?: boolean } = {},
+): Promise<ApprovalResult> {
   const membership = await resolveMembership(DEMO_WORKSPACE_ID);
   const workspaceId = membership?.workspaceId ?? DEMO_WORKSPACE_ID;
   const role = membership?.role ?? "VIEWER";
 
+  const dryRun = opts.dryRun === true;
   const order = getWorkOrder(id);
   if (!order) {
-    return { ok: false, applied: false, rolledBack: false, message: "That work order no longer exists.", steps: [], status: "expired" };
+    return {
+      ok: false,
+      applied: false,
+      rolledBack: false,
+      dryRun,
+      message: "That work order no longer exists.",
+      steps: [],
+      status: "expired",
+    };
   }
   if (order.status !== "pending") {
     return {
       ok: false,
       applied: false,
       rolledBack: false,
+      dryRun,
       message:
         order.status === "expired"
           ? "This work order expired. Regenerate the preview so the change is checked against the page as it is now."
@@ -249,14 +274,37 @@ export async function approveWorkOrderAction(id: string): Promise<ApprovalResult
       sourceUrl: c.sourceUrl,
       targetUrl: c.targetUrl,
     })),
+    dryRun,
   });
 
-  settleWorkOrder(id, outcome.applied ? "applied" : "failed", outcome.message);
+  // A rehearsal decides nothing: the work order stays pending so it can still
+  // be approved for real, and nothing is written to the history as having
+  // happened, because nothing did.
+  if (!dryRun) {
+    settleWorkOrder(id, outcome.applied ? "applied" : "failed", outcome.message);
+    recordApplication({
+      websiteId: order.websiteId,
+      workspaceId,
+      instruction: order.instruction,
+      batchId: outcome.batchId,
+      revisionHash: order.revision.revisionHash,
+      applied: outcome.applied,
+      rolledBack: outcome.rolledBack,
+      message: outcome.message,
+      steps: outcome.steps,
+      mock: resolved.connection?.isMock === true,
+      candidates: order.candidates,
+    });
+  }
 
   await audit({
     workspaceId,
     userId: membership?.userId ?? null,
-    action: outcome.applied ? "work_order.applied" : "work_order.failed",
+    action: dryRun
+      ? "work_order.dry_run"
+      : outcome.applied
+        ? "work_order.applied"
+        : "work_order.failed",
     resourceType: "revision",
     resourceId: order.revision.revisionHash.slice(0, 12),
     resultSummary: outcome.message,
@@ -264,12 +312,13 @@ export async function approveWorkOrderAction(id: string): Promise<ApprovalResult
 
   revalidatePath("/runs");
   return {
-    ok: outcome.applied,
+    ok: dryRun ? !outcome.message.startsWith("This would NOT") : outcome.applied,
     applied: outcome.applied,
     rolledBack: outcome.rolledBack,
+    dryRun: outcome.dryRun,
     message: outcome.message,
     steps: outcome.steps,
-    status: outcome.applied ? "applied" : "failed",
+    status: dryRun ? "pending" : outcome.applied ? "applied" : "failed",
   };
 }
 
@@ -290,8 +339,85 @@ export async function rejectWorkOrderAction(id: string): Promise<ApprovalResult>
     ok: true,
     applied: false,
     rolledBack: false,
+    dryRun: false,
     message: WORK_ORDER_ONLY,
     steps: [],
     status: "rejected",
   };
+}
+
+/**
+ * Undo a run that was applied.
+ *
+ * Restores the exact bytes captured before the write, then re-reads to confirm
+ * the restore landed. A partial restore is reported as a failure naming the
+ * pages that did not come back — "mostly undone" is not undone.
+ */
+export async function undoRunAction(runId: string): Promise<{
+  ok: boolean;
+  message: string;
+  restored: string[];
+  failed: { url: string; reason: string }[];
+}> {
+  const membership = await resolveMembership(DEMO_WORKSPACE_ID);
+  const workspaceId = membership?.workspaceId ?? DEMO_WORKSPACE_ID;
+
+  const run = getRun(runId);
+  if (!run || run.workspaceId !== workspaceId) {
+    return { ok: false, message: "That run is not in this workspace.", restored: [], failed: [] };
+  }
+  if (!isUndoable(run)) {
+    return {
+      ok: false,
+      message: run.undoneAt
+        ? "This run has already been undone."
+        : "This run never applied a change, so there is nothing to undo.",
+      restored: [],
+      failed: [],
+    };
+  }
+
+  const resolved = resolveConnection();
+  if (!resolved.connection) {
+    return {
+      ok: false,
+      message: resolved.error?.message ?? WORDPRESS_CONNECTION_REQUIRED,
+      restored: [],
+      failed: [],
+    };
+  }
+
+  let outcome;
+  try {
+    outcome = await rollbackFromBackups(resolved.connection, backups(), run.batchId);
+  } catch (e) {
+    const message = e instanceof CmsError ? e.message : "The rollback could not be attempted.";
+    markRunUndone(runId, message, false);
+    revalidatePath("/runs");
+    return { ok: false, message, restored: [], failed: [] };
+  }
+
+  const ok = outcome.failed.length === 0 && outcome.restored.length > 0;
+  const message = ok
+    ? `Undone. ${outcome.restored.length} page(s) restored to their pre-write content.`
+    : outcome.restored.length === 0
+      ? "Nothing was restored — no backup was found for this run."
+      : `Partly undone: restored ${outcome.restored.length}, FAILED on ${outcome.failed
+          .map((f) => `${f.url} (${f.reason})`)
+          .join(", ")}.`;
+
+  markRunUndone(runId, message, ok);
+
+  await audit({
+    workspaceId,
+    userId: membership?.userId ?? null,
+    action: ok ? "run.undone" : "run.undo_failed",
+    resourceType: "revision",
+    resourceId: run.revisionHash?.slice(0, 12) ?? run.batchId,
+    input: { restored: outcome.restored.length, failed: outcome.failed.length },
+    resultSummary: message,
+  });
+
+  revalidatePath("/runs");
+  return { ok, message, restored: outcome.restored, failed: outcome.failed };
 }
