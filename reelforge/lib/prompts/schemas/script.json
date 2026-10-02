@@ -1,0 +1,20 @@
+{
+  "id": "s1",
+  "title": "string",
+  "hook_type": "string",
+  "content_pillar": "string",
+  "emotion": "string",
+  "length_sec": 30,
+  "on_camera": "owner | staff | faceless | customer",
+  "hook": { "visual": "string", "on_screen_text": "string", "spoken": "string" },
+  "beats": [ { "start": 2, "end": 5, "visual": "string", "spoken": "string", "on_screen_text": "string" } ],
+  "payoff": "string",
+  "cta": { "spoken": "string", "on_screen_text": "string" },
+  "shooting": { "location": "string", "props": ["string"], "phone_setup": "string", "broll": ["string"], "editing_tip": "string" },
+  "audio": "string",
+  "caption": "string",
+  "hashtags": ["string"],
+  "why_it_works": "string",
+  "biggest_risk": "string",
+  "reel_summary": "string"
+}

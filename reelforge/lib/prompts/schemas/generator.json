@@ -1,0 +1,8 @@
+{
+  "assumptions": ["string"],
+  "audience_map": { "pains": ["string"], "desires": ["string"], "objections": ["string"], "relatable_refs": ["string"], "key_emotion": "string" },
+  "niche_strategy": { "pillars": ["string"], "trust_triggers": ["string"], "visuals": ["string"], "niche_hooks": ["string"], "seasonal_moments": ["string"], "common_mistakes": ["string"], "cautions": ["string"] },
+  "hook_analysis": ["<hook analysis item>"],
+  "scripts": ["<script object>"],
+  "testing_plan": { "post_first": [ { "script_id": "string", "reason": "string" } ], "ab_hooks": ["string", "string", "string"], "metrics": "string", "if_flops": "string", "if_works": "string", "posting_frequency": "string", "next_seasonal_moment": "string" }
+}

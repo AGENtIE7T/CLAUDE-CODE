@@ -1,0 +1,17 @@
+{
+  "scores": [
+    {
+      "script_id": "s1",
+      "breakdown": { "hook": 0, "retention": 0, "niche_fit": 0, "relatability": 0, "emotion": 0, "share_save": 0, "cta": 0 },
+      "justifications": { "hook": "string", "retention": "string", "niche_fit": "string", "relatability": "string", "emotion": "string", "share_save": "string", "cta": "string" },
+      "total": 0,
+      "violations": ["string"],
+      "rewritten": false
+    }
+  ],
+  "rewritten_scripts": ["<full script object, same schema as generator scripts, same id as the one it replaces>"],
+  "ranking": ["s2", "s1", "s3"],
+  "weakest_note": "string",
+  "similarity_flags": ["string"],
+  "honesty_note": "Scores estimate potential. They do not guarantee views."
+}

@@ -1,0 +1,437 @@
+{
+  "niches": [
+    {
+      "id": "salon",
+      "label": "Salon / Beauty / Makeup",
+      "mode": "B2C",
+      "pillars": [
+        "transformations",
+        "process close-ups",
+        "myth-busting",
+        "client reactions",
+        "price reveals"
+      ],
+      "trust_triggers": [
+        "real clients",
+        "hygiene on camera",
+        "product brands visible",
+        "artist's experience"
+      ],
+      "visuals": [
+        "before/after split",
+        "slow-mo hair flip",
+        "mirror reveal",
+        "technique close-up"
+      ],
+      "peaks": [
+        "wedding season",
+        "Karwa Chauth",
+        "Diwali",
+        "Teej",
+        "Eid"
+      ],
+      "mistakes": [
+        "only final looks, no process",
+        "heavy filters that kill trust"
+      ],
+      "cautions": [
+        "no \"permanent\", \"guaranteed\" or medical skin-treatment claims"
+      ]
+    },
+    {
+      "id": "restaurant",
+      "label": "Restaurant / Cafe / Cloud Kitchen / Street Food",
+      "mode": "B2C",
+      "pillars": [
+        "cooking process",
+        "sizzle/cheese-pull moments",
+        "portion reveals",
+        "owner's story",
+        "price-value shock"
+      ],
+      "trust_triggers": [
+        "kitchen hygiene",
+        "fresh ingredients",
+        "queues",
+        "repeat customers"
+      ],
+      "visuals": [
+        "overhead plating",
+        "sizzle close-ups",
+        "first-bite reactions",
+        "slow pours"
+      ],
+      "peaks": [
+        "monsoon",
+        "winter specials",
+        "festivals",
+        "cricket season",
+        "weekends"
+      ],
+      "mistakes": [
+        "dark lighting",
+        "showing the menu instead of food",
+        "hiding price"
+      ],
+      "cautions": [
+        "no health-benefit claims without basis"
+      ]
+    },
+    {
+      "id": "gym",
+      "label": "Gym / Fitness / Yoga",
+      "mode": "B2C",
+      "pillars": [
+        "member progress",
+        "form correction",
+        "myth-busting",
+        "trainer personality",
+        "day-in-the-gym"
+      ],
+      "trust_triggers": [
+        "certified trainers",
+        "real member progress with consent",
+        "equipment quality"
+      ],
+      "visuals": [
+        "rep close-ups",
+        "wrong-vs-right form",
+        "group class energy"
+      ],
+      "peaks": [
+        "January",
+        "post-Diwali",
+        "pre-wedding season",
+        "summer"
+      ],
+      "mistakes": [
+        "only very muscular people on screen, which scares beginners"
+      ],
+      "cautions": [
+        "no guaranteed weight-loss numbers or timelines",
+        "no supplement or medical claims"
+      ]
+    },
+    {
+      "id": "clinic",
+      "label": "Clinic / Dental / Physio / Diagnostics",
+      "mode": "B2C",
+      "pillars": [
+        "patient education",
+        "myth-busting",
+        "\"what happens during X\"",
+        "doctor Q&A",
+        "clinic tour"
+      ],
+      "trust_triggers": [
+        "qualifications",
+        "clean equipment",
+        "calm environment",
+        "clear pricing"
+      ],
+      "visuals": [
+        "doctor to camera",
+        "model/diagram explanations",
+        "clinic walkthrough"
+      ],
+      "peaks": [
+        "health awareness days",
+        "seasonal illness periods",
+        "school vacations"
+      ],
+      "mistakes": [
+        "jargon",
+        "fear-based content that feels predatory"
+      ],
+      "cautions": [
+        "STRICT. No cure claims",
+        "no patient before/after without consent",
+        "no diagnosis on video",
+        "follow medical advertising norms",
+        "add \"consult a doctor\" where relevant"
+      ]
+    },
+    {
+      "id": "coaching",
+      "label": "Coaching / Education / Tuition",
+      "mode": "B2C",
+      "pillars": [
+        "quick tips",
+        "student success stories",
+        "common mistakes",
+        "teacher personality",
+        "exam strategy"
+      ],
+      "trust_triggers": [
+        "verifiable results",
+        "teaching shown on camera",
+        "batch size",
+        "parent voices"
+      ],
+      "visuals": [
+        "whiteboard explanations",
+        "student reactions",
+        "teacher talking head with text"
+      ],
+      "peaks": [
+        "pre-board exams",
+        "result season",
+        "admission season"
+      ],
+      "mistakes": [
+        "only result banners, no teaching shown"
+      ],
+      "cautions": [
+        "no guaranteed ranks or marks",
+        "no fake topper claims"
+      ]
+    },
+    {
+      "id": "real_estate",
+      "label": "Real Estate / PG / Rentals",
+      "mode": "B2C",
+      "pillars": [
+        "property tours",
+        "area guides",
+        "price breakdowns",
+        "\"what ₹X gets you in [area]\"",
+        "red flags to check"
+      ],
+      "trust_triggers": [
+        "real walkthroughs",
+        "transparent pricing",
+        "local knowledge"
+      ],
+      "visuals": [
+        "POV walkthrough",
+        "balcony/view reveal",
+        "neighbourhood b-roll"
+      ],
+      "peaks": [
+        "Navratri/Diwali for buying",
+        "admission and job-joining months for rentals"
+      ],
+      "mistakes": [
+        "static photos only",
+        "hiding price"
+      ],
+      "cautions": [
+        "no guaranteed-returns claims",
+        "show RERA details where applicable"
+      ]
+    },
+    {
+      "id": "wholesale",
+      "label": "Wholesale / B2B / Manufacturing",
+      "mode": "B2B",
+      "pillars": [
+        "durability tests",
+        "warehouse/factory tours",
+        "how it's made",
+        "bulk dispatch",
+        "finished client installations"
+      ],
+      "trust_triggers": [
+        "years in business",
+        "big orders dispatched",
+        "material quality up close",
+        "GST billing professionalism"
+      ],
+      "visuals": [
+        "stacked inventory",
+        "loading trucks",
+        "stress tests",
+        "finished setups at client sites"
+      ],
+      "peaks": [
+        "new business opening season",
+        "wedding/catering season",
+        "financial year-end purchasing"
+      ],
+      "mistakes": [
+        "assuming B2B can't do reels",
+        "catalogue photos only"
+      ],
+      "cautions": [
+        "no false material grade or certification claims"
+      ]
+    },
+    {
+      "id": "fashion",
+      "label": "Fashion / Boutique / Ethnic Wear",
+      "mode": "B2C",
+      "pillars": [
+        "styling ideas",
+        "try-ons",
+        "fabric close-ups",
+        "one outfit 3 ways",
+        "new arrivals"
+      ],
+      "trust_triggers": [
+        "fabric in daylight",
+        "honest pricing",
+        "real customer try-ons"
+      ],
+      "visuals": [
+        "outfit transitions",
+        "twirls",
+        "texture close-ups"
+      ],
+      "peaks": [
+        "wedding season",
+        "Diwali",
+        "Eid",
+        "Navratri",
+        "Raksha Bandhan",
+        "sale seasons"
+      ],
+      "mistakes": [
+        "flat-lays only",
+        "ignoring sizes beyond small"
+      ],
+      "cautions": [
+        "no \"original designer\" claims for replicas"
+      ]
+    },
+    {
+      "id": "home_services",
+      "label": "Home Services (AC, plumbing, electrician, pest control, cleaning)",
+      "mode": "B2C",
+      "pillars": [
+        "problem-solution",
+        "\"signs you need X\"",
+        "small safe tips",
+        "dirty-to-clean reveals",
+        "cost explainers"
+      ],
+      "trust_triggers": [
+        "uniformed staff",
+        "transparent pricing",
+        "quick response",
+        "verified technicians"
+      ],
+      "visuals": [
+        "before/after cleaning",
+        "fault close-ups",
+        "timelapse"
+      ],
+      "peaks": [
+        "summer for AC",
+        "monsoon for plumbing and pests",
+        "pre-Diwali deep cleaning"
+      ],
+      "mistakes": [
+        "no face so no trust",
+        "overly technical language"
+      ],
+      "cautions": [
+        "no unsafe DIY instructions, especially electrical or gas"
+      ]
+    },
+    {
+      "id": "sweets",
+      "label": "Sweets / Bakery / Dairy",
+      "mode": "B2C",
+      "pillars": [
+        "making process",
+        "festive specials",
+        "purity checks",
+        "family legacy",
+        "gift box reveals"
+      ],
+      "trust_triggers": [
+        "purity",
+        "legacy years",
+        "hygiene"
+      ],
+      "visuals": [
+        "syrup pours",
+        "ghee close-ups",
+        "cake cutting",
+        "box packing"
+      ],
+      "peaks": [
+        "every festival",
+        "birthdays",
+        "weddings"
+      ],
+      "mistakes": [
+        "posting only during festivals"
+      ],
+      "cautions": [
+        "no \"100% pure\" claims without basis"
+      ]
+    },
+    {
+      "id": "auto",
+      "label": "Auto / Garage / Car Care",
+      "mode": "B2C",
+      "pillars": [
+        "detailing before/after",
+        "\"your car is telling you this\"",
+        "cost-saving tips",
+        "repair process"
+      ],
+      "trust_triggers": [
+        "transparent diagnosis",
+        "genuine parts shown",
+        "experienced mechanic"
+      ],
+      "visuals": [
+        "foam wash",
+        "coating shine",
+        "engine bay before/after"
+      ],
+      "peaks": [
+        "pre-monsoon",
+        "road-trip seasons",
+        "festive car purchases"
+      ],
+      "mistakes": [
+        "only luxury cars, which alienates regular customers"
+      ],
+      "cautions": [
+        "no safety-risk DIY advice"
+      ]
+    },
+    {
+      "id": "jewellery",
+      "label": "Jewellery",
+      "mode": "B2C",
+      "pillars": [
+        "craftsmanship close-ups",
+        "bridal sets",
+        "how to check purity",
+        "trend pieces",
+        "heirloom stories"
+      ],
+      "trust_triggers": [
+        "hallmarking shown",
+        "transparent making charges",
+        "family legacy"
+      ],
+      "visuals": [
+        "macro shots",
+        "rotating pieces in light",
+        "try-on reveals"
+      ],
+      "peaks": [
+        "Akshaya Tritiya",
+        "Dhanteras",
+        "wedding season"
+      ],
+      "mistakes": [
+        "dark or yellow lighting",
+        "no price range anywhere"
+      ],
+      "cautions": [
+        "no false purity or investment-return claims"
+      ]
+    }
+  ],
+  "other": {
+    "id": "other",
+    "label": "Other",
+    "instruction": "No preset playbook. Build a custom playbook with the same fields (pillars, trust_triggers, visuals, peaks, mistakes, cautions) based on how customers in this niche actually decide to buy, then use it for niche_strategy."
+  }
+}
