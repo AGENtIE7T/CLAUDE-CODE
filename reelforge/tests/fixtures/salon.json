@@ -1,0 +1,19 @@
+{
+  "business_name": "Glam Studio by Neha",
+  "niche": "salon",
+  "custom_niche": "",
+  "sub_niche": "neighbourhood beauty parlour doing festive and party makeup",
+  "city": "Gurugram",
+  "area": "Sector 56",
+  "target_customer": "women 22-40, working professionals and young mothers, mid income, care about looking good in photos without spending bridal-level money",
+  "offer": "Festive / party makeup + hairstyling package",
+  "usp": "owner does every makeup herself, 10+ years experience, uses branded products only",
+  "on_camera": "owner",
+  "language": "hinglish",
+  "tones": ["emotional", "raw/desi"],
+  "festival": "Diwali and wedding party season",
+  "avoid": "no before/after with heavy filters",
+  "reference_hooks": [],
+  "script_count": 3,
+  "b2b": false
+}

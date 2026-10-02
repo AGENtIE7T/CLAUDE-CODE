@@ -1,0 +1,19 @@
+{
+  "business_name": "Iron Den Fitness",
+  "niche": "gym",
+  "custom_niche": "",
+  "sub_niche": "budget gym near a college",
+  "city": "Greater Noida",
+  "area": "Knowledge Park",
+  "target_customer": "college students 18-25, boys and girls, low budget, first-time gym goers, care about looking fit and not getting judged",
+  "offer": "3-month student membership at a discounted price",
+  "usp": "trainer gives free form correction to every beginner; open till 11pm",
+  "on_camera": "staff",
+  "language": "hinglish",
+  "tones": ["funny", "educational"],
+  "festival": "new semester start",
+  "avoid": "no shirtless bodybuilder shots",
+  "reference_hooks": [],
+  "script_count": 3,
+  "b2b": false
+}

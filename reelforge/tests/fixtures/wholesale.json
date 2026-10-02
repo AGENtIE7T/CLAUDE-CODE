@@ -1,0 +1,19 @@
+{
+  "business_name": "Bansal Kitchen Equipments",
+  "niche": "wholesale",
+  "custom_niche": "",
+  "sub_niche": "commercial kitchen equipment wholesaler (SS tandoors, burners, sinks, chillers) for restaurants and caterers",
+  "city": "Gurugram",
+  "area": "Sector 37 industrial area",
+  "target_customer": "restaurant, cloud kitchen and catering owners across Delhi NCR; care about durability, downtime, gas efficiency and GST billing",
+  "offer": "Bulk order pricing on complete kitchen setups",
+  "usp": "in-house fabrication so custom sizes in 5-7 days, GST billing, delivery across NCR",
+  "on_camera": "faceless",
+  "language": "hinglish",
+  "tones": ["educational", "raw/desi"],
+  "festival": "wedding and catering season",
+  "avoid": "",
+  "reference_hooks": ["Restaurant kholne se pehle ye dekh lo", "Ye tandoor 10 saal chalega"],
+  "script_count": 3,
+  "b2b": true
+}

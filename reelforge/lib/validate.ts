@@ -71,7 +71,8 @@ const CTA_CATEGORIES: Record<string, RegExp> = {
   save: /\bsave\b/i,
   share: /\b(share|bhejo|tag)\b/i,
   contact: /\b(dm|whatsapp|call|message|msg|enquir\w*|inquir\w*|quote|contact|phone|number)\b/i,
-  visit: /\b(visit|aao|aaiye|book|booking|link in bio|bio|walk[- ]?in|order)\b/i,
+  // "book"/"order" are usually the purpose ("DM karo booking ke liye"), not a second action.
+  visit: /\b(visit|aao|aaiye|link in bio|walk[- ]?in)\b/i,
 };
 
 export function ctaCategories(text: string): string[] {
