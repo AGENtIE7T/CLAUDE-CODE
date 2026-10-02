@@ -57,6 +57,8 @@ export function friendlyError(e: unknown, rid: string, route: string): { message
   if (e instanceof Anthropic.AuthenticationError) return { message: "The server's Anthropic API key is invalid.", status: 500 };
   if (e instanceof Anthropic.RateLimitError) return { message: "The AI service is busy right now. Wait a minute and try again.", status: 429 };
   if (e instanceof Anthropic.NotFoundError) return { message: "That model name wasn't found. Check Settings → Model.", status: 400 };
+  if (e instanceof Anthropic.BadRequestError && /credit balance/i.test(e.message))
+    return { message: "The Anthropic account behind this server is out of credits. Add credits in the Anthropic Console (Plans & Billing) and try again.", status: 402 };
   if (e instanceof Anthropic.BadRequestError) return { message: "The AI service rejected the request. Check the model name in Settings.", status: 400 };
   if (e instanceof Anthropic.APIError) return { message: "The AI service had a problem. Please try again.", status: 502 };
   return { message: "Something went wrong on our side. Please try again.", status: 500 };

@@ -89,7 +89,7 @@ async function main() {
         rewritten: 0,
         seconds: Math.round((Date.now() - t0) / 1000),
         cost: "-",
-        note: (e as Error).message.slice(0, 120),
+        note: /credit balance/i.test((e as Error).message) ? "Anthropic account is out of credits (Plans & Billing)." : (e as Error).message.slice(0, 120),
       });
     }
   }
