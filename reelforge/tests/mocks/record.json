@@ -1,0 +1,460 @@
+{
+  "id": "g_mock_salon",
+  "created_at": "2026-10-01T10:00:00.000Z",
+  "prompt_version": "2026-10-02.1",
+  "model": "claude-sonnet-5-5",
+  "inputs": {
+    "business_name": "Glam Studio by Neha",
+    "niche": "salon",
+    "custom_niche": "",
+    "sub_niche": "neighbourhood beauty parlour doing festive and party makeup",
+    "city": "Gurugram",
+    "area": "Sector 56",
+    "target_customer": "women 22-40, working professionals and young mothers, mid income, care about looking good in photos without spending bridal-level money",
+    "offer": "Festive / party makeup + hairstyling package",
+    "usp": "owner does every makeup herself, 10+ years experience, uses branded products only",
+    "on_camera": "owner",
+    "language": "hinglish",
+    "tones": [
+      "emotional",
+      "raw/desi"
+    ],
+    "festival": "Diwali and wedding party season",
+    "avoid": "no before/after with heavy filters",
+    "reference_hooks": [],
+    "script_count": 3,
+    "b2b": false
+  },
+  "mode": "B2C",
+  "used_past_performance": false,
+  "output": {
+    "assumptions": [
+      "Price not given, so [INSERT REAL PRICE] is used",
+      "Owner is comfortable talking to camera"
+    ],
+    "audience_map": {
+      "pains": [
+        "Photos look dull",
+        "Bridal-level prices",
+        "Makeup cracks by evening"
+      ],
+      "desires": [
+        "Look good in photos",
+        "Quick, affordable"
+      ],
+      "objections": [
+        "Too expensive",
+        "Will it look natural?"
+      ],
+      "relatable_refs": [
+        "Sector 56 society Diwali party",
+        "Office Diwali lunch",
+        "Galleria market shopping"
+      ],
+      "key_emotion": "Excitement"
+    },
+    "niche_strategy": {
+      "pillars": [
+        "process close-ups",
+        "myth-busting",
+        "price reveals"
+      ],
+      "trust_triggers": [
+        "branded products visible",
+        "owner's 10+ years"
+      ],
+      "visuals": [
+        "split face",
+        "mirror reveal"
+      ],
+      "niche_hooks": [
+        "Diwali party mein sabse pehle photo kiski?",
+        "Heavy makeup = party makeup? Nahi.",
+        "Ek chair, hair + makeup"
+      ],
+      "seasonal_moments": [
+        "Diwali",
+        "wedding party season"
+      ],
+      "common_mistakes": [
+        "only final looks"
+      ],
+      "cautions": [
+        "no 'permanent' claims"
+      ]
+    },
+    "hook_analysis": [],
+    "scripts": [
+      {
+        "id": "s1",
+        "title": "Ek aankh ready, ek nahi",
+        "hook_type": "Before/after",
+        "content_pillar": "process close-ups",
+        "emotion": "curiosity",
+        "length_sec": 30,
+        "on_camera": "owner",
+        "hook": {
+          "visual": "Half-done face in the salon mirror, one eye glam, one eye bare",
+          "on_screen_text": "Ek aankh Diwali ready, ek nahi",
+          "spoken": "Ek aankh Diwali ready hai. Doosri dekho."
+        },
+        "beats": [
+          {
+            "start": 2,
+            "end": 8,
+            "visual": "Close-up: skin prep with branded primer",
+            "spoken": "Pehle prep. Bina iske base crack hota hai photo mein.",
+            "on_screen_text": "Step 1: prep"
+          },
+          {
+            "start": 8,
+            "end": 15,
+            "visual": "Soft glam eye blending",
+            "spoken": "Soft glam eyes, jo flash mein bhi natural lagein.",
+            "on_screen_text": "Step 2: eyes"
+          },
+          {
+            "start": 15,
+            "end": 24,
+            "visual": "Hair styling quick cuts",
+            "spoken": "Hair aur makeup, ek hi chair pe.",
+            "on_screen_text": "Hair included"
+          },
+          {
+            "start": 24,
+            "end": 30,
+            "visual": "Mirror reveal, client smiles",
+            "spoken": "Ye raha final look.",
+            "on_screen_text": "[INSERT REAL PRICE]"
+          }
+        ],
+        "payoff": "Full festive look revealed in the mirror",
+        "cta": {
+          "spoken": "Diwali slot ke liye DM karo 'GLOW'.",
+          "on_screen_text": "DM 'GLOW'"
+        },
+        "shooting": {
+          "location": "Salon chair near the window",
+          "props": [
+            "ring light",
+            "branded kit",
+            "mirror"
+          ],
+          "phone_setup": "Tripod at eye level, back camera, 1080p 30fps",
+          "broll": [
+            "brush strokes",
+            "product labels",
+            "hair spray mist",
+            "client smile"
+          ],
+          "editing_tip": "Cut on every brush stroke; no beauty filter"
+        },
+        "audio": "Trending soft desi beat under voiceover. Pick a currently trending audio inside Instagram.",
+        "caption": "Ek aankh ready, ek nahi... farak dikh raha? Is Diwali aap kaunsa look try karogi?",
+        "hashtags": [
+          "#makeup",
+          "#diwali",
+          "#partymakeup",
+          "#festivemakeup",
+          "#makeupartist",
+          "#gurugrammakeup",
+          "#sector56"
+        ],
+        "why_it_works": "Split-face first frame creates instant contrast and curiosity.",
+        "biggest_risk": "If the bare side looks too bad, it may feel like shaming.",
+        "reel_summary": "The owner finishes a half-done festive look live in the mirror. It's for working women in Sector 56 who want party-ready makeup without bridal prices. They're left feeling it's doable and affordable. We want them to DM for a Diwali slot."
+      },
+      {
+        "id": "s2",
+        "title": "Filter wala makeup vs asli",
+        "hook_type": "Myth-bust",
+        "content_pillar": "myth-busting",
+        "emotion": "confidence",
+        "length_sec": 30,
+        "on_camera": "owner",
+        "hook": {
+          "visual": "Half-done face in the salon mirror, one eye glam, one eye bare",
+          "on_screen_text": "Ek aankh Diwali ready, ek nahi",
+          "spoken": "Sabko lagta hai party makeup matlab heavy. Nahi."
+        },
+        "beats": [
+          {
+            "start": 2,
+            "end": 8,
+            "visual": "Close-up: skin prep with branded primer",
+            "spoken": "Pehle prep. Bina iske base crack hota hai photo mein.",
+            "on_screen_text": "Step 1: prep"
+          },
+          {
+            "start": 8,
+            "end": 15,
+            "visual": "Soft glam eye blending",
+            "spoken": "Soft glam eyes, jo flash mein bhi natural lagein.",
+            "on_screen_text": "Step 2: eyes"
+          },
+          {
+            "start": 15,
+            "end": 24,
+            "visual": "Hair styling quick cuts",
+            "spoken": "Hair aur makeup, ek hi chair pe.",
+            "on_screen_text": "Hair included"
+          },
+          {
+            "start": 24,
+            "end": 30,
+            "visual": "Mirror reveal, client smiles",
+            "spoken": "Ye raha final look.",
+            "on_screen_text": "[INSERT REAL PRICE]"
+          }
+        ],
+        "payoff": "Full festive look revealed in the mirror",
+        "cta": {
+          "spoken": "Diwali slot ke liye DM karo 'GLOW'.",
+          "on_screen_text": "DM 'GLOW'"
+        },
+        "shooting": {
+          "location": "Salon chair near the window",
+          "props": [
+            "ring light",
+            "branded kit",
+            "mirror"
+          ],
+          "phone_setup": "Tripod at eye level, back camera, 1080p 30fps",
+          "broll": [
+            "brush strokes",
+            "product labels",
+            "hair spray mist",
+            "client smile"
+          ],
+          "editing_tip": "Cut on every brush stroke; no beauty filter"
+        },
+        "audio": "Trending soft desi beat under voiceover. Pick a currently trending audio inside Instagram.",
+        "caption": "Ek aankh ready, ek nahi... farak dikh raha? Is Diwali aap kaunsa look try karogi?",
+        "hashtags": [
+          "#makeup",
+          "#diwali",
+          "#partymakeup",
+          "#festivemakeup",
+          "#makeupartist",
+          "#gurugrammakeup",
+          "#sector56"
+        ],
+        "why_it_works": "Split-face first frame creates instant contrast and curiosity.",
+        "biggest_risk": "If the bare side looks too bad, it may feel like shaming.",
+        "reel_summary": "The owner finishes a half-done festive look live in the mirror. It's for working women in Sector 56 who want party-ready makeup without bridal prices. They're left feeling it's doable and affordable. We want them to DM for a Diwali slot."
+      },
+      {
+        "id": "s3",
+        "title": "Price reveal",
+        "hook_type": "Price shock",
+        "content_pillar": "price reveals",
+        "emotion": "surprise",
+        "length_sec": 30,
+        "on_camera": "owner",
+        "hook": {
+          "visual": "Half-done face in the salon mirror, one eye glam, one eye bare",
+          "on_screen_text": "Ek aankh Diwali ready, ek nahi",
+          "spoken": "Ye pura look, hair ke saath? Price sunke chaunkogi."
+        },
+        "beats": [
+          {
+            "start": 2,
+            "end": 8,
+            "visual": "Close-up: skin prep with branded primer",
+            "spoken": "Pehle prep. Bina iske base crack hota hai photo mein.",
+            "on_screen_text": "Step 1: prep"
+          },
+          {
+            "start": 8,
+            "end": 15,
+            "visual": "Soft glam eye blending",
+            "spoken": "Soft glam eyes, jo flash mein bhi natural lagein.",
+            "on_screen_text": "Step 2: eyes"
+          },
+          {
+            "start": 15,
+            "end": 24,
+            "visual": "Hair styling quick cuts",
+            "spoken": "Hair aur makeup, ek hi chair pe.",
+            "on_screen_text": "Hair included"
+          },
+          {
+            "start": 24,
+            "end": 30,
+            "visual": "Mirror reveal, client smiles",
+            "spoken": "Ye raha final look.",
+            "on_screen_text": "[INSERT REAL PRICE]"
+          }
+        ],
+        "payoff": "Full festive look revealed in the mirror",
+        "cta": {
+          "spoken": "Diwali slot ke liye DM karo 'GLOW'.",
+          "on_screen_text": "DM 'GLOW'"
+        },
+        "shooting": {
+          "location": "Salon chair near the window",
+          "props": [
+            "ring light",
+            "branded kit",
+            "mirror"
+          ],
+          "phone_setup": "Tripod at eye level, back camera, 1080p 30fps",
+          "broll": [
+            "brush strokes",
+            "product labels",
+            "hair spray mist",
+            "client smile"
+          ],
+          "editing_tip": "Cut on every brush stroke; no beauty filter"
+        },
+        "audio": "Trending soft desi beat under voiceover. Pick a currently trending audio inside Instagram.",
+        "caption": "Ek aankh ready, ek nahi... farak dikh raha? Is Diwali aap kaunsa look try karogi?",
+        "hashtags": [
+          "#makeup",
+          "#diwali",
+          "#partymakeup",
+          "#festivemakeup",
+          "#makeupartist",
+          "#gurugrammakeup",
+          "#sector56"
+        ],
+        "why_it_works": "Split-face first frame creates instant contrast and curiosity.",
+        "biggest_risk": "If the bare side looks too bad, it may feel like shaming.",
+        "reel_summary": "The owner finishes a half-done festive look live in the mirror. It's for working women in Sector 56 who want party-ready makeup without bridal prices. They're left feeling it's doable and affordable. We want them to DM for a Diwali slot."
+      }
+    ],
+    "testing_plan": {
+      "post_first": [
+        {
+          "script_id": "s1",
+          "reason": "Strongest hook"
+        },
+        {
+          "script_id": "s2",
+          "reason": "Different pillar"
+        }
+      ],
+      "ab_hooks": [
+        "Ye side 10 minute pehle",
+        "Guess karo kaunsi side meri hai",
+        "Diwali se pehle vs baad"
+      ],
+      "metrics": "Watch 3s hold for the hook, avg watch % for body, DMs for the offer.",
+      "if_flops": "Change the first frame.",
+      "if_works": "Do a series with different clients.",
+      "posting_frequency": "3 reels a week",
+      "next_seasonal_moment": "Wedding season"
+    }
+  },
+  "critic": {
+    "scores": [
+      {
+        "script_id": "s1",
+        "breakdown": {
+          "hook": 17,
+          "retention": 15,
+          "niche_fit": 12,
+          "relatability": 11,
+          "emotion": 8,
+          "share_save": 7,
+          "cta": 8
+        },
+        "justifications": {
+          "hook": "Split face is a strong pattern interrupt.",
+          "retention": "Steps keep it moving.",
+          "niche_fit": "Process close-ups are a proven pillar.",
+          "relatability": "Mentions Sector 56.",
+          "emotion": "Clear excitement.",
+          "share_save": "Moderately saveable.",
+          "cta": "Single DM ask."
+        },
+        "total": 78,
+        "violations": [],
+        "rewritten": false
+      },
+      {
+        "script_id": "s2",
+        "breakdown": {
+          "hook": 13,
+          "retention": 13,
+          "niche_fit": 11,
+          "relatability": 10,
+          "emotion": 7,
+          "share_save": 6,
+          "cta": 7
+        },
+        "justifications": {
+          "hook": "Split face is a strong pattern interrupt.",
+          "retention": "Steps keep it moving.",
+          "niche_fit": "Process close-ups are a proven pillar.",
+          "relatability": "Mentions Sector 56.",
+          "emotion": "Clear excitement.",
+          "share_save": "Moderately saveable.",
+          "cta": "Single DM ask."
+        },
+        "total": 67,
+        "violations": [
+          "Generic: could be any salon"
+        ],
+        "rewritten": true
+      },
+      {
+        "script_id": "s3",
+        "breakdown": {
+          "hook": 10,
+          "retention": 11,
+          "niche_fit": 9,
+          "relatability": 9,
+          "emotion": 6,
+          "share_save": 5,
+          "cta": 6
+        },
+        "justifications": {
+          "hook": "Split face is a strong pattern interrupt.",
+          "retention": "Steps keep it moving.",
+          "niche_fit": "Process close-ups are a proven pillar.",
+          "relatability": "Mentions Sector 56.",
+          "emotion": "Clear excitement.",
+          "share_save": "Moderately saveable.",
+          "cta": "Single DM ask."
+        },
+        "total": 56,
+        "violations": [
+          "Hook promise (price) not paid off with a real number"
+        ],
+        "rewritten": false
+      }
+    ],
+    "rewritten_scripts": [],
+    "ranking": [
+      "s1",
+      "s2",
+      "s3"
+    ],
+    "weakest_note": "s3 teases a price but never shows one.",
+    "similarity_flags": [],
+    "honesty_note": "Scores estimate potential. They do not guarantee views."
+  },
+  "checks": {
+    "initial": [
+      {
+        "script_id": "s2",
+        "check": "spoken_words",
+        "message": "80 spoken words for a 30s reel (max 75)."
+      }
+    ],
+    "final": [
+      {
+        "script_id": "s3",
+        "check": "hashtag_count",
+        "message": "5 hashtags; needs 6-8."
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 21400,
+    "output_tokens": 14800,
+    "calls": 2,
+    "cost_usd": 0.191
+  }
+}
