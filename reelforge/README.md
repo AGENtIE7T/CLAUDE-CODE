@@ -19,6 +19,22 @@ npm run dev                     # http://localhost:3000
 
 Without an API key the UI still loads and every screen works with stored data. Generation shows a clear "Server is missing ANTHROPIC_API_KEY" error.
 
+## No-API-key version (Claude artifact)
+
+`artifact/` builds the same app as a single page that runs inside claude.ai and calls Claude on **your own Claude account**, with no Anthropic API key and no server.
+
+```bash
+node artifact/build.mjs     # -> artifact/reelforge.html
+```
+
+`build.mjs` copies in the same `lib/prompts/*.md`, schemas, `niches.json` and `PROMPT_VERSION`, so prompt edits apply to both versions. The page reimplements the checks, critic merge, stats and exporters in plain JS (ported from `lib/validate.ts`, `lib/stats.ts` and `lib/format.ts`).
+
+Differences from the Next.js app:
+- No token or cost footer. Usage counts against your Claude plan, and the page shows how many Claude calls were made (and how many JSON retries).
+- Model choice is a tier ("Balanced" or "Most capable"), not a model id.
+- Files are saved through Claude's download prompt. If that's unavailable, the text is shown for copy-paste.
+- Data lives in that artifact's browser storage, so export from Settings regularly.
+
 ## Environment variables
 
 | Variable | Required | Default | What it does |

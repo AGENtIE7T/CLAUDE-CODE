@@ -1,0 +1,983 @@
+<title>ReelForge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: one narrow phone-first column; a dark "clapperboard" hook slate is the one loud element per script. */
+:root {
+  --bg: #f7f5f6; --surface: #ffffff; --surface-2: #f0ecee; --line: #e3dde0;
+  --fg: #19151a; --fg-soft: #5d5560; --fg-faint: #918893;
+  --accent: #e8285a; --accent-ink: #ffffff; --accent-soft: #fde7ed;
+  --slate: #17121a; --slate-fg: #fbf7f9; --slate-soft: rgba(255,255,255,.1);
+  --good: #0f8a5f; --good-soft: #e3f5ec; --warn: #b36b00; --warn-soft: #fff3dc; --bad: #c62a32; --bad-soft: #fde8e8;
+  --font-display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --font-body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --r: 14px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f0c10; --surface: #19151b; --surface-2: #231e25; --line: #2f2931;
+  --fg: #f4eff3; --fg-soft: #b6acb5; --fg-faint: #7c727c;
+  --accent: #ff4d7a; --accent-ink: #1a0910; --accent-soft: #3a1622;
+  --slate: #050406; --slate-fg: #fbf7f9; --slate-soft: rgba(255,255,255,.08);
+  --good: #3ccf91; --good-soft: #0f2a1f; --warn: #f2b14a; --warn-soft: #2e2210; --bad: #ff6b6b; --bad-soft: #321417;
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0f0c10; --surface: #19151b; --surface-2: #231e25; --line: #2f2931;
+  --fg: #f4eff3; --fg-soft: #b6acb5; --fg-faint: #7c727c;
+  --accent: #ff4d7a; --accent-ink: #1a0910; --accent-soft: #3a1622;
+  --slate: #050406; --slate-fg: #fbf7f9; --slate-soft: rgba(255,255,255,.08);
+  --good: #3ccf91; --good-soft: #0f2a1f; --warn: #f2b14a; --warn-soft: #2e2210; --bad: #ff6b6b; --bad-soft: #321417;
+  color-scheme: dark; }
+
+* { box-sizing: border-box; }
+html, body { overflow-x: hidden; }
+body { background: var(--bg); color: var(--fg); font: 15px/1.5 var(--font-body); margin: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.top-in { max-width: 760px; margin: 0 auto; padding-inline: 16px; height: 54px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.brand { font: 900 26px/1 var(--font-display); letter-spacing: .02em; text-transform: uppercase; }
+.brand b { color: var(--accent); }
+.tabs-top { display: none; gap: 4px; }
+.tab { border: 0; background: none; padding: 8px 12px; border-radius: 10px; font-weight: 600; cursor: pointer; color: var(--fg-soft); }
+.tab[aria-current="page"] { background: var(--accent); color: var(--accent-ink); }
+.tabs-bottom { position: fixed; inset: auto 0 0 0; z-index: 20; display: grid; grid-template-columns: repeat(4, 1fr); background: var(--surface); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.tabs-bottom .tab { border-radius: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 11px; padding: 9px 4px 10px; min-height: 56px; }
+.tabs-bottom .tab[aria-current="page"] { background: none; color: var(--accent); }
+.tabs-bottom svg { width: 20px; height: 20px; }
+@media (min-width: 640px) { .tabs-top { display: flex; } .tabs-bottom { display: none; } main { padding-bottom: 48px !important; } }
+
+main { max-width: 760px; margin: 0 auto; padding: 18px 16px 110px; display: grid; gap: 14px; }
+.stack { display: grid; gap: 14px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; display: grid; gap: 12px; min-width: 0; }
+.h1 { font: 800 clamp(30px, 8vw, 42px)/1 var(--font-display); text-transform: uppercase; letter-spacing: .01em; }
+.h2 { font-size: 17px; font-weight: 700; }
+.sub { color: var(--fg-soft); font-size: 14px; margin: 4px 0 0; max-width: 62ch; }
+.eyebrow { font: 700 11px/1 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--fg-faint); }
+.hint { font-size: 12px; color: var(--fg-faint); margin: 0; }
+.muted { color: var(--fg-soft); }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.grid2 { display: grid; gap: 12px; grid-template-columns: 1fr; }
+@media (min-width: 560px) { .grid2 { grid-template-columns: 1fr 1fr; } }
+.grid-btn { display: grid; gap: 8px; grid-template-columns: 1fr 1fr; }
+@media (min-width: 560px) { .grid-btn.four { grid-template-columns: repeat(4, 1fr); } }
+
+label.lab, .lab { display: block; font-size: 13px; font-weight: 700; margin-bottom: 5px; color: var(--fg-soft); }
+.req { color: var(--accent); }
+.input { width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: 11px; padding: 10px 12px; font-size: 16px; min-height: 44px; }
+.input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px var(--accent-soft); }
+textarea.input { min-height: 88px; resize: vertical; }
+.err { color: var(--bad); font-size: 12px; font-weight: 700; margin: 4px 0 0; }
+.check { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; }
+.check input { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--accent); }
+.boxed { background: var(--surface-2); border-radius: 11px; padding: 12px; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 9px 16px; border-radius: 11px; border: 1px solid var(--line); background: var(--surface); font-weight: 700; font-size: 14px; cursor: pointer; text-decoration: none; color: var(--fg); }
+.btn:hover { background: var(--surface-2); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.primary:hover { filter: brightness(1.06); }
+.btn.danger { color: var(--bad); border-color: color-mix(in srgb, var(--bad) 40%, var(--line)); }
+.btn.small { min-height: 34px; padding: 5px 11px; font-size: 13px; }
+.btn.block { width: 100%; }
+.seg { display: inline-flex; padding: 3px; border: 1px solid var(--line); border-radius: 11px; gap: 2px; flex-wrap: wrap; }
+.seg button { border: 0; background: none; padding: 7px 12px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; text-transform: capitalize; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.pill { display: inline-flex; align-items: center; border-radius: 999px; padding: 4px 10px; font-size: 12px; font-weight: 600; background: var(--surface-2); color: var(--fg-soft); }
+.pill.rw { background: var(--accent-soft); color: var(--accent); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip-btn { border: 1px solid var(--line); background: none; border-radius: 999px; padding: 8px 14px; font-weight: 600; font-size: 14px; cursor: pointer; text-transform: capitalize; }
+.chip-btn[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+details.fold { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); }
+details.fold > summary { list-style: none; cursor: pointer; padding: 15px 16px; display: flex; justify-content: space-between; align-items: center; gap: 10px; font-weight: 700; font-size: 16px; }
+details.fold > summary::-webkit-details-marker { display: none; }
+details.fold > summary::after { content: "▾"; color: var(--fg-faint); transition: transform .15s; }
+details.fold[open] > summary::after { transform: rotate(180deg); }
+details.fold > .fold-body { padding: 0 16px 16px; display: grid; gap: 12px; }
+ul.list { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: 14px; }
+
+.note { border-radius: 11px; padding: 11px 13px; font-size: 13px; }
+.note.warn { background: var(--warn-soft); color: var(--warn); }
+.note.bad { background: var(--bad-soft); color: var(--bad); }
+.note.good { background: var(--good-soft); color: var(--good); }
+.note b { display: block; margin-bottom: 2px; }
+
+/* Script card */
+.script-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.script-title { font: 800 28px/1 var(--font-display); text-transform: uppercase; margin-top: 4px; }
+.score { flex: none; text-align: center; border-radius: 14px; padding: 8px 12px; min-width: 74px; }
+.score .n { font: 900 44px/1 var(--font-display); font-variant-numeric: tabular-nums; }
+.score .of { font: 700 10px var(--font-mono); color: var(--fg-faint); }
+.s-good { color: var(--good); } .bg-good { background: var(--good-soft); } .bar-good { background: var(--good); }
+.s-warn { color: var(--warn); } .bg-warn { background: var(--warn-soft); } .bar-warn { background: var(--warn); }
+.s-bad { color: var(--bad); } .bg-bad { background: var(--bad-soft); } .bar-bad { background: var(--bad); }
+.slate { background: var(--slate); color: var(--slate-fg); border-radius: 16px; padding: 16px; display: grid; gap: 12px; position: relative; overflow: hidden; }
+.slate::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 8px; background: repeating-linear-gradient(-45deg, var(--slate-fg) 0 10px, transparent 10px 20px); opacity: .9; }
+.slate .eyebrow { color: var(--accent); margin-top: 6px; }
+.slate .line { font: 800 clamp(26px, 7vw, 34px)/1.05 var(--font-display); text-transform: uppercase; }
+.slate .cells { display: grid; gap: 8px; grid-template-columns: 1fr; }
+@media (min-width: 560px) { .slate .cells { grid-template-columns: 1fr 1fr; } }
+.slate .cell { background: var(--slate-soft); border-radius: 10px; padding: 9px 10px; font-size: 14px; }
+.slate .cell .eyebrow { color: rgba(255,255,255,.55); margin: 0 0 4px; }
+.summary { border: 2px dashed color-mix(in srgb, var(--accent) 55%, transparent); background: var(--accent-soft); border-radius: 14px; padding: 12px 14px; font-size: 14px; }
+.summary .eyebrow { color: var(--accent); margin-bottom: 4px; }
+.timeline { list-style: none; margin: 0; padding: 0 0 0 18px; border-left: 2px solid var(--line); display: grid; gap: 12px; margin-left: 6px; }
+.timeline li { position: relative; font-size: 14px; }
+.timeline li::before { content: ""; position: absolute; left: -25px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); }
+.tc { font: 700 12px var(--font-mono); color: var(--fg-faint); font-variant-numeric: tabular-nums; }
+.say { font-weight: 700; }
+.ost { font-size: 12px; color: var(--fg-soft); }
+.bars { display: grid; gap: 8px; }
+details.bar > summary { list-style: none; cursor: pointer; }
+details.bar > summary::-webkit-details-marker { display: none; }
+.bar-top { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; }
+.bar-top span:last-child { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.track { height: 9px; border-radius: 99px; background: var(--surface-2); overflow: hidden; margin-top: 4px; }
+.track > i { display: block; height: 100%; border-radius: 99px; }
+details.bar p { margin: 6px 0 0; font-size: 12px; background: var(--surface-2); padding: 8px; border-radius: 8px; }
+.kv { display: grid; gap: 6px; font-size: 14px; }
+.kv b { font-weight: 700; }
+.tile { background: var(--surface-2); border-radius: 11px; padding: 11px; font-size: 14px; min-width: 0; }
+.tile .eyebrow { margin-bottom: 4px; }
+.tags { color: var(--accent); font-size: 14px; word-break: break-word; }
+.foot { border-top: 1px solid var(--line); padding-top: 12px; display: grid; gap: 10px; }
+.vote[aria-pressed="true"].up { background: var(--good); color: #fff; border-color: var(--good); }
+.vote[aria-pressed="true"].down { background: var(--bad); color: #fff; border-color: var(--bad); }
+
+/* Progress */
+.spin { width: 18px; height: 18px; border-radius: 50%; border: 2.5px solid var(--accent); border-top-color: transparent; animation: spin .8s linear infinite; flex: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spin { animation-duration: 3s; } }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 14px; }
+.steps .done { color: var(--good); } .steps .now { font-weight: 700; } .steps .todo { color: var(--fg-faint); }
+.big-status { font-size: 18px; font-weight: 700; }
+
+/* Perf */
+.metrics { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 4px 8px; font: 500 12px var(--font-mono); font-variant-numeric: tabular-nums; color: var(--fg-soft); }
+@media (min-width: 560px) { .metrics { grid-template-columns: repeat(6, minmax(0,1fr)); } }
+.chart { width: 100%; height: auto; display: block; }
+.chart text { fill: var(--fg-soft); font: 11px var(--font-mono); }
+.chart .grid { stroke: var(--line); }
+.chart .dot { fill: var(--accent); stroke: var(--surface); stroke-width: 2; }
+.empty { text-align: center; padding: 34px 16px; }
+.empty .h2 { font: 800 26px/1.05 var(--font-display); text-transform: uppercase; }
+.toast { position: fixed; left: 50%; bottom: calc(76px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--fg); color: var(--bg); padding: 10px 16px; border-radius: 11px; font-weight: 600; font-size: 14px; z-index: 50; max-width: calc(100% - 32px); }
+.hidden-file { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.copybox { width: 100%; min-height: 220px; font: 12px/1.5 var(--font-mono); }
+</style>
+
+<header class="top">
+  <div class="top-in">
+    <div class="brand">Reel<b>Forge</b></div>
+    <nav class="tabs-top" aria-label="Main" id="tabsTop"></nav>
+    <button class="tab" data-tab="settings" id="settingsBtn" aria-label="Settings">⚙︎ <span class="settings-word">Settings</span></button>
+  </div>
+</header>
+<main id="main" aria-live="polite"></main>
+<nav class="tabs-bottom" aria-label="Main" id="tabsBottom"></nav>
+<input type="file" id="importFile" class="hidden-file" accept="application/json,.json" tabindex="-1" aria-hidden="true">
+
+<script>
+"use strict";
+const DATA = {"promptVersion":"2026-10-02.1","niches":{"niches":[{"id":"salon","label":"Salon / Beauty / Makeup","mode":"B2C","pillars":["transformations","process close-ups","myth-busting","client reactions","price reveals"],"trust_triggers":["real clients","hygiene on camera","product brands visible","artist's experience"],"visuals":["before/after split","slow-mo hair flip","mirror reveal","technique close-up"],"peaks":["wedding season","Karwa Chauth","Diwali","Teej","Eid"],"mistakes":["only final looks, no process","heavy filters that kill trust"],"cautions":["no \"permanent\", \"guaranteed\" or medical skin-treatment claims"]},{"id":"restaurant","label":"Restaurant / Cafe / Cloud Kitchen / Street Food","mode":"B2C","pillars":["cooking process","sizzle/cheese-pull moments","portion reveals","owner's story","price-value shock"],"trust_triggers":["kitchen hygiene","fresh ingredients","queues","repeat customers"],"visuals":["overhead plating","sizzle close-ups","first-bite reactions","slow pours"],"peaks":["monsoon","winter specials","festivals","cricket season","weekends"],"mistakes":["dark lighting","showing the menu instead of food","hiding price"],"cautions":["no health-benefit claims without basis"]},{"id":"gym","label":"Gym / Fitness / Yoga","mode":"B2C","pillars":["member progress","form correction","myth-busting","trainer personality","day-in-the-gym"],"trust_triggers":["certified trainers","real member progress with consent","equipment quality"],"visuals":["rep close-ups","wrong-vs-right form","group class energy"],"peaks":["January","post-Diwali","pre-wedding season","summer"],"mistakes":["only very muscular people on screen, which scares beginners"],"cautions":["no guaranteed weight-loss numbers or timelines","no supplement or medical claims"]},{"id":"clinic","label":"Clinic / Dental / Physio / Diagnostics","mode":"B2C","pillars":["patient education","myth-busting","\"what happens during X\"","doctor Q&A","clinic tour"],"trust_triggers":["qualifications","clean equipment","calm environment","clear pricing"],"visuals":["doctor to camera","model/diagram explanations","clinic walkthrough"],"peaks":["health awareness days","seasonal illness periods","school vacations"],"mistakes":["jargon","fear-based content that feels predatory"],"cautions":["STRICT. No cure claims","no patient before/after without consent","no diagnosis on video","follow medical advertising norms","add \"consult a doctor\" where relevant"]},{"id":"coaching","label":"Coaching / Education / Tuition","mode":"B2C","pillars":["quick tips","student success stories","common mistakes","teacher personality","exam strategy"],"trust_triggers":["verifiable results","teaching shown on camera","batch size","parent voices"],"visuals":["whiteboard explanations","student reactions","teacher talking head with text"],"peaks":["pre-board exams","result season","admission season"],"mistakes":["only result banners, no teaching shown"],"cautions":["no guaranteed ranks or marks","no fake topper claims"]},{"id":"real_estate","label":"Real Estate / PG / Rentals","mode":"B2C","pillars":["property tours","area guides","price breakdowns","\"what ₹X gets you in [area]\"","red flags to check"],"trust_triggers":["real walkthroughs","transparent pricing","local knowledge"],"visuals":["POV walkthrough","balcony/view reveal","neighbourhood b-roll"],"peaks":["Navratri/Diwali for buying","admission and job-joining months for rentals"],"mistakes":["static photos only","hiding price"],"cautions":["no guaranteed-returns claims","show RERA details where applicable"]},{"id":"wholesale","label":"Wholesale / B2B / Manufacturing","mode":"B2B","pillars":["durability tests","warehouse/factory tours","how it's made","bulk dispatch","finished client installations"],"trust_triggers":["years in business","big orders dispatched","material quality up close","GST billing professionalism"],"visuals":["stacked inventory","loading trucks","stress tests","finished setups at client sites"],"peaks":["new business opening season","wedding/catering season","financial year-end purchasing"],"mistakes":["assuming B2B can't do reels","catalogue photos only"],"cautions":["no false material grade or certification claims"]},{"id":"fashion","label":"Fashion / Boutique / Ethnic Wear","mode":"B2C","pillars":["styling ideas","try-ons","fabric close-ups","one outfit 3 ways","new arrivals"],"trust_triggers":["fabric in daylight","honest pricing","real customer try-ons"],"visuals":["outfit transitions","twirls","texture close-ups"],"peaks":["wedding season","Diwali","Eid","Navratri","Raksha Bandhan","sale seasons"],"mistakes":["flat-lays only","ignoring sizes beyond small"],"cautions":["no \"original designer\" claims for replicas"]},{"id":"home_services","label":"Home Services (AC, plumbing, electrician, pest control, cleaning)","mode":"B2C","pillars":["problem-solution","\"signs you need X\"","small safe tips","dirty-to-clean reveals","cost explainers"],"trust_triggers":["uniformed staff","transparent pricing","quick response","verified technicians"],"visuals":["before/after cleaning","fault close-ups","timelapse"],"peaks":["summer for AC","monsoon for plumbing and pests","pre-Diwali deep cleaning"],"mistakes":["no face so no trust","overly technical language"],"cautions":["no unsafe DIY instructions, especially electrical or gas"]},{"id":"sweets","label":"Sweets / Bakery / Dairy","mode":"B2C","pillars":["making process","festive specials","purity checks","family legacy","gift box reveals"],"trust_triggers":["purity","legacy years","hygiene"],"visuals":["syrup pours","ghee close-ups","cake cutting","box packing"],"peaks":["every festival","birthdays","weddings"],"mistakes":["posting only during festivals"],"cautions":["no \"100% pure\" claims without basis"]},{"id":"auto","label":"Auto / Garage / Car Care","mode":"B2C","pillars":["detailing before/after","\"your car is telling you this\"","cost-saving tips","repair process"],"trust_triggers":["transparent diagnosis","genuine parts shown","experienced mechanic"],"visuals":["foam wash","coating shine","engine bay before/after"],"peaks":["pre-monsoon","road-trip seasons","festive car purchases"],"mistakes":["only luxury cars, which alienates regular customers"],"cautions":["no safety-risk DIY advice"]},{"id":"jewellery","label":"Jewellery","mode":"B2C","pillars":["craftsmanship close-ups","bridal sets","how to check purity","trend pieces","heirloom stories"],"trust_triggers":["hallmarking shown","transparent making charges","family legacy"],"visuals":["macro shots","rotating pieces in light","try-on reveals"],"peaks":["Akshaya Tritiya","Dhanteras","wedding season"],"mistakes":["dark or yellow lighting","no price range anywhere"],"cautions":["no false purity or investment-return claims"]}],"other":{"id":"other","label":"Other","instruction":"No preset playbook. Build a custom playbook with the same fields (pillars, trust_triggers, visuals, peaks, mistakes, cautions) based on how customers in this niche actually decide to buy, then use it for niche_strategy."}},"prompts":{"generator":"# ROLE\nYou are \"ReelForge\", a short-form video strategist and scriptwriter for Indian local businesses. You combine:\n1. Hook psychology: why viewers stop scrolling in the first 1.5 seconds.\n2. Retention engineering: structuring videos so people watch till the end.\n3. Niche expertise: what works in each business category and what doesn't.\n4. Cultural fluency: Indian audiences across metros and tier-2/3 cities, festivals, slang, price sensitivity, trust triggers.\nYou are blunt and practical. No ad-agency fluff.\n\n# MISSION\nWrite ready-to-shoot Instagram Reels / YouTube Shorts scripts that a non-actor can film on a phone in under 30 minutes, with zero budget, using only what the business already has.\n\n# INPUTS\nBusiness details as JSON. You cannot ask questions. If something is missing or vague, make a sensible assumption and list it in \"assumptions\".\n{{INPUTS}}\n\n# PAST PERFORMANCE (may be empty)\nIf present, these are learnings from this client's real posted reels. Lean into what worked and avoid what flopped.\n{{PAST_PERFORMANCE}}\n\n# BUSINESS MODE\n- B2C: viewer is the end customer. Relatability = local: their area, habits, festivals.\n- B2B: viewer is another business owner (restaurant owner, caterer, contractor, retailer). Relatability = industry-insider: daily operational pain, costs, their customers' complaints. Hashtags are trade/industry tags, not consumer lifestyle tags. CTA asks for a quote, a call, or a WhatsApp message.\n\n# NICHE PLAYBOOK\nTailor everything to the SUB-NICHE, not just the broad category. A bridal makeup studio and a budget college-area salon need different reels.\n{{NICHE_PLAYBOOK}}\n\n# STEP 1: AUDIENCE & PAIN MAP\n3 pains, 2 desires, 2 objections, 3 relatable references (local for B2C, industry for B2B), 1 key emotion.\n\n# STEP 2: NICHE STRATEGY\nAdapt the playbook to THIS sub-niche: pillars, trust triggers, visuals, 3 niche-specific hooks, seasonal moments, common mistakes, cautions. Don't just copy the playbook.\nName festivals/seasons but never state exact dates unless the user gave them. Festival dates shift every year.\n\n# STEP 3: HOOK ANALYSIS\nOnly if reference hooks are provided. For each: type, first frame, first words, pattern interrupt, curiosity gap, specificity, emotion, niche fit, payoff check, score /10, one-line reason, stronger rewrite.\n\n# HOOK LIBRARY\nThese are hook TYPES. Example lines show the pattern only. Never reuse an example line word for word; write fresh lines specific to this business.\n1. Curiosity gap: \"[Area] mein koi ye nahi batata...\"\n2. Contrarian: \"[Common practice] band karo agar...\"\n3. Pain call-out: \"Agar tumhara [specific problem], ye dekho\"\n4. POV: \"POV: tum [relatable situation]\"\n5. Local/industry call-out: \"[Area/industry] wale dhyan do\"\n6. Number/list: \"[N] cheezein jo [group] galat karta hai\"\n7. Before/after: transformation in the first frame\n8. Mistake: \"Maine [cost] barbaad kiye, tum mat karna\"\n9. Myth-bust: \"Sabko lagta hai [belief]. Galat.\"\n10. Price shock: \"[Price] mein ye? Haan, sach mein\"\n11. Insider secret: \"[N] saal se [business], ek secret batata hoon\"\n12. Challenge/test: \"Kya [cheap thing] [expensive thing] ko hara sakta hai?\"\n13. Customer reaction: genuine reaction in the first frame (only if it will really be filmed)\n14. Question to viewer: \"Tumhe pata hai [surprising question]?\"\n\n# STEP 4: SCRIPTS\nWrite the requested number of scripts. Each uses a DIFFERENT hook type, a DIFFERENT content pillar, and a different emotion.\n\nTiming rules (hard):\n- Hook covers 0-2 seconds. Beats are continuous; each starts where the previous ended.\n- Last beat ends at or before the chosen length.\n- Total spoken words \u003c= length in seconds x 2.5 (30s reel = max 75 words). Extra info goes into on-screen text or gets cut.\n- Hook on-screen text: max 7 words.\n- New visual or new line every 2-3 seconds. No dead air.\n\nEach script: title, hook type, content pillar, emotion, length, on-camera, hook (first-frame visual, on-screen text, spoken line), beats, payoff, ONE CTA, shooting notes (location, props the business already has, phone setup, 3-5 b-roll shots, one editing tip), audio direction, caption ending with a question, 6-8 hashtags, why it could work, biggest risk, reel summary.\n\nAudio: describe the TYPE (trending audio style, voiceover only, original sound, beat type). Never name copyrighted songs. Remind the user to pick a currently trending audio inside the app since trends change weekly.\n\nHashtags: 2 broad, 3 niche, 1-3 local (B2C) or trade (B2B).\n\nREEL SUMMARY: 2-4 plain sentences. What happens from start to finish, who it's for, the feeling the viewer is left with, and the one action we want. The owner should understand the whole reel in 10 seconds before shooting.\n\nDo not score the scripts. A separate critic will.\n\n# STEP 5: TESTING PLAN\n- Which 2 scripts to post first and why\n- 3 alternative hooks for the strongest script (same body, different first 2 seconds)\n- What to watch after 48 hours: 3-second hold rate (low = hook problem), average watch % (low = body problem), shares (relatability), saves (usefulness), profile visits and DMs (CTA and offer)\n- What to change if it flops; what to double down on if it works\n- Realistic posting frequency for this business size\n- Next seasonal moment to prepare for\n\n# NON-NEGOTIABLE RULES\n1. No fake claims, testimonials, reviews or statistics. If a number is needed and wasn't given, write [INSERT REAL NUMBER].\n2. No false scarcity unless the user confirmed it.\n3. Every hook's promise is paid off inside the video.\n4. No copyrighted songs, characters or brand logos.\n5. Shootable by a non-actor on a phone in under 30 minutes with existing props.\n6. Sounds like real people talking. Hinglish = Hindi-English mix in Roman script, never Devanagari, unless the language setting says otherwise.\n7. Follow niche cautions strictly, especially health, beauty, finance, food, real estate.\n8. One video = one idea = one CTA.\n\n# OUTPUT\nReturn ONLY valid JSON matching the schema provided by the app. No markdown, no text outside the JSON. \"hook_analysis\" is an empty array if no reference hooks were given.\n","critic":"# ROLE\nYou are a harsh, experienced short-form content reviewer. You have seen thousands of reels from Indian local businesses flop. You do not inflate scores to be nice. The person relying on you loses money if you are generous.\n\n# INPUT\nBusiness inputs, niche playbook, the generator's scripts as JSON, and possibly a list of failed automated checks.\n\n# SCORING RUBRIC (total 100)\n- hook (20): stops the scroll in under 1.5s; specific; instant tension or curiosity\n- retention (20): open loop held till the end; new beat every 2-3s; no dead air; payoff lands\n- niche_fit (15): uses a proven pillar and trust trigger for this sub-niche\n- relatability (15): B2C \"ye toh mere area ki baat hai\"; B2B \"ye toh mere business ki problem hai\"\n- emotion (10): one clear dominant emotion, not five mixed\n- share_save (10): useful enough to save or relatable enough to send to a friend\n- cta (10): one action, natural, right for the mode (B2B asks for quote/call/WhatsApp)\n\n# CALIBRATION (strict)\n- 90-100: exceptional, rare; would stand out among the best reels in this niche. Most batches have zero here.\n- 75-89: solid; likely above this business's average.\n- 60-74: average; posted and forgotten. Needs sharper hook or tighter body.\n- Below 60: weak; generic, slow, or breaks a rule.\n- If you're about to give every script 80+, stop and look again for what's generic. In a batch of 3+, at least one script usually has a clear weakness.\n- One-line justification for EVERY sub-score. No score without a reason.\n\n# VIOLATION CHECKS\nList per script:\n- Fake claims, invented numbers, fake testimonials\n- False scarcity\n- Hook promise not paid off\n- Too many spoken words for the length (> length x 2.5)\n- Hook on-screen text over 7 words\n- Not shootable by a non-actor in 30 minutes with existing props\n- Breaks a niche caution\n- Generic: any business in any city could post it with only the name changed\n- Wrong mode: B2B script talking to consumers or using consumer lifestyle hashtags\n- Devanagari when Hinglish in Roman script was required\nAlso include every failed automated check provided.\n\n# REWRITE RULE\nRewrite any script scoring below 70 OR having any violation. Keep the same id. Fix the specific problems named; don't just reword. Re-score the rewrite honestly and report that final score with \"rewritten\": true.\n\n# ALSO RETURN\nranking (strongest to weakest after rewrites), weakest_note (2 lines), similarity_flags, honesty_note: \"Scores estimate potential. They do not guarantee views.\"\n\n# OUTPUT\nReturn ONLY valid JSON matching the schema provided by the app. No markdown, no text outside the JSON.\n","learnings":"# ROLE\nYou are a blunt short-form content analyst for Indian local businesses. You read aggregated performance stats from reels a business has already posted and turn them into practical direction for the next batch.\n\n# INPUT\nAggregated stats only (no personal data): number of posts, averages grouped by hook type, content pillar, niche and emotion, the correlation between the predicted critic score and real results, and auto-computed insights.\n\n# RULES\n1. Use ONLY the numbers in the input. Never invent, round up, or extrapolate numbers that aren't there.\n2. If the sample is small (fewer than 5 posts, or a group with only 1 post), say the signal is early and frame the bullet as a test, not a conclusion.\n3. Each bullet is one short, specific action for the next batch of scripts (what to do more of, what to drop, what to test). No generic advice like \"post consistently\" unless the data supports it.\n4. Write in simple English with natural Hinglish where it helps. Roman script only.\n5. Exactly 5 bullets, each under 30 words.\n\n# OUTPUT\nReturn ONLY valid JSON: {\"bullets\": [\"string\", \"string\", \"string\", \"string\", \"string\"]}. No markdown, no text outside the JSON.\n","hooks":"# TASK\nAnalyse the reference hooks below for a {{NICHE}} business. Use the HOOK ANALYSIS step and the HOOK LIBRARY from your instructions. Your rewrite must be specific to this niche and must not reuse any hook library example line word for word.\n\nReturn ONLY valid JSON: {\"hook_analysis\": [ ...one object per hook, in the same order... ]} using this schema for each item:\n{{SCHEMA}}\n\nLanguage for rewrites: {{LANGUAGE}}. Roman script only unless the language says otherwise.\n\n# HOOKS\n{{HOOKS}}\n"},"schemas":{"generator":"{\n  \"assumptions\": [\"string\"],\n  \"audience_map\": { \"pains\": [\"string\"], \"desires\": [\"string\"], \"objections\": [\"string\"], \"relatable_refs\": [\"string\"], \"key_emotion\": \"string\" },\n  \"niche_strategy\": { \"pillars\": [\"string\"], \"trust_triggers\": [\"string\"], \"visuals\": [\"string\"], \"niche_hooks\": [\"string\"], \"seasonal_moments\": [\"string\"], \"common_mistakes\": [\"string\"], \"cautions\": [\"string\"] },\n  \"hook_analysis\": [\"\u003chook analysis item>\"],\n  \"scripts\": [\"\u003cscript object>\"],\n  \"testing_plan\": { \"post_first\": [ { \"script_id\": \"string\", \"reason\": \"string\" } ], \"ab_hooks\": [\"string\", \"string\", \"string\"], \"metrics\": \"string\", \"if_flops\": \"string\", \"if_works\": \"string\", \"posting_frequency\": \"string\", \"next_seasonal_moment\": \"string\" }\n}\n","script":"{\n  \"id\": \"s1\",\n  \"title\": \"string\",\n  \"hook_type\": \"string\",\n  \"content_pillar\": \"string\",\n  \"emotion\": \"string\",\n  \"length_sec\": 30,\n  \"on_camera\": \"owner | staff | faceless | customer\",\n  \"hook\": { \"visual\": \"string\", \"on_screen_text\": \"string\", \"spoken\": \"string\" },\n  \"beats\": [ { \"start\": 2, \"end\": 5, \"visual\": \"string\", \"spoken\": \"string\", \"on_screen_text\": \"string\" } ],\n  \"payoff\": \"string\",\n  \"cta\": { \"spoken\": \"string\", \"on_screen_text\": \"string\" },\n  \"shooting\": { \"location\": \"string\", \"props\": [\"string\"], \"phone_setup\": \"string\", \"broll\": [\"string\"], \"editing_tip\": \"string\" },\n  \"audio\": \"string\",\n  \"caption\": \"string\",\n  \"hashtags\": [\"string\"],\n  \"why_it_works\": \"string\",\n  \"biggest_risk\": \"string\",\n  \"reel_summary\": \"string\"\n}\n","hook":"{ \"original\": \"string\", \"type\": \"string\", \"first_frame\": \"string\", \"first_words\": \"string\", \"pattern_interrupt\": \"string\", \"curiosity_gap\": \"string\", \"specificity\": \"string\", \"emotion\": \"string\", \"niche_fit\": \"string\", \"payoff\": \"string\", \"score_10\": 0, \"reason\": \"string\", \"rewrite\": \"string\" }\n","critic":"{\n  \"scores\": [\n    {\n      \"script_id\": \"s1\",\n      \"breakdown\": { \"hook\": 0, \"retention\": 0, \"niche_fit\": 0, \"relatability\": 0, \"emotion\": 0, \"share_save\": 0, \"cta\": 0 },\n      \"justifications\": { \"hook\": \"string\", \"retention\": \"string\", \"niche_fit\": \"string\", \"relatability\": \"string\", \"emotion\": \"string\", \"share_save\": \"string\", \"cta\": \"string\" },\n      \"total\": 0,\n      \"violations\": [\"string\"],\n      \"rewritten\": false\n    }\n  ],\n  \"rewritten_scripts\": [\"\u003cfull script object, same schema as generator scripts, same id as the one it replaces>\"],\n  \"ranking\": [\"s2\", \"s1\", \"s3\"],\n  \"weakest_note\": \"string\",\n  \"similarity_flags\": [\"string\"],\n  \"honesty_note\": \"Scores estimate potential. They do not guarantee views.\"\n}\n"}};
+const NICHES = DATA.niches.niches;
+const LANG_LABELS = { hinglish: "Hinglish (Roman script)", hindi_roman: "Hindi (Roman script)", english: "English" };
+const TONES = ["funny", "emotional", "premium", "raw/desi", "educational"];
+const ON_CAMERA = ["owner", "staff", "faceless", "customer"];
+const CRITERIA = [["hook","Hook",20],["retention","Retention",20],["niche_fit","Niche fit",15],["relatability","Relatability",15],["emotion","Emotion",10],["share_save","Share / save",10],["cta","CTA",10]];
+const STAGES = { audience: "Audience padh rahe hain...", writing: "Scripts likh rahe hain...", critic: "Critic roast kar raha hai...", finalising: "Final touches de rahe hain..." };
+
+/* ---------------- helpers ---------------- */
+const $ = (s, r = document) => r.querySelector(s);
+const h = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const uid = (p) => `${p}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`;
+const fmtDate = (iso) => { try { return new Date(iso).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" }); } catch { return iso; } };
+const scoreCls = (n) => (n >= 75 ? "good" : n >= 60 ? "warn" : "bad");
+const nicheLabel = (i) => (i.niche === "other" ? i.custom_niche || "Other" : NICHES.find((n) => n.id === i.niche)?.label ?? i.niche);
+const clientKey = (name) => String(name || "").trim().toLowerCase().replace(/\s+/g, " ");
+function toast(msg) {
+  const t = document.createElement("div");
+  t.className = "toast"; t.role = "status"; t.textContent = msg;
+  document.body.append(t); setTimeout(() => t.remove(), 2200);
+}
+
+/* ---------------- storage (localStorage, every access guarded) ---------------- */
+const KEYS = { generations: "rf_generations", feedback: "rf_feedback", performance: "rf_performance", profiles: "rf_profiles", learnings: "rf_learnings", settings: "rf_settings" };
+const mem = new Map();
+let storageOk = true;
+function sGet(k, fb) {
+  let raw = null;
+  try { raw = localStorage.getItem(k); } catch { storageOk = false; }
+  if (raw == null) raw = mem.get(k) ?? null;
+  if (raw == null) return fb;
+  try { return JSON.parse(raw); } catch { return fb; }
+}
+function sSet(k, v) {
+  const raw = JSON.stringify(v); mem.set(k, raw);
+  try { localStorage.setItem(k, raw); } catch { storageOk = false; }
+}
+const store = {
+  gens: () => sGet(KEYS.generations, []),
+  gen: (id) => store.gens().find((g) => g.id === id),
+  saveGen: (r) => sSet(KEYS.generations, [r, ...store.gens().filter((g) => g.id !== r.id)].slice(0, 50)),
+  delGen: (id) => sSet(KEYS.generations, store.gens().filter((g) => g.id !== id)),
+  fb: () => sGet(KEYS.feedback, {}),
+  setFb: (k, v) => { const a = store.fb(); a[k] = { ...v, updated_at: new Date().toISOString() }; sSet(KEYS.feedback, a); },
+  perf: () => sGet(KEYS.performance, []),
+  upPerf: (e) => sSet(KEYS.performance, [e, ...store.perf().filter((x) => x.id !== e.id)]),
+  delPerf: (id) => sSet(KEYS.performance, store.perf().filter((x) => x.id !== id)),
+  profiles: () => sGet(KEYS.profiles, []),
+  saveProfile: (inputs) => { const key = clientKey(inputs.business_name); sSet(KEYS.profiles, [{ key, name: inputs.business_name, inputs, saved_at: new Date().toISOString() }, ...store.profiles().filter((p) => p.key !== key)]); },
+  delProfile: (key) => sSet(KEYS.profiles, store.profiles().filter((p) => p.key !== key)),
+  learnings: (key) => sGet(KEYS.learnings, {})[key],
+  setLearnings: (key, l) => { const a = sGet(KEYS.learnings, {}); a[key] = l; sSet(KEYS.learnings, a); },
+  settings: () => ({ tier: "default", default_script_count: 3, default_language: "hinglish", ...sGet(KEYS.settings, {}) }),
+  saveSettings: (s) => sSet(KEYS.settings, s),
+};
+function exportAll() { const data = {}; for (const k of Object.values(KEYS)) data[k] = sGet(k, null); return { app: "reelforge", version: 1, exported_at: new Date().toISOString(), data }; }
+function importAll(b) {
+  if (!b || b.app !== "reelforge" || !b.data || typeof b.data !== "object") return { ok: false, message: "This doesn't look like a ReelForge export file." };
+  const d = b.data;
+  const mergeArr = (k, idf, cap) => { const inc = Array.isArray(d[k]) ? d[k] : []; const ids = new Set(inc.map((x) => x[idf])); const m = [...inc, ...sGet(k, []).filter((x) => !ids.has(x[idf]))]; sSet(k, cap ? m.slice(0, cap) : m); return inc.length; };
+  const mergeMap = (k) => { const inc = d[k] && typeof d[k] === "object" && !Array.isArray(d[k]) ? d[k] : {}; sSet(k, { ...sGet(k, {}), ...inc }); };
+  const g = mergeArr(KEYS.generations, "id", 50), p = mergeArr(KEYS.performance, "id"); mergeArr(KEYS.profiles, "key");
+  mergeMap(KEYS.feedback); mergeMap(KEYS.learnings);
+  if (d[KEYS.settings] && typeof d[KEYS.settings] === "object") sSet(KEYS.settings, d[KEYS.settings]);
+  return { ok: true, message: `Imported ${g} generations and ${p} performance logs.` };
+}
+function clearAll() { for (const k of Object.values(KEYS)) { mem.delete(k); try { localStorage.removeItem(k); } catch {} } }
+
+/* ---------------- tiny schema validator (Zod-like: coerce, default, report paths) ---------------- */
+const S = {
+  str: (o = {}) => (v, p) => { if (v == null) { if ("def" in o) return o.def; throw `${p}: required string`; } if (typeof v === "number") v = String(v); if (typeof v !== "string") throw `${p}: expected string`; if (o.min && !v.trim()) throw `${p}: must not be empty`; return v; },
+  num: (o = {}) => (v, p) => { const n = typeof v === "string" ? Number(v) : v; if (typeof n !== "number" || !Number.isFinite(n)) throw `${p}: expected number`; if (o.min != null && n < o.min) throw `${p}: must be >= ${o.min}`; if (o.max != null && n > o.max) throw `${p}: must be <= ${o.max}`; return n; },
+  bool: (def) => (v, p) => (v == null ? def : typeof v === "boolean" ? v : (() => { throw `${p}: expected boolean`; })()),
+  arr: (item, o = {}) => (v, p) => { if (v == null && "def" in o) return o.def; if (!Array.isArray(v)) throw `${p}: expected array`; if (o.min && v.length < o.min) throw `${p}: needs at least ${o.min} item(s)`; if (o.len && v.length !== o.len) throw `${p}: needs exactly ${o.len} item(s)`; return v.map((x, i) => item(x, `${p}.${i}`)); },
+  obj: (shape) => (v, p) => { if (!v || typeof v !== "object" || Array.isArray(v)) throw `${p || "(root)"}: expected object`; const out = {}; for (const k in shape) out[k] = shape[k](v[k], p ? `${p}.${k}` : k); return out; },
+};
+function check(schema, value) {
+  try { return { ok: true, data: schema(value, "") }; } catch (e) { return { ok: false, error: typeof e === "string" ? e : String(e?.message || e) }; }
+}
+const sA = S.arr(S.str());
+const ScriptS = S.obj({
+  id: S.str({ min: 1 }), title: S.str(), hook_type: S.str(), content_pillar: S.str(), emotion: S.str(),
+  length_sec: S.num({ min: 5, max: 180 }), on_camera: S.str({ def: "owner" }),
+  hook: S.obj({ visual: S.str(), on_screen_text: S.str(), spoken: S.str() }),
+  beats: S.arr(S.obj({ start: S.num(), end: S.num(), visual: S.str(), spoken: S.str({ def: "" }), on_screen_text: S.str({ def: "" }) }), { min: 1 }),
+  payoff: S.str(), cta: S.obj({ spoken: S.str({ def: "" }), on_screen_text: S.str({ def: "" }) }),
+  shooting: S.obj({ location: S.str(), props: sA, phone_setup: S.str(), broll: sA, editing_tip: S.str() }),
+  audio: S.str(), caption: S.str(), hashtags: sA, why_it_works: S.str(), biggest_risk: S.str(), reel_summary: S.str(),
+});
+const HookS = S.obj({ original: S.str(), type: S.str(), first_frame: S.str(), first_words: S.str(), pattern_interrupt: S.str(), curiosity_gap: S.str(), specificity: S.str(), emotion: S.str(), niche_fit: S.str(), payoff: S.str(), score_10: S.num({ min: 0, max: 10 }), reason: S.str(), rewrite: S.str() });
+const GenS = S.obj({
+  assumptions: sA,
+  audience_map: S.obj({ pains: sA, desires: sA, objections: sA, relatable_refs: sA, key_emotion: S.str() }),
+  niche_strategy: S.obj({ pillars: sA, trust_triggers: sA, visuals: sA, niche_hooks: sA, seasonal_moments: sA, common_mistakes: sA, cautions: sA }),
+  hook_analysis: S.arr(HookS, { def: [] }),
+  scripts: S.arr(ScriptS, { min: 1 }),
+  testing_plan: S.obj({ post_first: S.arr(S.obj({ script_id: S.str(), reason: S.str() })), ab_hooks: sA, metrics: S.str(), if_flops: S.str(), if_works: S.str(), posting_frequency: S.str(), next_seasonal_moment: S.str() }),
+});
+const clampInt = (max) => (v, p) => Math.max(0, Math.min(max, Math.round(S.num()(v, p))));
+const CriticS = (ids) => (v, p) => {
+  const out = S.obj({
+    scores: S.arr(S.obj({
+      script_id: S.str(),
+      breakdown: S.obj(Object.fromEntries(CRITERIA.map(([k, , m]) => [k, clampInt(m)]))),
+      justifications: S.obj(Object.fromEntries(CRITERIA.map(([k]) => [k, S.str({ def: "" })]))),
+      total: S.num(), violations: S.arr(S.str(), { def: [] }), rewritten: S.bool(false),
+    }), { min: 1 }),
+    rewritten_scripts: S.arr(ScriptS, { def: [] }),
+    ranking: S.arr(S.str(), { def: [] }), weakest_note: S.str({ def: "" }),
+    similarity_flags: S.arr(S.str(), { def: [] }),
+    honesty_note: S.str({ def: "Scores estimate potential. They do not guarantee views." }),
+  })(v, p);
+  const scored = new Set(out.scores.map((s) => s.script_id));
+  for (const id of ids) if (!scored.has(id)) throw `scores: missing score for script "${id}"`;
+  return out;
+};
+
+/* ---------------- deterministic checks (port of lib/validate.ts) ---------------- */
+const HOOK_LIBRARY = ["[Area] mein koi ye nahi batata...","[Common practice] band karo agar...","Agar tumhara [specific problem], ye dekho","POV: tum [relatable situation]","[Area/industry] wale dhyan do","[N] cheezein jo [group] galat karta hai","Maine [cost] barbaad kiye, tum mat karna","Sabko lagta hai [belief]. Galat.","[Price] mein ye? Haan, sach mein","[N] saal se [business], ek secret batata hoon","Kya [cheap thing] [expensive thing] ko hara sakta hai?","Tumhe pata hai [surprising question]?"];
+const norm = (s) => String(s || "").toLowerCase().replace(/[^\p{L}\p{N}\s[\]]/gu, " ").replace(/\s+/g, " ").trim();
+const words = (s) => String(s || "").trim().split(/\s+/).filter(Boolean).length;
+const spokenWords = (s) => words(s.hook.spoken) + s.beats.reduce((n, b) => n + words(b.spoken), 0) + words(s.cta.spoken);
+function reusesTemplate(line, tpl) {
+  const l = norm(line); if (!l) return false;
+  const lits = norm(tpl.replace(/\[[^\]]*\]/g, " ")).split(" ").filter(Boolean);
+  if (lits.length < 4) return l === norm(tpl.replace(/\[[^\]]*\]/g, " "));
+  const parts = norm(tpl).split(/\[[^\]]*\]/).map((x) => x.trim()).filter(Boolean).map((x) => x.replace(/[.*+?^${}()|\\]/g, "\\$&"));
+  return new RegExp(parts.join("(?:\\s+[^\\s]+){0,8}?\\s*"), "u").test(l);
+}
+const CTA_CAT = { follow: /\bfollow\b/i, comment: /\bcomment\b/i, save: /\bsave\b/i, share: /\b(share|bhejo|tag)\b/i, contact: /\b(dm|whatsapp|call|message|msg|enquir\w*|inquir\w*|quote|contact|phone|number)\b/i, visit: /\b(visit|aao|aaiye|link in bio|walk[- ]?in)\b/i };
+const ctaCats = (t) => Object.entries(CTA_CAT).filter(([, re]) => re.test(t)).map(([k]) => k);
+const sentences = (t) => String(t || "").split(/[.!?।]+(?=\s|$)/).map((x) => x.trim()).filter((x) => /\p{L}/u.test(x)).length;
+const CONSUMER = /(food|foodie|foodies|eats|eat|blogger|blog|lifestyle|fashion|style|makeup|beauty|vibes|diaries|insta|yummy|delicious|tasty|streetfood|cafe|weekend|love)/i;
+function consumerTag(tag, ctx) {
+  const t = tag.replace(/^#/, "").toLowerCase();
+  const places = [ctx.city, ctx.area].filter(Boolean).flatMap((p) => p.toLowerCase().split(/[\s,/]+/)).filter((p) => p.length >= 3);
+  const local = places.some((p) => t.includes(p)) || /(delhi|ncr|mumbai|gurgaon|gurugram|noida|bangalore|bengaluru|pune)/.test(t);
+  if (local && CONSUMER.test(t)) return true;
+  return /^(foodie|foodporn|instafood|foodblogger|foodlover|yummy|lifestyle|ootd|instagood|foodstagram)$/.test(t);
+}
+function checkScript(s, ctx) {
+  const out = []; const fail = (check, message) => out.push({ script_id: s.id, check, message });
+  const b = s.beats;
+  if (b.length) {
+    if (b[0].start > 3 || b[0].start < 0) fail("beats_continuous", `First beat starts at ${b[0].start}s; it should start right after the hook (~2s).`);
+    b.forEach((x, i) => {
+      if (x.end <= x.start) fail("beats_continuous", `Beat ${i + 1} ends (${x.end}s) before it starts (${x.start}s).`);
+      if (i > 0 && Math.abs(x.start - b[i - 1].end) > 0.01) fail("beats_continuous", `Gap/overlap: beat ${i} ends at ${b[i - 1].end}s but beat ${i + 1} starts at ${x.start}s.`);
+    });
+    const last = b[b.length - 1].end;
+    if (last > s.length_sec) fail("beats_within_length", `Last beat ends at ${last}s but the reel is ${s.length_sec}s.`);
+  }
+  const w = spokenWords(s), max = Math.floor(s.length_sec * 2.5);
+  if (w > max) fail("spoken_words", `${w} spoken words for a ${s.length_sec}s reel (max ${max}).`);
+  const hw = words(s.hook.on_screen_text);
+  if (hw > 7) fail("hook_text_length", `Hook on-screen text is ${hw} words (max 7).`);
+  for (const line of [s.hook.spoken, s.hook.on_screen_text]) { const t = HOOK_LIBRARY.find((x) => reusesTemplate(line, x)); if (t) { fail("hook_library_reuse", `Hook reuses the library example "${t}" almost word for word.`); break; } }
+  const cta = `${s.cta.spoken} ${s.cta.on_screen_text}`.trim();
+  if (!cta) fail("one_cta", "No CTA.");
+  else { const c = ctaCats(cta); if (c.length > 1) fail("one_cta", `CTA asks for ${c.length} different actions (${c.join(", ")}). Keep one.`); }
+  const n = sentences(s.reel_summary);
+  if (n < 2 || n > 4) fail("reel_summary_length", `Reel summary has ${n} sentence(s); needs 2-4.`);
+  if (s.hashtags.length < 6 || s.hashtags.length > 8) fail("hashtag_count", `${s.hashtags.length} hashtags; needs 6-8.`);
+  if (ctx.mode === "B2B") {
+    const bad = s.hashtags.filter((t) => consumerTag(t, ctx));
+    if (bad.length) fail("b2b_hashtags", `Consumer/lifestyle hashtags in a B2B reel: ${bad.join(" ")}.`);
+    if (!CTA_CAT.contact.test(cta)) fail("b2b_cta", "B2B CTA should ask for a quote, a call or a WhatsApp message, not just a follow.");
+  }
+  if ((ctx.language === "hinglish" || ctx.language === "hindi_roman") && /[ऀ-ॿ]/.test(JSON.stringify(s))) fail("no_devanagari", "Devanagari characters found; Roman script was required.");
+  return out;
+}
+const npill = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+function checkBatch(scripts, ctx) {
+  const out = scripts.flatMap((s) => checkScript(s, ctx));
+  for (const [f, label] of [["hook_type", "hook type"], ["content_pillar", "content pillar"]]) {
+    const seen = new Map();
+    for (const s of scripts) { const k = npill(s[f]); if (seen.has(k)) out.push({ script_id: s.id, check: `unique_${f}`, message: `Same ${label} as ${seen.get(k)} ("${s[f]}").` }); else seen.set(k, s.id); }
+  }
+  return out;
+}
+function finalChecks(scripts, critic, ctx) {
+  const f = checkBatch(scripts, ctx);
+  if (critic.scores.length && critic.scores.every((s) => s.total >= 85)) f.push({ script_id: null, check: "score_inflation", message: "Every script scored 85+: possible score inflation. Treat scores with suspicion." });
+  return f;
+}
+
+/* ---------------- prompts ---------------- */
+const fill = (t, vars) => t.replace(/\{\{([A-Z_]+)\}\}/g, (m, k) => (k in vars ? vars[k] : m));
+const modeOf = (i) => (i.b2b ? "B2B" : "B2C");
+function playbookText(i) {
+  const n = NICHES.find((x) => x.id === i.niche);
+  if (!n) return JSON.stringify({ niche: i.custom_niche || "Other", sub_niche: i.sub_niche, playbook: null, instruction: DATA.niches.other.instruction }, null, 2);
+  const { id, ...rest } = n;
+  return JSON.stringify({ ...rest, sub_niche: i.sub_niche }, null, 2);
+}
+function inputsJson(i) {
+  return JSON.stringify({
+    business_name: i.business_name, niche: nicheLabel(i), sub_niche: i.sub_niche, city: i.city, area_locality: i.area,
+    target_customer: i.target_customer, main_offer: i.offer, usp: i.usp, on_camera: i.on_camera, language: LANG_LABELS[i.language],
+    tone: i.tones.length ? i.tones : ["(not specified: pick what fits)"], upcoming_festival_season_event: i.festival || "(none given)",
+    things_to_avoid: i.avoid || "(none given)", reference_hooks: i.reference_hooks, number_of_scripts: i.script_count, mode: modeOf(i),
+  }, null, 2);
+}
+const generatorBase = (i, past) => fill(DATA.prompts.generator, { INPUTS: inputsJson(i), PAST_PERFORMANCE: (past || "").trim() || "(none)", NICHE_PLAYBOOK: playbookText(i) });
+const generatorPrompt = (i, past) => [generatorBase(i, past), "", "---", `Write ${i.script_count} script(s) now, following every step.`, "", "# OUTPUT SCHEMA (return exactly this JSON shape)", "Top-level shape:", DATA.schemas.generator, 'Each item in "scripts" (ids s1, s2, s3, ...):', DATA.schemas.script, 'Each item in "hook_analysis":', DATA.schemas.hook].join("\n");
+const replacementPrompt = (i, id, keep) => [generatorBase(i), "", "---", `Write exactly ONE new script with id "${id}" to replace a weak script in an existing batch.`, "It must use a hook type, content pillar and emotion that are DIFFERENT from these scripts that are staying:", JSON.stringify(keep, null, 2), "Follow every timing rule and non-negotiable rule.", "", "# OUTPUT SCHEMA", 'Return ONLY: {"scripts": [ <one script object> ]} where the script object is:', DATA.schemas.script].join("\n");
+const criticPrompt = ({ inputs, scripts, failed, context }) => [DATA.prompts.critic, "", "---", "# BUSINESS INPUTS", inputsJson(inputs), "", "# NICHE PLAYBOOK", playbookText(inputs), "", "# GENERATOR SCRIPTS", JSON.stringify(scripts, null, 2),
+  context ? `\n# OTHER SCRIPTS IN THE BATCH (for similarity only; do not score these)\n${JSON.stringify(context, null, 2)}` : "", "", "# FAILED AUTOMATED CHECKS",
+  failed.length ? failed.map((f) => `- [${f.script_id ?? "batch"}] ${f.check}: ${f.message}`).join("\n") : "(none)", "", "# OUTPUT SCHEMA", DATA.schemas.critic, "Each rewritten script uses this schema:", DATA.schemas.script, "Score every script listed under GENERATOR SCRIPTS exactly once."].join("\n");
+function hooksPrompt(hooks, niche, language) {
+  const g = DATA.prompts.generator;
+  const sec = (t) => (g.match(new RegExp(`# ${t}[\\s\\S]*?(?=\\n# )`)) || [""])[0].trim();
+  return [sec("ROLE"), sec("STEP 3: HOOK ANALYSIS"), sec("HOOK LIBRARY"), "", "---", fill(DATA.prompts.hooks, { NICHE: niche, LANGUAGE: LANG_LABELS[language], SCHEMA: DATA.schemas.hook, HOOKS: hooks.map((x, n) => `${n + 1}. ${x}`).join("\n") })].join("\n\n");
+}
+
+/* ---------------- Claude via the viewer's own account ---------------- */
+let samplePromise = null;
+const getSample = () => (samplePromise ??= (window.claude?.use ? window.claude.use("sample").catch(() => null) : Promise.resolve(null)));
+let sampleBlocked = null; // error code once the viewer declines
+class AppError extends Error { constructor(code, message, text) { super(message); this.code = code; this.text = text; } }
+const ERR_COPY = {
+  not_granted: "You didn't allow ReelForge to use Claude. Reload the page and choose Allow to generate.",
+  sampling_disabled: "Claude isn't available for this account here.",
+  rate_limited: "You've hit a usage limit for now. Wait a bit, then try again.",
+  session_expired: "Your Claude session expired. Sign in again, then retry.",
+  refused: "Claude declined this request. Try rephrasing the business details.",
+  prompt_too_large: "That's too much text at once. Shorten the inputs or ask for fewer scripts.",
+  bad_json: "Claude's reply couldn't be read, even after a retry. Try again, or ask for fewer scripts.",
+  unavailable: "Claude isn't reachable from this view. Open the artifact on claude.ai or in the Claude app.",
+  upstream_error: "Connection to Claude dropped. Try again.",
+  empty_completion: "Claude returned nothing. Try again with fewer scripts.",
+};
+const errCopy = (e) => ERR_COPY[e?.code] || ERR_COPY.upstream_error;
+
+/** sample.json + schema validation, retried once with the validation error. */
+async function callJson(prompt, schema, run) {
+  const sample = await getSample();
+  if (!sample) throw new AppError("unavailable", ERR_COPY.unavailable);
+  const opts = (onText) => ({ modelTier: run.tier, cache: false, signal: run.signal, onText });
+  const ask = async (p, onText) => {
+    run.calls++;
+    try { return { data: await sample.json(p, opts(onText)) }; }
+    catch (e) {
+      if (e?.code === "invalid_json") return { bad: `Invalid JSON: ${e.message}`, raw: e.text || "" };
+      if (e?.code === "not_granted" || e?.code === "sampling_disabled") sampleBlocked = e.code;
+      throw new AppError(e?.code || "upstream_error", errCopy(e));
+    }
+  };
+  let r = await ask(prompt, run.onText);
+  let firstErr, raw;
+  if (r.data !== undefined) { const v = check(schema, r.data); if (v.ok) return v.data; firstErr = `Schema validation failed: ${v.error}`; raw = JSON.stringify(r.data); }
+  else { firstErr = r.bad; raw = r.raw; }
+  run.retries++;
+  const retry = `${prompt}\n\n# YOUR PREVIOUS ATTEMPT FAILED VALIDATION\n${firstErr}\n${raw ? `\nPrevious output (fix it, keep what was good):\n${raw.slice(0, 60000)}` : ""}\n\nReturn the complete corrected JSON only. No markdown, no commentary.`;
+  r = await ask(retry);
+  if (r.data !== undefined) { const v = check(schema, r.data); if (v.ok) return v.data; }
+  throw new AppError("bad_json", ERR_COPY.bad_json);
+}
+
+const tagFix = (s) => ({ ...s, hashtags: s.hashtags.map((t) => t.trim()).filter(Boolean).map((t) => (t.startsWith("#") ? t : `#${t}`)) });
+const sumB = (b) => Object.values(b).reduce((a, n) => a + n, 0);
+function mergeCritic(scripts, critic) {
+  const rw = new Map(critic.rewritten_scripts.map((s) => [s.id, tagFix(s)]));
+  const scores = critic.scores.map((s) => ({ ...s, total: sumB(s.breakdown), rewritten: s.rewritten || rw.has(s.script_id) }));
+  const by = new Map(scores.map((s) => [s.script_id, s]));
+  const merged = scripts.map((s) => rw.get(s.id) ?? s).sort((a, b) => (by.get(b.id)?.total ?? 0) - (by.get(a.id)?.total ?? 0));
+  return { scripts: merged, critic: { ...critic, scores, ranking: merged.map((s) => s.id) } };
+}
+const ctxOf = (i) => ({ mode: modeOf(i), language: i.language, city: i.city, area: i.area });
+
+async function runPipeline(inputs, past, run) {
+  const ctx = ctxOf(inputs);
+  run.stage("audience");
+  let wrote = false;
+  run.onText = ({ text }) => { if (!wrote && text.includes('"scripts"')) { wrote = true; run.stage("writing"); } };
+  const gen = await callJson(generatorPrompt(inputs, past), GenS, run);
+  run.onText = null;
+  if (!wrote) run.stage("writing");
+  gen.scripts = gen.scripts.map(tagFix);
+  const initial = checkBatch(gen.scripts, ctx);
+  run.stage("critic");
+  const critic = await callJson(criticPrompt({ inputs, scripts: gen.scripts, failed: initial }), CriticS(gen.scripts.map((s) => s.id)), run);
+  run.stage("finalising");
+  const m = mergeCritic(gen.scripts, critic);
+  return {
+    id: uid("g"), created_at: new Date().toISOString(), prompt_version: DATA.promptVersion, model: `Claude (${run.tier} tier, your plan)`,
+    inputs, mode: ctx.mode, used_past_performance: !!(past || "").trim(),
+    output: { ...gen, scripts: m.scripts }, critic: m.critic,
+    checks: { initial, final: finalChecks(m.scripts, m.critic, ctx) },
+    usage: { calls: run.calls, retries: run.retries },
+  };
+}
+
+async function regenerateWeakest(rec, run) {
+  const ctx = ctxOf(rec.inputs);
+  const sc = new Map(rec.critic.scores.map((s) => [s.script_id, s.total]));
+  const weakest = [...rec.output.scripts].sort((a, b) => (sc.get(a.id) ?? 0) - (sc.get(b.id) ?? 0))[0];
+  const keep = rec.output.scripts.filter((s) => s.id !== weakest.id);
+  run.stage("writing");
+  const rep = await callJson(replacementPrompt(rec.inputs, weakest.id, keep.map(({ id, hook_type, content_pillar, emotion, title }) => ({ id, hook_type, content_pillar, emotion, title }))), S.obj({ scripts: S.arr(ScriptS, { len: 1 }) }), run);
+  const fresh = tagFix({ ...rep.scripts[0], id: weakest.id });
+  const initial = checkBatch([...keep, fresh], ctx).filter((f) => f.script_id === fresh.id);
+  run.stage("critic");
+  const c = await callJson(criticPrompt({ inputs: rec.inputs, scripts: [fresh], failed: initial, context: keep.map(({ id, title, hook_type, content_pillar, hook }) => ({ id, title, hook_type, content_pillar, hook })) }), CriticS([fresh.id]), run);
+  run.stage("finalising");
+  const combined = { ...rec.critic, scores: [...rec.critic.scores.filter((s) => s.script_id !== fresh.id), c.scores.find((s) => s.script_id === fresh.id)], rewritten_scripts: c.rewritten_scripts.filter((s) => s.id === fresh.id), similarity_flags: [...rec.critic.similarity_flags, ...c.similarity_flags] };
+  const m = mergeCritic([...keep, fresh], combined);
+  return {
+    ...rec, id: uid("g"), created_at: new Date().toISOString(), prompt_version: DATA.promptVersion,
+    output: { ...rec.output, scripts: m.scripts }, critic: m.critic,
+    checks: { initial: [...rec.checks.initial.filter((f) => f.script_id !== fresh.id), ...initial], final: finalChecks(m.scripts, m.critic, ctx) },
+    usage: { calls: (rec.usage?.calls || 0) + run.calls, retries: (rec.usage?.retries || 0) + run.retries },
+  };
+}
+
+/* ---------------- stats (port of lib/stats.ts) ---------------- */
+const DIMS = [["hook_type", "Hook type", "hooks"], ["content_pillar", "Content pillar", "reels"], ["niche", "Niche", "reels"], ["emotion", "Emotion", "reels"]];
+const mean = (xs) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : 0);
+const r1 = (n) => Math.round(n * 10) / 10;
+function pearson(xs, ys) {
+  const n = Math.min(xs.length, ys.length); if (n < 3) return null;
+  const mx = mean(xs.slice(0, n)), my = mean(ys.slice(0, n)); let num = 0, dx = 0, dy = 0;
+  for (let i = 0; i < n; i++) { const a = xs[i] - mx, b = ys[i] - my; num += a * b; dx += a * a; dy += b * b; }
+  return dx && dy ? Math.round((num / Math.sqrt(dx * dy)) * 100) / 100 : null;
+}
+function describeR(r) { if (r == null) return "not enough data"; const a = Math.abs(r); if (a < 0.2) return "no real relationship"; return `${a >= 0.7 ? "strong" : a >= 0.4 ? "moderate" : "weak"} ${r > 0 ? "positive" : "negative"}`; }
+function groupBy(es, dim) {
+  const g = new Map();
+  for (const e of es) { const label = (e[dim] || "unknown").trim(); const k = label.toLowerCase(); const x = g.get(k) || { label, items: [] }; x.items.push(e); g.set(k, x); }
+  return [...g.values()].map(({ label, items }) => ({ group: label, posts: items.length, avg_views: r1(mean(items.map((i) => i.views))), avg_saves: r1(mean(items.map((i) => i.saves))), avg_shares: r1(mean(items.map((i) => i.shares))), avg_hold_rate: r1(mean(items.map((i) => i.hold_rate_3s))), avg_watch_pct: r1(mean(items.map((i) => i.avg_watch_pct))), avg_predicted_score: r1(mean(items.map((i) => i.predicted_score))) })).sort((a, b) => b.posts - a.posts || b.avg_views - a.avg_views);
+}
+function insights(es) {
+  const out = []; if (!es.length) return out;
+  const noun = { avg_saves: "saves", avg_views: "views" };
+  for (const [dim, , n] of DIMS) {
+    if (dim === "niche" && new Set(es.map((e) => e.niche.toLowerCase())).size < 2) continue;
+    const gs = groupBy(es, dim); if (gs.length < 2) continue;
+    for (const m of ["avg_saves", "avg_views"]) {
+      const s = [...gs].sort((a, b) => b[m] - a[m]); const best = s[0], worst = s[s.length - 1];
+      if (worst[m] <= 0) { if (best[m] > 0) out.push(`"${best.group}" ${n} got ${best[m]} ${noun[m]} on average while "${worst.group}" ${n} got none (${best.posts} vs ${worst.posts} posts).`); continue; }
+      const ratio = best[m] / worst[m];
+      if (ratio >= 1.2) out.push(`"${best.group}" ${n} averaged ${ratio.toFixed(1)}x more ${noun[m]} than "${worst.group}" ${n} (${best.posts} vs ${worst.posts} posts).`);
+    }
+  }
+  const sc = es.map((e) => e.predicted_score);
+  const rv = pearson(sc, es.map((e) => e.views)), rs = pearson(sc, es.map((e) => e.saves));
+  if (rv != null) out.push(`Critic score vs views: r = ${rv} (${describeR(rv)}) across ${es.length} posts.`);
+  if (rs != null) out.push(`Critic score vs saves: r = ${rs} (${describeR(rs)}).`);
+  const lh = es.filter((e) => e.hold_rate_3s > 0 && e.hold_rate_3s < 40).length;
+  if (lh) out.push(`${lh} of ${es.length} posts held under 40% of viewers past 3 seconds. That's a hook problem: test new first frames.`);
+  const lw = es.filter((e) => e.avg_watch_pct > 0 && e.avg_watch_pct < 30).length;
+  if (lw) out.push(`${lw} of ${es.length} posts had average watch under 30%. That's a body problem: cut slower beats.`);
+  if (es.length < 5) out.push(`Only ${es.length} post${es.length > 1 ? "s" : ""} logged so far. Treat these patterns as early signals, not rules.`);
+  return out;
+}
+function aggregate(es) {
+  const sc = es.map((e) => e.predicted_score);
+  return { total_posts: es.length, correlation_score_views: pearson(sc, es.map((e) => e.views)), correlation_score_saves: pearson(sc, es.map((e) => e.saves)),
+    by_hook_type: groupBy(es, "hook_type"), by_pillar: groupBy(es, "content_pillar"), by_niche: groupBy(es, "niche"), by_emotion: groupBy(es, "emotion"), insights: insights(es) };
+}
+
+/* ---------------- exporters (port of lib/format.ts) ---------------- */
+const scoreFor = (rec, id) => rec.critic.scores.find((s) => s.script_id === id);
+const captionText = (s) => `${s.caption.trim()}\n\n${s.hashtags.join(" ")}`;
+function scriptText(s, sc) {
+  const L = [`🎬 ${s.title.toUpperCase()}`, `${s.length_sec}s | ${s.hook_type} | ${s.content_pillar} | ${s.emotion} | On camera: ${s.on_camera}`];
+  if (sc) L.push(`Critic score: ${sc.total}/100${sc.rewritten ? " (rewritten by critic)" : ""}`);
+  L.push("", "HOOK (0-2s)", `First frame: ${s.hook.visual}`, `On screen: ${s.hook.on_screen_text}`, `Say: "${s.hook.spoken}"`, "", "SCRIPT");
+  for (const b of s.beats) { L.push(`${b.start}s-${b.end}s: ${b.visual}`); if (b.spoken) L.push(`   Say: "${b.spoken}"`); if (b.on_screen_text) L.push(`   On screen: ${b.on_screen_text}`); }
+  L.push("", `PAYOFF: ${s.payoff}`, `CTA: "${s.cta.spoken}"${s.cta.on_screen_text ? ` (on screen: ${s.cta.on_screen_text})` : ""}`, "", "HOW TO SHOOT", `Location: ${s.shooting.location}`, `Props: ${s.shooting.props.join(", ")}`, `Phone: ${s.shooting.phone_setup}`, `B-roll:${s.shooting.broll.map((x) => `\n - ${x}`).join("")}`, `Editing tip: ${s.shooting.editing_tip}`, `Audio: ${s.audio}`, "", "CAPTION", captionText(s), "", `Why it could work: ${s.why_it_works}`, `Biggest risk: ${s.biggest_risk}`, "", `REEL SUMMARY: ${s.reel_summary}`);
+  return L.join("\n");
+}
+const titleOf = (rec, id) => rec.output.scripts.find((s) => s.id === id)?.title ?? id;
+function allText(rec) {
+  const L = [`REELFORGE SCRIPTS: ${rec.inputs.business_name} (${rec.inputs.area}, ${rec.inputs.city})`, `Generated ${fmtDate(rec.created_at)}`, rec.critic.honesty_note];
+  for (const s of rec.output.scripts) L.push("", "━━━━━━━━━━━━━━━━", "", scriptText(s, scoreFor(rec, s.id)));
+  const tp = rec.output.testing_plan;
+  L.push("", "━━━━━━━━━━━━━━━━", "", "TESTING PLAN", ...tp.post_first.map((p) => `Post first: ${titleOf(rec, p.script_id)}: ${p.reason}`), "Alternative hooks for the strongest script:", ...tp.ab_hooks.map((x, i) => ` ${i + 1}. ${x}`), `What to watch after 48h: ${tp.metrics}`, `If it flops: ${tp.if_flops}`, `If it works: ${tp.if_works}`, `Posting frequency: ${tp.posting_frequency}`, `Next seasonal moment: ${tp.next_seasonal_moment}`);
+  return L.join("\n");
+}
+function toMarkdown(rec) {
+  const o = rec.output, md = (s) => String(s).replace(/\|/g, "\\|"), list = (xs) => xs.map((x) => `- ${x}`).join("\n");
+  const L = [`# ReelForge scripts: ${rec.inputs.business_name}`, `_${rec.inputs.sub_niche} · ${rec.inputs.area}, ${rec.inputs.city} · ${rec.mode} · ${fmtDate(rec.created_at)} · prompt ${rec.prompt_version}_`, "", `> ${rec.critic.honesty_note}`, "", "## Assumptions", list(o.assumptions), "", "## Audience & pain map", `**Pains**\n${list(o.audience_map.pains)}`, `\n**Desires**\n${list(o.audience_map.desires)}`, `\n**Objections**\n${list(o.audience_map.objections)}`, `\n**Relatable references**\n${list(o.audience_map.relatable_refs)}`, `\n**Key emotion:** ${o.audience_map.key_emotion}`, "", "## Niche strategy"];
+  const ns = o.niche_strategy;
+  for (const [k, t] of [["pillars", "Pillars"], ["trust_triggers", "Trust triggers"], ["visuals", "Visuals"], ["niche_hooks", "Niche hooks"], ["seasonal_moments", "Seasonal moments"], ["common_mistakes", "Common mistakes"], ["cautions", "Cautions"]]) L.push(`\n**${t}**\n${list(ns[k])}`);
+  for (const s of o.scripts) {
+    const sc = scoreFor(rec, s.id);
+    L.push("", `## ${s.title}${sc ? ` (${sc.total}/100)` : ""}`, `${s.length_sec}s · ${s.hook_type} · ${s.content_pillar} · ${s.emotion} · on camera: ${s.on_camera}${sc?.rewritten ? " · rewritten by critic" : ""}`);
+    if (sc) { L.push("", "| Criterion | Score | Why |", "|---|---|---|", ...CRITERIA.map(([k, l, m]) => `| ${l} | ${sc.breakdown[k]}/${m} | ${md(sc.justifications[k])} |`)); if (sc.violations.length) L.push("", `**Critic violations:**\n${list(sc.violations)}`); }
+    L.push("", "### Hook (0-2s)", `- **First frame:** ${s.hook.visual}`, `- **On screen:** ${s.hook.on_screen_text}`, `- **Say:** "${s.hook.spoken}"`, "", "### Beats", "| Time | Visual | Spoken | On screen |", "|---|---|---|---|", ...s.beats.map((b) => `| ${b.start}s-${b.end}s | ${md(b.visual)} | ${md(b.spoken)} | ${md(b.on_screen_text)} |`));
+    L.push("", `**Payoff:** ${s.payoff}`, "", `**CTA:** "${s.cta.spoken}"${s.cta.on_screen_text ? ` (on screen: ${s.cta.on_screen_text})` : ""}`, "", "### Shooting notes", `- **Location:** ${s.shooting.location}`, `- **Props:** ${s.shooting.props.join(", ")}`, `- **Phone setup:** ${s.shooting.phone_setup}`, `- **B-roll:** ${s.shooting.broll.join("; ")}`, `- **Editing tip:** ${s.shooting.editing_tip}`, `- **Audio:** ${s.audio}`, "", "### Caption", s.caption, "", s.hashtags.join(" "), "", `**Why it could work:** ${s.why_it_works}`, "", `**Biggest risk:** ${s.biggest_risk}`, "", `> **Reel summary:** ${s.reel_summary}`);
+    const w = rec.checks.final.filter((f) => f.script_id === s.id); if (w.length) L.push("", `**Automated check warnings:**\n${list(w.map((x) => x.message))}`);
+  }
+  const tp = o.testing_plan;
+  L.push("", "## Testing plan", list(tp.post_first.map((p) => `**Post first:** ${titleOf(rec, p.script_id)}: ${p.reason}`)), "", "**Alternative hooks for the strongest script**", tp.ab_hooks.map((x, i) => `${i + 1}. ${x}`).join("\n"), "", `**What to watch after 48h:** ${tp.metrics}`, "", `**If it flops:** ${tp.if_flops}`, "", `**If it works:** ${tp.if_works}`, "", `**Posting frequency:** ${tp.posting_frequency}`, "", `**Next seasonal moment:** ${tp.next_seasonal_moment}`);
+  if (rec.critic.weakest_note) L.push("", `**Critic's note on the weakest script:** ${rec.critic.weakest_note}`);
+  return L.join("\n") + "\n";
+}
+
+/* ---------------- clipboard + downloads ---------------- */
+async function copy(text) {
+  try { await navigator.clipboard.writeText(text); toast("Copied ✓"); return; } catch {}
+  showTextModal("Copy this", text);
+}
+let downloadsP = null;
+const getDownloads = () => (downloadsP ??= (window.claude?.use ? window.claude.use("downloads").catch(() => null) : Promise.resolve(null)));
+async function saveFile(filename, data) {
+  const d = await getDownloads();
+  if (!d) { showTextModal(`Save as ${filename}`, data); return; }
+  try { await d.save({ filename, data }); toast("Saved"); }
+  catch (e) { if (e?.code === "declined") return; if (e?.code === "rate_limited") return toast("A save is already waiting for you."); showTextModal(`Save as ${filename}`, data); }
+}
+function showTextModal(title, text) {
+  ui.modal = { title, text }; render();
+}
+const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "reelforge";
+
+/* ---------------- UI state ---------------- */
+const ui = { tab: "generate", resultId: null, form: null, errors: {}, saveProfile: false, usePast: true, busy: null, failure: null, ctl: null,
+  perfClient: "", perfMetric: "views", perfDim: "hook_type", logging: null, learnBusy: false, learnErr: null,
+  hooks: { text: "", niche: "salon", custom: "", language: "hinglish", busy: false, res: null, err: null }, armed: null, modal: null };
+
+const EMPTY_FORM = { business_name: "", niche: "salon", custom_niche: "", sub_niche: "", city: "", area: "", target_customer: "", offer: "", usp: "", on_camera: "owner", language: "hinglish", tones: [], festival: "", avoid: "", reference_hooks_text: "", script_count: 3, b2b: false };
+function freshForm() { const s = store.settings(); return { ...EMPTY_FORM, language: s.default_language, script_count: s.default_script_count }; }
+const toForm = (i) => ({ ...EMPTY_FORM, ...i, reference_hooks_text: (i.reference_hooks || []).join("\n") });
+function formToInputs(f) {
+  const errs = {}; const req = (k, max, label) => { const v = String(f[k] || "").trim(); if (!v) errs[k] = `${label} is required`; else if (v.length > max) errs[k] = `Max ${max} characters`; return v.slice(0, max); };
+  const opt = (k, max) => String(f[k] || "").trim().slice(0, max);
+  const i = {
+    business_name: req("business_name", 80, "Business name"), niche: f.niche, custom_niche: opt("custom_niche", 80), sub_niche: req("sub_niche", 160, "Sub-niche"),
+    city: req("city", 60, "City"), area: req("area", 80, "Area"), target_customer: req("target_customer", 300, "Target customer"), offer: req("offer", 300, "Main offer"), usp: req("usp", 300, "USP"),
+    on_camera: ON_CAMERA.includes(f.on_camera) ? f.on_camera : "owner", language: LANG_LABELS[f.language] ? f.language : "hinglish", tones: f.tones.filter((t) => TONES.includes(t)),
+    festival: opt("festival", 120), avoid: opt("avoid", 300), reference_hooks: f.reference_hooks_text.split("\n").map((x) => x.trim().slice(0, 200)).filter(Boolean).slice(0, 10),
+    script_count: Math.max(1, Math.min(5, Number(f.script_count) || 3)), b2b: !!f.b2b,
+  };
+  if (i.niche === "other" && !i.custom_niche) errs.custom_niche = "Custom niche is required when niche is Other";
+  return { inputs: i, errs };
+}
+
+/* ---------------- render: shell ---------------- */
+const ICONS = {
+  generate: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5z"/></svg>',
+  hooks: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 4v9a5 5 0 1 1-10 0v-2"/><circle cx="14" cy="4" r="1.5"/></svg>',
+  performance: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 20h18M6 16l4-5 3 3 5-7"/></svg>',
+  history: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 2"/></svg>',
+};
+const TABS = [["generate", "Generate"], ["hooks", "Hooks"], ["performance", "Performance"], ["history", "History"]];
+function renderTabs() {
+  const cur = ui.tab === "results" ? "generate" : ui.tab;
+  $("#tabsTop").innerHTML = TABS.map(([k, l]) => `<button class="tab" data-tab="${k}" ${cur === k ? 'aria-current="page"' : ""}>${l}</button>`).join("");
+  $("#tabsBottom").innerHTML = TABS.map(([k, l]) => `<button class="tab" data-tab="${k}" ${cur === k ? 'aria-current="page"' : ""}>${ICONS[k]}${l}</button>`).join("");
+  const sb = $("#settingsBtn"); if (cur === "settings") sb.setAttribute("aria-current", "page"); else sb.removeAttribute("aria-current");
+}
+function render() {
+  renderTabs();
+  const main = $("#main");
+  if (ui.modal) { main.innerHTML = viewModal(); return; }
+  const v = { generate: viewGenerate, results: viewResults, hooks: viewHooks, performance: viewPerformance, history: viewHistory, settings: viewSettings }[ui.tab];
+  main.innerHTML = v();
+}
+const storageNote = () => (storageOk ? "" : `<div class="note warn"><b>Browser storage is blocked here.</b>Your work only lives in this tab. Use Settings → Export to keep it.</div>`);
+function viewModal() {
+  return `<section class="card"><h2 class="h2">${h(ui.modal.title)}</h2><p class="hint">Saving files isn't available in this view. Select all and copy instead.</p><textarea class="input copybox" id="modalText" readonly>${h(ui.modal.text)}</textarea><div class="row"><button class="btn primary" data-act="modal-select">Select all</button><button class="btn" data-act="modal-close">Close</button></div></section>`;
+}
+function viewProgress() {
+  const order = ["audience", "writing", "critic", "finalising"], idx = order.indexOf(ui.busy.stage);
+  return `<section class="card" role="status"><div class="row"><span class="spin" aria-hidden="true"></span><span class="big-status">${STAGES[ui.busy.stage]}</span></div>
+  <ol class="steps">${order.map((s, i) => `<li class="${i < idx ? "done" : i === idx ? "now" : "todo"}">${i < idx ? "✓" : i === idx ? "•" : "○"} ${STAGES[s]}</li>`).join("")}</ol>
+  <p class="hint">Usually 1-4 minutes. Runs on your own Claude plan. Keep this tab open.</p><button class="btn" data-act="stop">Stop</button></section>`;
+}
+const errorBox = (msg, retryAct) => `<div class="note bad" role="alert"><b>Arre, kuch gadbad ho gayi.</b>${h(msg)}${retryAct ? `<div style="margin-top:10px"><button class="btn primary small" data-act="${retryAct}">Try again</button></div>` : ""}</div>`;
+const listHtml = (xs) => (xs?.length ? `<ul class="list">${xs.map((x) => `<li>${h(x)}</li>`).join("")}</ul>` : `<p class="hint">—</p>`);
+const armBtn = (act, id, label, armedLabel, cls = "btn") => { const on = ui.armed === `${act}:${id}`; return `<button class="${cls}${on ? " danger" : ""}" data-act="${act}" data-id="${h(id)}">${on ? armedLabel : label}</button>`; };
+
+/* ---------------- render: generate ---------------- */
+const currentLearnings = () => (ui.form?.business_name.trim() ? store.learnings(clientKey(ui.form.business_name)) : null);
+const learnSlot = (learn) => (learn ? `<label class="check"><input type="checkbox" id="usePast" data-act="toggle-use-past" ${ui.usePast ? "checked" : ""}><span>Use past performance learnings for this client<br><span class="hint">${learn.bullets.length} learnings from ${learn.posts} posted reels</span></span></label>` : "");
+function field(k, label, o) {
+  const f = ui.form, v = h(f[k]);
+  const ctl = o.textarea ? `<textarea class="input" id="f-${k}" data-f="${k}" maxlength="${o.max}" placeholder="${h(o.ph || "")}">${v}</textarea>` : `<input class="input" id="f-${k}" data-f="${k}" maxlength="${o.max}" placeholder="${h(o.ph || "")}" value="${v}">`;
+  return `<div><label class="lab" for="f-${k}">${label}${o.req ? ' <span class="req">*</span>' : ""}</label>${ctl}${o.hint ? `<p class="hint">${o.hint}</p>` : ""}${ui.errors[k] ? `<p class="err">${h(ui.errors[k])}</p>` : ""}</div>`;
+}
+function viewGenerate() {
+  if (ui.busy) return viewProgress();
+  ui.form ??= freshForm();
+  const f = ui.form, profiles = store.profiles(), learn = currentLearnings();
+  return `<div><h1 class="h1">Reels that actually get shot</h1><p class="sub">Fill in the business. Get hook-first scripts a non-actor can film in 30 minutes, scored by a separate critic. Runs on your Claude account, no API key needed.</p></div>
+  ${storageNote()}${ui.failure ? errorBox(ui.failure, "generate") : ""}
+  ${profiles.length ? `<section class="card"><label class="lab" for="profile">Load a client profile</label><div class="row" style="flex-wrap:nowrap"><select class="input" id="profile" data-act="load-profile"><option value="">Choose a saved client…</option>${profiles.map((p) => `<option value="${h(p.key)}">${h(p.name)}</option>`).join("")}</select>${profiles.some((p) => p.key === clientKey(f.business_name)) ? armBtn("del-profile", clientKey(f.business_name), "Delete", "Tap again") : ""}</div></section>` : ""}
+  <section class="card"><h2 class="h2">The business</h2>
+    ${field("business_name", "Business name", { max: 80, req: 1, ph: "e.g. Glam Studio by Neha" })}
+    <div><label class="lab" for="f-niche">Niche <span class="req">*</span></label><select class="input" id="f-niche" data-f="niche">${NICHES.map((n) => `<option value="${n.id}" ${f.niche === n.id ? "selected" : ""}>${h(n.label)}</option>`).join("")}<option value="other" ${f.niche === "other" ? "selected" : ""}>Other</option></select></div>
+    ${f.niche === "other" ? field("custom_niche", "Custom niche", { max: 80, req: 1, ph: "e.g. pet grooming, travel agency" }) : ""}
+    ${field("sub_niche", "Sub-niche", { max: 160, req: 1, ph: "e.g. bridal makeup studio, budget unisex salon near college" })}
+    <div class="grid2">${field("city", "City", { max: 60, req: 1, ph: "e.g. Gurugram" })}${field("area", "Area / locality", { max: 80, req: 1, ph: "e.g. Sector 56" })}</div>
+    <label class="check boxed"><input type="checkbox" id="f-b2b" data-f="b2b" ${f.b2b ? "checked" : ""}><span><b>Sells to businesses, not consumers</b><br><span class="hint">B2B mode: trade hashtags, quote/call/WhatsApp CTAs.</span></span></label>
+  </section>
+  <section class="card"><h2 class="h2">Audience & offer</h2>
+    ${field("target_customer", "Target customer", { max: 300, req: 1, textarea: 1, ph: "age, gender, income, what they care about" })}
+    ${field("offer", "Main offer to push now", { max: 300, req: 1, ph: "e.g. festive makeup + hair package" })}
+    ${field("usp", "USP", { max: 300, req: 1, ph: "even a small one counts" })}
+    <div><span class="lab">Who's on camera <span class="req">*</span></span><div class="seg" role="group">${ON_CAMERA.map((o) => `<button type="button" data-act="oncam" data-v="${o}" aria-pressed="${f.on_camera === o}">${o}</button>`).join("")}</div></div>
+  </section>
+  <section class="card"><h2 class="h2">Style</h2>
+    <div><label class="lab" for="f-language">Language</label><select class="input" id="f-language" data-f="language">${Object.entries(LANG_LABELS).map(([k, l]) => `<option value="${k}" ${f.language === k ? "selected" : ""}>${l}</option>`).join("")}</select></div>
+    <div><span class="lab">Tone (pick any)</span><div class="chips">${TONES.map((t) => `<button type="button" class="chip-btn" data-act="tone" data-v="${t}" aria-pressed="${f.tones.includes(t)}">${t}</button>`).join("")}</div></div>
+    <div><label class="lab" for="f-script_count">Number of scripts: <span id="countOut">${f.script_count}</span></label><input type="range" id="f-script_count" data-f="script_count" min="1" max="5" value="${f.script_count}"></div>
+  </section>
+  <section class="card"><h2 class="h2">Optional extras</h2>
+    ${field("festival", "Upcoming festival / season / event", { max: 120, ph: "e.g. Diwali, wedding season, new semester" })}
+    ${field("avoid", "Things to avoid", { max: 300, ph: "e.g. no competitor names, no discount talk" })}
+    ${field("reference_hooks_text", "Reference hooks (one per line, max 10)", { max: 2100, textarea: 1, ph: "Paste hooks you liked from other reels", hint: "They'll be analysed and rewritten for this business." })}
+  </section>
+  <section class="card">
+    <label class="check"><input type="checkbox" id="saveProfile" data-act="toggle-save-profile" ${ui.saveProfile ? "checked" : ""}> Save as client profile</label>
+    <div id="learnSlot">${learnSlot(learn)}</div>
+    <button class="btn primary block" data-act="generate" style="min-height:52px;font-size:16px">Generate ${f.script_count} script${f.script_count > 1 ? "s" : ""}</button>
+    <p class="hint">The first run asks you to allow ReelForge to use Claude.</p>
+  </section>`;
+}
+
+/* ---------------- render: results ---------------- */
+function scriptCard(rec, s, rank) {
+  const sc = scoreFor(rec, s.id), cls = sc ? scoreCls(sc.total) : "", warns = rec.checks.final.filter((f) => f.script_id === s.id);
+  const fb = store.fb()[`${rec.id}:${s.id}`] || {};
+  return `<article class="card" id="script-${h(s.id)}">
+  <div class="script-head"><div style="min-width:0"><div class="eyebrow">#${rank} · ${h(s.id)}</div><h3 class="script-title">${h(s.title)}</h3>
+    <div class="chips" style="margin-top:8px"><span class="pill">${h(s.hook_type)}</span><span class="pill">${h(s.content_pillar)}</span><span class="pill">${h(s.emotion)}</span><span class="pill">${h(s.length_sec)}s</span><span class="pill" style="text-transform:capitalize">${h(s.on_camera)}</span>${sc?.rewritten ? '<span class="pill rw">Rewritten by critic</span>' : ""}</div></div>
+    ${sc ? `<div class="score bg-${cls}"><div class="n s-${cls}">${sc.total}</div><div class="of">/100</div></div>` : ""}</div>
+  ${warns.length ? `<div class="note warn"><b>Automated checks still failing</b><ul class="list">${warns.map((w) => `<li>${h(w.message)}</li>`).join("")}</ul></div>` : ""}
+  <div class="slate"><div class="eyebrow">Hook · 0–2s</div><div class="line">“${h(s.hook.spoken)}”</div>
+    <div class="cells"><div class="cell"><div class="eyebrow">First frame</div>${h(s.hook.visual)}</div><div class="cell"><div class="eyebrow">On-screen text</div><b>${h(s.hook.on_screen_text)}</b></div></div></div>
+  <div class="summary"><div class="eyebrow">Reel summary</div>${h(s.reel_summary)}</div>
+  <div><div class="lab">Beats</div><ol class="timeline">${s.beats.map((b) => `<li><div class="tc">${h(b.start)}s – ${h(b.end)}s</div><div>${h(b.visual)}</div>${b.spoken ? `<div class="say">“${h(b.spoken)}”</div>` : ""}${b.on_screen_text ? `<div class="ost">On screen: ${h(b.on_screen_text)}</div>` : ""}</li>`).join("")}</ol></div>
+  <div class="grid2"><div class="tile"><div class="eyebrow">Payoff</div>${h(s.payoff)}</div><div class="tile"><div class="eyebrow">CTA</div>“${h(s.cta.spoken)}”${s.cta.on_screen_text ? `<div class="ost">On screen: ${h(s.cta.on_screen_text)}</div>` : ""}</div></div>
+  ${sc ? `<div><div class="lab">Score breakdown <span class="hint" style="font-weight:400">· tap a bar for the reason</span></div><div class="bars">${CRITERIA.map(([k, l, m]) => { const v = sc.breakdown[k], pc = (v / m) * 100; return `<details class="bar"><summary><div class="bar-top"><span>${l}</span><span>${v}/${m}</span></div><div class="track"><i class="bar-${scoreCls(pc)}" style="width:${pc}%"></i></div></summary><p>${h(sc.justifications[k] || "No reason given.")}</p></details>`; }).join("")}</div>
+    ${sc.violations.length ? `<div class="note bad" style="margin-top:10px"><b>Critic flagged${sc.rewritten ? " (in the original, before rewrite)" : ""}</b><ul class="list">${sc.violations.map((v) => `<li>${h(v)}</li>`).join("")}</ul></div>` : ""}</div>` : ""}
+  <details class="fold" style="background:var(--surface-2);border:0"><summary>Shooting notes, audio & caption</summary><div class="fold-body">
+    <div class="kv"><div><b>Location:</b> ${h(s.shooting.location)}</div><div><b>Props:</b> ${h(s.shooting.props.join(", "))}</div><div><b>Phone setup:</b> ${h(s.shooting.phone_setup)}</div><div><b>B-roll:</b> ${h(s.shooting.broll.join(" · "))}</div><div><b>Editing tip:</b> ${h(s.shooting.editing_tip)}</div><div><b>Audio:</b> ${h(s.audio)}</div></div>
+    <div><div class="lab">Caption</div><div style="white-space:pre-wrap">${h(s.caption)}</div><div class="tags">${h(s.hashtags.join(" "))}</div></div>
+    <div class="grid2"><div class="tile" style="background:var(--good-soft)"><div class="eyebrow" style="color:var(--good)">Why it could work</div>${h(s.why_it_works)}</div><div class="tile" style="background:var(--bad-soft)"><div class="eyebrow" style="color:var(--bad)">Biggest risk</div>${h(s.biggest_risk)}</div></div>
+  </div></details>
+  <div class="foot"><div class="grid-btn"><button class="btn" data-act="copy-script" data-id="${h(s.id)}">Copy script</button><button class="btn" data-act="copy-caption" data-id="${h(s.id)}">Copy caption + tags</button></div>
+    <div class="row" style="justify-content:space-between"><div class="row"><button class="btn vote up" data-act="vote" data-id="${h(s.id)}" data-v="up" aria-pressed="${fb.vote === "up"}" aria-label="Thumbs up">👍</button><button class="btn vote down" data-act="vote" data-id="${h(s.id)}" data-v="down" aria-pressed="${fb.vote === "down"}" aria-label="Thumbs down">👎</button></div><button class="btn primary" data-act="posted" data-id="${h(s.id)}">I posted this</button></div>
+    ${fb.vote ? `<input class="input" id="fbnote-${h(s.id)}" data-act="fb-note" data-id="${h(s.id)}" maxlength="300" placeholder="Optional note: what's good or off?" value="${h(fb.note || "")}">` : ""}</div>
+</article>`;
+}
+function viewResults() {
+  if (ui.busy) return viewProgress();
+  const rec = store.gen(ui.resultId);
+  if (!rec) return `<section class="card empty"><div class="h2">Ye result nahi mila</div><p class="muted">It may have been deleted. Check History or generate new scripts.</p><div class="row" style="justify-content:center"><button class="btn primary" data-tab="generate">Generate</button><button class="btn" data-tab="history">History</button></div></section>`;
+  const o = rec.output, am = o.audience_map, ns = o.niche_strategy, tp = o.testing_plan;
+  const batch = rec.checks.final.filter((f) => f.script_id === null);
+  return `<div><div class="eyebrow">${rec.mode} · ${h(fmtDate(rec.created_at))}</div><h1 class="h1" style="margin-top:6px">${h(rec.inputs.business_name)}</h1><p class="sub">${h(rec.inputs.sub_niche)} · ${h(rec.inputs.area)}, ${h(rec.inputs.city)}</p><p class="hint" style="margin-top:6px;font-style:italic">${h(rec.critic.honesty_note)}</p></div>
+  ${ui.failure ? errorBox(ui.failure, ui.lastAct) : ""}
+  ${batch.map((w) => `<div class="note warn"><b>Heads up</b>${h(w.message)}</div>`).join("")}
+  <div class="grid-btn four"><button class="btn" data-act="copy-all">Copy all</button><button class="btn" data-act="download-md">Download .md</button><button class="btn" data-act="regenerate">Regenerate</button><button class="btn" data-act="regen-weakest" ${o.scripts.length < 2 ? "disabled" : ""}>Redo weakest</button></div>
+  <details class="fold"><summary>Assumptions <span class="pill">${o.assumptions.length}</span></summary><div class="fold-body">${listHtml(o.assumptions)}</div></details>
+  <details class="fold"><summary>Audience & pain map</summary><div class="fold-body"><div class="grid2"><div><div class="lab">Pains</div>${listHtml(am.pains)}</div><div><div class="lab">Desires</div>${listHtml(am.desires)}</div><div><div class="lab">Objections</div>${listHtml(am.objections)}</div><div><div class="lab">Relatable references</div>${listHtml(am.relatable_refs)}</div></div><p style="margin:0"><b>Key emotion:</b> ${h(am.key_emotion)}</p></div></details>
+  <details class="fold"><summary>Niche strategy</summary><div class="fold-body"><div class="grid2">${[["pillars", "Pillars"], ["trust_triggers", "Trust triggers"], ["visuals", "Visuals"], ["niche_hooks", "Niche hooks"], ["seasonal_moments", "Seasonal moments"], ["common_mistakes", "Common mistakes"], ["cautions", "Cautions"]].map(([k, l]) => `<div><div class="lab">${l}</div>${listHtml(ns[k])}</div>`).join("")}</div></div></details>
+  ${o.hook_analysis.length ? `<details class="fold"><summary>Reference hook analysis <span class="pill">${o.hook_analysis.length}</span></summary><div class="fold-body">${hookList(o.hook_analysis)}</div></details>` : ""}
+  ${o.scripts.map((s, i) => scriptCard(rec, s, i + 1)).join("")}
+  <section class="card"><h2 class="h2">Testing plan</h2>
+    <div><div class="lab">Post first</div><ul class="list">${tp.post_first.map((p) => `<li><b>${h(titleOf(rec, p.script_id))}</b>: ${h(p.reason)}</li>`).join("")}</ul></div>
+    <div><div class="lab">A/B hooks for the strongest script</div><ol class="list">${tp.ab_hooks.map((x) => `<li>${h(x)}</li>`).join("")}</ol></div>
+    <div class="kv"><div><b>Watch after 48h:</b> ${h(tp.metrics)}</div><div><b>If it flops:</b> ${h(tp.if_flops)}</div><div><b>If it works:</b> ${h(tp.if_works)}</div><div><b>Posting frequency:</b> ${h(tp.posting_frequency)}</div><div><b>Next seasonal moment:</b> ${h(tp.next_seasonal_moment)}</div>${rec.critic.weakest_note ? `<div><b>Critic on the weakest:</b> ${h(rec.critic.weakest_note)}</div>` : ""}</div>
+    ${rec.critic.similarity_flags.length ? `<div><div class="lab">Similarity flags</div>${listHtml(rec.critic.similarity_flags)}</div>` : ""}
+  </section>
+  <p class="hint" style="text-align:center">${rec.usage?.calls ?? "?"} Claude calls${rec.usage?.retries ? ` (${rec.usage.retries} JSON retr${rec.usage.retries > 1 ? "ies" : "y"})` : ""} · ${h(rec.model)} · prompt v${h(rec.prompt_version)}${rec.used_past_performance ? " · used past performance" : ""} · usage counts against your Claude plan, no per-token bill</p>`;
+}
+function hookList(items) {
+  const rows = [["type", "Type"], ["first_frame", "First frame"], ["first_words", "First words"], ["pattern_interrupt", "Pattern interrupt"], ["curiosity_gap", "Curiosity gap"], ["specificity", "Specificity"], ["emotion", "Emotion"], ["niche_fit", "Niche fit"], ["payoff", "Payoff check"]];
+  return items.map((x, i) => { const c = scoreCls(x.score_10 * 10); return `<div class="card" style="padding:14px"><div class="script-head"><b style="min-width:0">“${h(x.original)}”</b><span class="s-${c}" style="font:900 30px/1 var(--font-display)">${h(x.score_10)}<span class="hint">/10</span></span></div><p class="muted" style="margin:0;font-size:14px">${h(x.reason)}</p><div class="kv" style="font-size:13px">${rows.map(([k, l]) => `<div><b>${l}:</b> ${h(x[k])}</div>`).join("")}</div><div class="tile" style="background:var(--good-soft)"><div class="eyebrow" style="color:var(--good)">Stronger rewrite</div><b>${h(x.rewrite)}</b></div><button class="btn small" data-act="copy-rewrite" data-i="${i}">Copy rewrite</button></div>`; }).join("");
+}
+
+/* ---------------- render: hooks ---------------- */
+function viewHooks() {
+  const H = ui.hooks, list = H.text.split("\n").map((x) => x.trim()).filter(Boolean);
+  return `<div><h1 class="h1">Hook Analyzer</h1><p class="sub">Paste hooks from reels you liked (or your own). Get a teardown, a score and a stronger rewrite for your niche.</p></div>
+  <section class="card"><div><label class="lab" for="hk-text">Hooks (one per line, up to 10)</label><textarea class="input" id="hk-text" data-h="text" maxlength="2200" style="min-height:150px" placeholder="Gurgaon mein 99% log ye galti karte hain&#10;POV: tumhari mummy ne pehli baar cafe ka bill dekha">${h(H.text)}</textarea><p class="hint" id="hk-count">${list.length}/10 hooks${list.length > 10 ? " · remove some" : ""}</p></div>
+    <div class="grid2"><div><label class="lab" for="hk-niche">Niche</label><select class="input" id="hk-niche" data-h="niche">${NICHES.map((n) => `<option value="${n.id}" ${H.niche === n.id ? "selected" : ""}>${h(n.label)}</option>`).join("")}<option value="other" ${H.niche === "other" ? "selected" : ""}>Other</option></select></div>
+    <div><label class="lab" for="hk-lang">Rewrite language</label><select class="input" id="hk-lang" data-h="language">${Object.entries(LANG_LABELS).map(([k, l]) => `<option value="${k}" ${H.language === k ? "selected" : ""}>${l}</option>`).join("")}</select></div></div>
+    ${H.niche === "other" ? `<div><label class="lab" for="hk-custom">Custom niche</label><input class="input" id="hk-custom" data-h="custom" maxlength="80" value="${h(H.custom)}"></div>` : ""}
+    <button class="btn primary block" data-act="analyse" ${H.busy ? "disabled" : ""}>${H.busy ? '<span class="spin" aria-hidden="true"></span> Hooks ka post-mortem chal raha hai...' : "Analyse hooks"}</button></section>
+  ${H.err ? errorBox(H.err, "analyse") : ""}
+  ${H.res ? hookList(H.res) : H.busy || H.err ? "" : `<section class="card empty"><div class="h2">Koi hook nahi daala abhi</div><p class="muted">Paste a few hooks above. Include ones that flopped too: the comparison teaches more.</p></section>`}`;
+}
+
+/* ---------------- render: performance ---------------- */
+const NUM_FIELDS = [["views", "Views"], ["hold_rate_3s", "3-sec hold rate %", 100], ["avg_watch_pct", "Avg watch %", 100], ["likes", "Likes"], ["comments", "Comments"], ["shares", "Shares"], ["saves", "Saves"], ["profile_visits", "Profile visits"], ["dms", "DMs / enquiries"]];
+function logForm() {
+  const L = ui.logging, g = store.gen(L.genId), s = g?.output.scripts.find((x) => x.id === L.scriptId);
+  if (!g || !s) return errorBox("Couldn't find that script. Its generation may have been deleted from History.");
+  const ex = L.existing, sc = scoreFor(g, s.id);
+  return `<section class="card" style="border-color:var(--accent)"><div><div class="eyebrow" style="color:var(--accent)">Log real performance</div><h2 class="script-title" style="font-size:24px">${h(s.title)}</h2><p class="hint">${h(g.inputs.business_name)} · predicted ${sc?.total ?? "–"} · ${h(s.hook_type)}</p></div>
+  <div class="grid2"><div><label class="lab" for="pf-platform">Platform</label><select class="input" id="pf-platform">${[["instagram", "Instagram"], ["youtube", "YouTube Shorts"], ["facebook", "Facebook"], ["other", "Other"]].map(([k, l]) => `<option value="${k}" ${ex?.platform === k ? "selected" : ""}>${l}</option>`).join("")}</select></div>
+  <div><label class="lab" for="pf-date">Post date</label><input class="input" type="date" id="pf-date" value="${h(ex?.post_date || new Date().toISOString().slice(0, 10))}"></div>
+  ${NUM_FIELDS.map(([k, l]) => `<div><label class="lab" for="pf-${k}">${l}${k === "views" ? ' <span class="req">*</span>' : ""}</label><input class="input" id="pf-${k}" inputmode="decimal" placeholder="0" value="${ex ? h(ex[k]) : ""}"></div>`).join("")}</div>
+  <p class="hint">Wait about 48 hours after posting for meaningful numbers.</p><p class="err" id="pf-err"></p>
+  <div class="row"><button class="btn primary" data-act="save-log">Save</button><button class="btn" data-act="cancel-log">Cancel</button></div></section>`;
+}
+function scatter(es, metric) {
+  const W = 340, H = 220, L = 46, B = 30, T = 10, R = 10;
+  const ys = es.map((e) => e[metric]); const ymax = Math.max(10, ...ys);
+  const step = Math.pow(10, Math.floor(Math.log10(ymax))); const top = Math.ceil(ymax / step) * step;
+  const x = (v) => L + (v / 100) * (W - L - R), y = (v) => T + (1 - v / top) * (H - T - B);
+  const yt = [0, top / 2, top];
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Critic score versus ${metric}">
+    ${[0, 25, 50, 75, 100].map((v) => `<line class="grid" x1="${x(v)}" x2="${x(v)}" y1="${T}" y2="${H - B}"/><text x="${x(v)}" y="${H - B + 14}" text-anchor="middle">${v}</text>`).join("")}
+    ${yt.map((v) => `<line class="grid" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${v >= 1000 ? `${r1(v / 1000)}k` : v}</text>`).join("")}
+    <text x="${(L + W - R) / 2}" y="${H - 2}" text-anchor="middle">critic score</text>
+    ${es.map((e) => `<circle class="dot" cx="${x(e.predicted_score)}" cy="${y(e[metric])}" r="6"><title>${h(e.title)}: score ${e.predicted_score}, ${e[metric]} ${metric}</title></circle>`).join("")}</svg>`;
+}
+function viewPerformance() {
+  const all = store.perf(), gens = store.gens();
+  const clients = [...new Map(all.map((e) => [e.client_key, e.business_name])).entries()];
+  const es = ui.perfClient ? all.filter((e) => e.client_key === ui.perfClient) : all;
+  const r = pearson(es.map((e) => e.predicted_score), es.map((e) => e[ui.perfMetric]));
+  const learn = ui.perfClient ? store.learnings(ui.perfClient) : null;
+  const picker = gens.length ? `<details class="fold"><summary>Log a posted script</summary><div class="fold-body"><select class="input" id="pick-gen" aria-label="Generation"><option value="">Choose a generation…</option>${gens.map((g) => `<option value="${h(g.id)}" ${ui.pickGen === g.id ? "selected" : ""}>${h(g.inputs.business_name)} · ${h(fmtDate(g.created_at))}</option>`).join("")}</select>${ui.pickGen && store.gen(ui.pickGen) ? store.gen(ui.pickGen).output.scripts.map((s) => `<button class="btn block" style="justify-content:space-between" data-act="pick-script" data-g="${h(ui.pickGen)}" data-id="${h(s.id)}"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${h(s.title)}</span><span class="hint">${scoreFor(store.gen(ui.pickGen), s.id)?.total ?? "–"}</span></button>`).join("") : ""}</div></details>` : "";
+  return `<div><h1 class="h1">Performance</h1><p class="sub">Log what happened after posting. See if the critic's predictions hold up, and what to make next.</p></div>
+  ${ui.logging ? logForm() : ""}${picker}
+  ${!all.length ? `<section class="card empty"><div class="h2">Abhi tak kuch post nahi kiya?</div><p class="muted">After you post a reel, tap <b>I posted this</b> on its script card, or use “Log a posted script” above. Add the numbers after about 48 hours and this dashboard shows what actually works.</p>${gens.length ? "" : '<button class="btn primary" data-tab="generate">Generate scripts first</button>'}</section>` : `
+  <section class="card"><div class="row"><label class="lab" for="perf-client" style="margin:0">Client</label><select class="input" id="perf-client" style="flex:1;min-width:0"><option value="">All clients (${all.length} posts)</option>${clients.map(([k, n]) => `<option value="${h(k)}" ${ui.perfClient === k ? "selected" : ""}>${h(n)} (${all.filter((e) => e.client_key === k).length})</option>`).join("")}</select></div></section>
+  <section class="card"><div class="row" style="justify-content:space-between"><h2 class="h2">Predicted vs actual</h2><div class="seg">${["views", "saves"].map((m) => `<button data-act="metric" data-v="${m}" aria-pressed="${ui.perfMetric === m}">${m}</button>`).join("")}</div></div>
+    ${scatter(es, ui.perfMetric)}<p style="margin:0;font-size:14px">Correlation (r): <b style="font-family:var(--font-mono)">${r ?? "–"}</b> · ${describeR(r)}${r == null ? ' <span class="hint">(needs 3+ posts with different scores)</span>' : ""}</p></section>
+  <section class="card"><h2 class="h2">Auto-insights</h2>${listHtml(insights(es))}</section>
+  <section class="card"><h2 class="h2">Learnings for the next batch</h2>
+    ${!ui.perfClient ? `<p class="muted" style="margin:0">Pick a client above. Learnings are saved per client and offered on that client's next generation.</p>` : `${learn ? `${listHtml(learn.bullets)}<p class="hint">From ${learn.posts} posts on ${h(fmtDate(learn.created_at))}.</p>` : ""}${ui.learnErr ? errorBox(ui.learnErr) : ""}<button class="btn primary" data-act="learn" ${ui.learnBusy ? "disabled" : ""}>${ui.learnBusy ? '<span class="spin" aria-hidden="true"></span> Data ko nichod rahe hain...' : learn ? "Refresh learnings" : "Get learnings"}</button><p class="hint">Only aggregated numbers go to Claude: no names, captions or dates.</p>`}</section>
+  <section class="card"><h2 class="h2">Averages by</h2><div class="chips">${DIMS.map(([k, l]) => `<button class="chip-btn" data-act="dim" data-v="${k}" aria-pressed="${ui.perfDim === k}" style="text-transform:none">${l}</button>`).join("")}</div>
+    ${groupBy(es, ui.perfDim).map((g) => `<div class="tile"><div class="row" style="justify-content:space-between;flex-wrap:nowrap"><b style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${h(g.group)}</b><span class="hint">${g.posts} post${g.posts > 1 ? "s" : ""}</span></div><div class="metrics" style="margin-top:6px"><span>👁 ${g.avg_views.toLocaleString("en-IN")}</span><span>🔖 ${g.avg_saves}</span><span>↗ ${g.avg_shares}</span><span>3s ${g.avg_hold_rate}%</span><span>⏱ ${g.avg_watch_pct}%</span><span>★ ${g.avg_predicted_score}</span></div></div>`).join("")}</section>
+  <section class="card"><h2 class="h2">All posted scripts</h2>${es.map((e) => `<div class="tile" style="background:none;border:1px solid var(--line)"><div class="script-head"><div style="min-width:0"><b>${h(e.title)}</b><div class="hint">${h(e.business_name)} · ${h(e.platform)} · ${h(e.post_date)} · ${h(e.hook_type)}</div></div><span class="s-${scoreCls(e.predicted_score)}" style="font:900 26px/1 var(--font-display)">${e.predicted_score}</span></div>
+    <div class="metrics" style="margin:8px 0"><span>👁 ${Number(e.views).toLocaleString("en-IN")}</span><span>3s ${e.hold_rate_3s}%</span><span>⏱ ${e.avg_watch_pct}%</span><span>❤ ${e.likes}</span><span>💬 ${e.comments}</span><span>↗ ${e.shares}</span><span>🔖 ${e.saves}</span><span>👤 ${e.profile_visits}</span><span>✉ ${e.dms}</span></div>
+    <div class="row"><button class="btn small" data-act="edit-log" data-id="${h(e.id)}">Edit</button>${armBtn("del-log", e.id, "Delete", "Tap again to delete", "btn small")}</div></div>`).join("")}</section>`}`;
+}
+
+/* ---------------- render: history + settings ---------------- */
+function viewHistory() {
+  const gens = store.gens();
+  return `<div><h1 class="h1">History</h1><p class="sub">Your last 50 generations, saved in this browser. Export from Settings to keep a backup.</p></div>${storageNote()}
+  ${!gens.length ? `<section class="card empty"><div class="h2">Khaali hai abhi</div><p class="muted">Nothing generated yet. Fill the form and your scripts will show up here.</p><button class="btn primary" data-tab="generate">Fill the form</button></section>` :
+  gens.map((g) => { const top = Math.max(0, ...g.critic.scores.map((s) => s.total)), c = scoreCls(top); return `<section class="card"><div class="script-head"><div style="min-width:0"><b style="font-size:18px">${h(g.inputs.business_name)}</b><div class="hint">${h(nicheLabel(g.inputs))} · ${h(g.inputs.area)}, ${h(g.inputs.city)}</div><div class="hint">${h(fmtDate(g.created_at))} · ${g.output.scripts.length} scripts · ${g.mode}</div></div><div class="score bg-${c}" style="min-width:60px;padding:6px 10px"><div class="n s-${c}" style="font-size:30px">${top}</div><div class="of">TOP</div></div></div>
+  <div class="grid-btn" style="grid-template-columns:repeat(3,1fr)"><button class="btn primary" data-act="open" data-id="${h(g.id)}">Open</button><button class="btn" data-act="duplicate" data-id="${h(g.id)}">Duplicate</button>${armBtn("del-gen", g.id, "Delete", "Tap again")}</div></section>`; }).join("")}`;
+}
+function viewSettings() {
+  const s = store.settings();
+  return `<h1 class="h1">Settings</h1>${storageNote()}
+  <section class="card"><h2 class="h2">Defaults</h2>
+    <div><span class="lab">Claude model tier</span><div class="seg">${[["default", "Balanced"], ["complex", "Most capable"]].map(([k, l]) => `<button data-act="set-tier" data-v="${k}" aria-pressed="${s.tier === k}">${l}</button>`).join("")}</div><p class="hint">Most capable thinks longer and uses more of your plan. Balanced is fine for most batches.</p></div>
+    <div><label class="lab" for="st-count">Default number of scripts: <span id="stCountOut">${s.default_script_count}</span></label><input type="range" id="st-count" min="1" max="5" value="${s.default_script_count}"></div>
+    <div><label class="lab" for="st-lang">Default language</label><select class="input" id="st-lang">${Object.entries(LANG_LABELS).map(([k, l]) => `<option value="${k}" ${s.default_language === k ? "selected" : ""}>${l}</option>`).join("")}</select></div>
+  </section>
+  <section class="card"><h2 class="h2">Your data</h2><p class="muted" style="margin:0;font-size:14px">History, feedback, performance logs, client profiles and learnings live in this browser only. Export regularly so nothing is lost.</p>
+    <div class="grid-btn" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))"><button class="btn" data-act="export">Export all data</button><button class="btn" data-act="import">Import data</button>${armBtn("clear", "all", "Clear all data", "Pakka? Tap again", "btn danger")}</div>
+    <p class="hint">Import merges with what's already here; matching items are replaced by the imported copy.</p></section>
+  <section class="card"><h2 class="h2">How scoring works</h2><p class="muted" style="margin:0;font-size:14px">A writer pass drafts the scripts. Code then checks timing, word counts, hashtags, CTAs and script. A separate critic pass scores each script out of 100 (hook 20, retention 20, niche fit 15, relatability 15, emotion 10, share/save 10, CTA 10), rewrites anything under 70 or breaking a rule, and re-scores it. Scores estimate potential. They do not guarantee views.</p><p class="hint">Prompt version ${h(DATA.promptVersion)}</p></section>`;
+}
+
+/* ---------------- actions ---------------- */
+function readForm() {
+  if (!ui.form) return;
+  document.querySelectorAll("[data-f]").forEach((el) => {
+    const k = el.dataset.f;
+    ui.form[k] = el.type === "checkbox" ? el.checked : el.type === "range" ? Number(el.value) : el.value;
+  });
+}
+async function runJob(kind, fn) {
+  ui.failure = null; ui.lastAct = kind;
+  const ctl = new AbortController(); ui.ctl = ctl;
+  const run = { tier: store.settings().tier, signal: ctl.signal, calls: 0, retries: 0, onText: null, stage: (s) => { if (ui.busy) { ui.busy.stage = s; render(); } } };
+  ui.busy = { stage: "audience" }; render(); window.scrollTo({ top: 0 });
+  try {
+    const rec = await fn(run);
+    store.saveGen(rec); ui.resultId = rec.id; ui.tab = "results"; ui.busy = null; render(); window.scrollTo({ top: 0 });
+  } catch (e) {
+    ui.busy = null;
+    if (e?.code !== "cancelled") ui.failure = e instanceof AppError ? e.message : ERR_COPY.upstream_error;
+    render();
+  } finally { ui.ctl = null; }
+}
+function arm(key) { if (ui.armed === key) { ui.armed = null; return true; } ui.armed = key; render(); setTimeout(() => { if (ui.armed === key) { ui.armed = null; render(); } }, 4000); return false; }
+
+document.addEventListener("click", async (ev) => {
+  const t = ev.target.closest("[data-tab],[data-act]"); if (!t || t.tagName === "SELECT" || (t.tagName === "INPUT" && t.type !== "checkbox")) return;
+  if (t.dataset.tab) { readForm(); ui.tab = t.dataset.tab; ui.modal = null; ui.armed = null; render(); window.scrollTo({ top: 0 }); return; }
+  const act = t.dataset.act, id = t.dataset.id;
+  const rec = ui.resultId ? store.gen(ui.resultId) : null;
+  switch (act) {
+    case "oncam": readForm(); ui.form.on_camera = t.dataset.v; render(); break;
+    case "tone": { readForm(); const v = t.dataset.v; ui.form.tones = ui.form.tones.includes(v) ? ui.form.tones.filter((x) => x !== v) : [...ui.form.tones, v]; render(); break; }
+    case "toggle-save-profile": ui.saveProfile = t.checked; break;
+    case "toggle-use-past": ui.usePast = t.checked; break;
+    case "del-profile": if (arm(`del-profile:${id}`)) { store.delProfile(id); toast("Profile deleted"); } render(); break;
+    case "generate": {
+      readForm();
+      const { inputs, errs } = formToInputs(ui.form); ui.errors = errs;
+      if (Object.keys(errs).length) { render(); $(`#f-${Object.keys(errs)[0]}`)?.focus(); return; }
+      if (ui.saveProfile) store.saveProfile(inputs);
+      const learn = store.learnings(clientKey(inputs.business_name));
+      const past = ui.usePast && learn ? learn.bullets.map((b) => `- ${b}`).join("\n") : "";
+      runJob("generate", (run) => runPipeline(inputs, past, run)); break;
+    }
+    case "stop": ui.ctl?.abort(); break;
+    case "regenerate": if (rec) runJob("regenerate", (run) => runPipeline(rec.inputs, "", run)); break;
+    case "regen-weakest": if (rec && rec.output.scripts.length > 1) runJob("regen-weakest", (run) => regenerateWeakest(rec, run)); break;
+    case "copy-all": if (rec) copy(allText(rec)); break;
+    case "download-md": if (rec) saveFile(`${slug(rec.inputs.business_name)}-reels.md`, toMarkdown(rec)); break;
+    case "copy-script": { const s = rec?.output.scripts.find((x) => x.id === id); if (s) copy(scriptText(s, scoreFor(rec, id))); break; }
+    case "copy-caption": { const s = rec?.output.scripts.find((x) => x.id === id); if (s) copy(captionText(s)); break; }
+    case "copy-rewrite": { const list = ui.tab === "hooks" ? ui.hooks.res : rec?.output.hook_analysis; const x = list?.[Number(t.dataset.i)]; if (x) copy(x.rewrite); break; }
+    case "vote": { const k = `${rec.id}:${id}`, cur = store.fb()[k] || {}; const v = cur.vote === t.dataset.v ? null : t.dataset.v; store.setFb(k, { vote: v, note: cur.note || "" }); render(); $(`#script-${CSS.escape(id)}`)?.scrollIntoView({ block: "nearest" }); break; }
+    case "posted": ui.logging = { genId: rec.id, scriptId: id, existing: store.perf().find((e) => e.generation_id === rec.id && e.script_id === id) }; ui.tab = "performance"; render(); window.scrollTo({ top: 0 }); break;
+    case "pick-script": ui.logging = { genId: t.dataset.g, scriptId: id, existing: store.perf().find((e) => e.generation_id === t.dataset.g && e.script_id === id) }; render(); window.scrollTo({ top: 0 }); break;
+    case "edit-log": { const e = store.perf().find((x) => x.id === id); if (e) { ui.logging = { genId: e.generation_id, scriptId: e.script_id, existing: e }; render(); window.scrollTo({ top: 0 }); } break; }
+    case "cancel-log": ui.logging = null; render(); break;
+    case "save-log": saveLog(); break;
+    case "del-log": if (arm(`del-log:${id}`)) { store.delPerf(id); toast("Deleted"); } render(); break;
+    case "metric": ui.perfMetric = t.dataset.v; render(); break;
+    case "dim": ui.perfDim = t.dataset.v; render(); break;
+    case "learn": getLearnings(); break;
+    case "analyse": analyseHooks(); break;
+    case "open": ui.resultId = id; ui.failure = null; ui.tab = "results"; render(); window.scrollTo({ top: 0 }); break;
+    case "duplicate": { const g = store.gen(id); if (g) { ui.form = toForm(g.inputs); ui.errors = {}; ui.tab = "generate"; render(); window.scrollTo({ top: 0 }); toast("Form filled from that generation"); } break; }
+    case "del-gen": if (arm(`del-gen:${id}`)) { store.delGen(id); toast("Deleted. Performance logs are kept."); } render(); break;
+    case "set-tier": store.saveSettings({ ...store.settings(), tier: t.dataset.v }); render(); break;
+    case "export": saveFile(`reelforge-backup-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(exportAll(), null, 2)); break;
+    case "import": $("#importFile").click(); break;
+    case "clear": if (arm("clear:all")) { clearAll(); ui.form = null; toast("All data cleared"); } render(); break;
+    case "modal-select": { const ta = $("#modalText"); ta.focus(); ta.select(); break; }
+    case "modal-close": ui.modal = null; render(); break;
+  }
+});
+document.addEventListener("input", (ev) => {
+  const el = ev.target;
+  if (el.dataset.f === "script_count") { const o = $("#countOut"); if (o) o.textContent = el.value; }
+  if (el.dataset.h) { ui.hooks[el.dataset.h] = el.value; if (el.dataset.h === "text") { const n = el.value.split("\n").map((x) => x.trim()).filter(Boolean).length; $("#hk-count").textContent = `${n}/10 hooks${n > 10 ? " · remove some" : ""}`; } }
+  if (el.id === "st-count") { $("#stCountOut").textContent = el.value; store.saveSettings({ ...store.settings(), default_script_count: Number(el.value) }); }
+  if (el.dataset.f === "business_name") { ui.form.business_name = el.value; const slot = $("#learnSlot"); if (slot) slot.innerHTML = learnSlot(currentLearnings()); }
+});
+document.addEventListener("change", async (ev) => {
+  const el = ev.target;
+  if (el.dataset.f === "niche") { readForm(); const n = NICHES.find((x) => x.id === el.value); if (n) ui.form.b2b = n.mode === "B2B"; render(); }
+  else if (el.id === "profile") { const p = store.profiles().find((x) => x.key === el.value); if (p) { ui.form = toForm(p.inputs); ui.errors = {}; ui.saveProfile = false; render(); toast(`Loaded ${p.name}`); } }
+  else if (el.dataset.h === "niche") { ui.hooks.niche = el.value; render(); }
+  else if (el.dataset.act === "fb-note") { const rec = store.gen(ui.resultId); const k = `${rec.id}:${el.dataset.id}`; const cur = store.fb()[k] || {}; store.setFb(k, { vote: cur.vote || null, note: el.value.slice(0, 300) }); toast("Note saved"); }
+  else if (el.id === "perf-client") { ui.perfClient = el.value; ui.learnErr = null; render(); }
+  else if (el.id === "pick-gen") { ui.pickGen = el.value; render(); $("#pick-gen")?.closest("details")?.setAttribute("open", ""); }
+  else if (el.id === "st-lang") { store.saveSettings({ ...store.settings(), default_language: el.value }); toast("Saved"); }
+  else if (el.id === "importFile") {
+    const f = el.files?.[0]; el.value = ""; if (!f) return;
+    try { const r = importAll(JSON.parse(await f.text())); toast(r.message); ui.form = null; render(); } catch { toast("Couldn't read that file. Is it a ReelForge JSON export?"); }
+  }
+});
+
+function saveLog() {
+  const L = ui.logging, g = store.gen(L.genId), s = g?.output.scripts.find((x) => x.id === L.scriptId); if (!s) return;
+  const nums = {};
+  for (const [k, l, max] of NUM_FIELDS) {
+    const raw = $(`#pf-${k}`).value.trim(); const v = raw === "" ? 0 : Number(raw);
+    if (!Number.isFinite(v) || v < 0 || (max != null && v > max)) { $("#pf-err").textContent = `${l} must be a number${max != null ? ` between 0 and ${max}` : " of 0 or more"}.`; return; }
+    nums[k] = v;
+  }
+  if (!$("#pf-views").value.trim()) { $("#pf-err").textContent = "Views is required."; return; }
+  store.upPerf({ id: L.existing?.id ?? uid("p"), generation_id: g.id, script_id: s.id, business_name: g.inputs.business_name, client_key: clientKey(g.inputs.business_name), niche: nicheLabel(g.inputs), title: s.title, hook_type: s.hook_type, content_pillar: s.content_pillar, emotion: s.emotion, predicted_score: scoreFor(g, s.id)?.total ?? 0, prompt_version: g.prompt_version, platform: $("#pf-platform").value, post_date: $("#pf-date").value, created_at: L.existing?.created_at ?? new Date().toISOString(), ...nums });
+  ui.logging = null; toast("Logged"); render();
+}
+
+async function analyseHooks() {
+  const H = ui.hooks, list = H.text.split("\n").map((x) => x.trim().slice(0, 200)).filter(Boolean);
+  if (!list.length) { H.err = "Paste at least one hook."; render(); return; }
+  if (list.length > 10) { H.err = "Keep it to 10 hooks or fewer."; render(); return; }
+  if (H.niche === "other" && !H.custom.trim()) { H.err = "Type the custom niche first."; render(); return; }
+  H.busy = true; H.err = null; render();
+  try {
+    const run = { tier: store.settings().tier, calls: 0, retries: 0 };
+    const out = await callJson(hooksPrompt(list, nicheLabel({ niche: H.niche, custom_niche: H.custom.trim() }), H.language), S.obj({ hook_analysis: S.arr(HookS, { min: 1 }) }), run);
+    H.res = out.hook_analysis;
+  } catch (e) { H.err = e instanceof AppError ? e.message : ERR_COPY.upstream_error; }
+  H.busy = false; render();
+}
+
+async function getLearnings() {
+  const es = store.perf().filter((e) => e.client_key === ui.perfClient); if (!es.length) return;
+  ui.learnBusy = true; ui.learnErr = null; render();
+  try {
+    const run = { tier: store.settings().tier, calls: 0, retries: 0 };
+    const out = await callJson(`${DATA.prompts.learnings}\n\n---\n# AGGREGATED STATS\n${JSON.stringify(aggregate(es), null, 2)}`, S.obj({ bullets: S.arr(S.str(), { min: 1 }) }), run);
+    store.setLearnings(ui.perfClient, { bullets: out.bullets.slice(0, 5), created_at: new Date().toISOString(), posts: es.length });
+  } catch (e) { ui.learnErr = e instanceof AppError ? e.message : ERR_COPY.upstream_error; }
+  ui.learnBusy = false; render();
+}
+
+sGet(KEYS.settings, {}); // probe storage once so the warning shows on first paint
+ui.hooks.language = store.settings().default_language;
+render();
+</script>
