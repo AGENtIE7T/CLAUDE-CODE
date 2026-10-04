@@ -37,7 +37,7 @@ Differences from the Next.js app:
 
 ## Viral pattern research + learning loop
 
-- `research/` holds 591 real Indian YouTube Shorts across the 12 niches, the analysis, and `REPORT.md`, which covers findings, method and caveats.
+- `research/` holds 1,169 real Indian YouTube Shorts across 25 of the 26 niches, the analysis, and `REPORT.md`, which covers findings, method and caveats.
 - `lib/viral_patterns.json` is built from that research. It feeds the generator (`{{VIRAL_PATTERNS}}`) and the critic, for the selected niche only.
 - `lib/learning.ts` is the self-improvement loop. Your 👍/👎 hooks, results from your posted reels, and client learnings are added to the next generation's `PAST PERFORMANCE & YOUR TASTE` section. Your own data overrides the general research.
 

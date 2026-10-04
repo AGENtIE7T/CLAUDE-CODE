@@ -1,5 +1,5 @@
 {
-  "total_videos": 591,
+  "total_videos": 1169,
   "hit_threshold": 1000000,
   "niches": {
     "auto": {
@@ -101,12 +101,12 @@
           "hit_rate_without": 0.12
         },
         "named_place": {
-          "n": 12,
+          "n": 14,
           "confidence": "low",
-          "median_with": 56413,
-          "median_without": 13000,
-          "lift": 0.66,
-          "hit_rate_with": 0.17,
+          "median_with": 72000,
+          "median_without": 3500,
+          "lift": 0.84,
+          "hit_rate_with": 0.14,
           "hit_rate_without": 0.07
         },
         "transformation": {
@@ -272,6 +272,167 @@
         }
       ]
     },
+    "dance_music": {
+      "videos": 25,
+      "median_views": 237000,
+      "hit_rate": 0.24,
+      "features": {},
+      "hashtag_spam": {
+        "median_4plus_tags": 212500,
+        "median_under_4": 237000,
+        "n_4plus": 4
+      },
+      "top_examples": [
+        {
+          "title": "Played Sitar today for the first time, had a great teacher",
+          "views": 11000000
+        },
+        {
+          "title": "My 6 year guitar progress!",
+          "views": 9000000
+        },
+        {
+          "title": "3 Idiots-Give Me Some Sunshine Guitar Lesson | #guitarlesson #3idiots",
+          "views": 5100000
+        },
+        {
+          "title": "5 Bollywood Actors who can play GUITAR #shorts",
+          "views": 4400000
+        },
+        {
+          "title": "That one Music teacher in school 🏫 #shorts #ytshorts #teacherlife",
+          "views": 4300000
+        }
+      ],
+      "flop_examples": [
+        {
+          "title": "The Hungry Ghost – Trinity Acoustic Guitar Grade 1 | Online Guitar Teacher India",
+          "views": 1
+        },
+        {
+          "title": "Neele Neele Ambar Par | Mukhda on Guitar | Indian Lead Guitar | Kapil Srivastava",
+          "views": 1700
+        },
+        {
+          "title": "Guitar Lessons with Pro Musicians at Delhi Tunes 🎸 Learn from the Best!",
+          "views": 6200
+        }
+      ]
+    },
+    "driving_school": {
+      "videos": 20,
+      "median_views": 506917,
+      "hit_rate": 0.4,
+      "features": {
+        "question_hook": {
+          "n": 5,
+          "confidence": "low",
+          "median_with": 1352790,
+          "median_without": 505905,
+          "lift": 2.67,
+          "hit_rate_with": 0.6,
+          "hit_rate_without": 0.33
+        }
+      },
+      "hashtag_spam": {
+        "median_4plus_tags": 522830,
+        "median_under_4": 277867,
+        "n_4plus": 4
+      },
+      "top_examples": [
+        {
+          "title": "The correct position of your feet when driving! #car #cardriving #tips",
+          "views": 16067606
+        },
+        {
+          "title": "Car ko stop karne ke liye clutch press Karke hi ku breck lagate hai direct ku nahi",
+          "views": 10682177
+        },
+        {
+          "title": "Case Closed ❌ Clutch First or Brakes First ?",
+          "views": 9765200
+        },
+        {
+          "title": "1 Simple step 🤯 Sirf ye karo Traffic मैं Left and right judgement ke liye 🔥",
+          "views": 6325502
+        },
+        {
+          "title": "Should you press the clutch or brake first at high speed? 🥱#car #driving",
+          "views": 5255662
+        }
+      ],
+      "flop_examples": [
+        {
+          "title": "reverse driving basics explained in Hindi || reverse driving tutorial",
+          "views": 5566
+        },
+        {
+          "title": "Driving tips for beginners #car #hindi part 11",
+          "views": 5703
+        },
+        {
+          "title": "Driving tips for beginners 2024 | part 2 #car #hindi",
+          "views": 6494
+        }
+      ]
+    },
+    "events": {
+      "videos": 54,
+      "median_views": 844500,
+      "hit_rate": 0.48,
+      "features": {
+        "price_in_hook": {
+          "n": 10,
+          "confidence": "low",
+          "median_with": 1950000,
+          "median_without": 584000,
+          "lift": 1.85,
+          "hit_rate_with": 0.75,
+          "hit_rate_without": 0.4
+        }
+      },
+      "hashtag_spam": {
+        "median_4plus_tags": 6850000,
+        "median_under_4": 794000,
+        "n_4plus": 2
+      },
+      "top_examples": [
+        {
+          "title": "Birthday party decoration 💙|| Simple birthday decoration || balloon decoration",
+          "views": 13000000
+        },
+        {
+          "title": "Best stage price #eventdecor #wedding #stagedecoration #decoration #stageprops",
+          "views": 12000000
+        },
+        {
+          "title": "balloon decoration ideas,birthday decoration ideas at home,birthday decoration",
+          "views": 8100000
+        },
+        {
+          "title": "Birthday decoration ideas at home | easy balloon decoration ideas at home",
+          "views": 7900000
+        },
+        {
+          "title": "Birthday Decoration under 500/- | Birthday decoration ideas #amazonfinds",
+          "views": 7200000
+        }
+      ],
+      "flop_examples": [
+        {
+          "title": "Dreamy South Indian Wedding Setup ✨ #FeaturebrightEventPlanner #Shorts",
+          "views": 151
+        },
+        {
+          "title": "Elegant Birthday Balloon Decoration | Gold & White Theme ✨ #balloon",
+          "views": 2600
+        },
+        {
+          "title": "Designer Backdrops For Occasion | Festive Decorations | Birthday @flipkart",
+          "views": 20000
+        }
+      ]
+    },
     "fashion": {
       "videos": 48,
       "median_views": 36000,
@@ -316,6 +477,90 @@
         {
           "title": "Premium Boutique Style Unstitched Suits | Mohan Textiles Amritsar",
           "views": 208
+        }
+      ]
+    },
+    "grocery": {
+      "videos": 50,
+      "median_views": 8900,
+      "hit_rate": 0.08,
+      "features": {
+        "owner_or_client_story": {
+          "n": 5,
+          "confidence": "low",
+          "median_with": 506000,
+          "median_without": 7900,
+          "lift": 5.43,
+          "hit_rate_with": 0.29,
+          "hit_rate_without": 0.05
+        },
+        "question_hook": {
+          "n": 14,
+          "confidence": "medium",
+          "median_with": 18250,
+          "median_without": 8900,
+          "lift": 2.88,
+          "hit_rate_with": 0.07,
+          "hit_rate_without": 0.08
+        },
+        "shock_emoji_words": {
+          "n": 15,
+          "confidence": "low",
+          "median_with": 1300,
+          "median_without": 17000,
+          "lift": 0.85,
+          "hit_rate_with": 0.13,
+          "hit_rate_without": 0.06
+        },
+        "price_in_hook": {
+          "n": 21,
+          "confidence": "medium",
+          "median_with": 610,
+          "median_without": 239000,
+          "lift": 0.01,
+          "hit_rate_with": 0.0,
+          "hit_rate_without": 0.15
+        }
+      },
+      "hashtag_spam": {
+        "median_4plus_tags": 114000,
+        "median_under_4": 5500,
+        "n_4plus": 9
+      },
+      "top_examples": [
+        {
+          "title": "Expensive Celebrity Shopping Mall 😱| Exploring celebrities grocery store of Delhi",
+          "views": 6900000
+        },
+        {
+          "title": "DAY-32 DRY FRUITS MARGIN REVEAL!!😱😳🤑 #dryfruits #profit #kiranastore #vlog",
+          "views": 2300000
+        },
+        {
+          "title": "Dukan Se Kitna Kama💸 leta ho🤑 #vlog #ytshorts #minivlog #kirana",
+          "views": 2000000
+        },
+        {
+          "title": "गांव का छोटा किराना स्टोर | रोज कमाई का सिक्रेट | Kirana Shop Business Idea",
+          "views": 1100000
+        },
+        {
+          "title": "is profitable kirana store? | #shorts #minivlog #kiranastore",
+          "views": 684000
+        }
+      ],
+      "flop_examples": [
+        {
+          "title": "India's cheapest grocery 😯#shorts #viral",
+          "views": 1
+        },
+        {
+          "title": "Supermarket Mein Aaj Kya Sasta Mila? 😱 Best Deals Today 🛒",
+          "views": 22
+        },
+        {
+          "title": "Supermarket Mein Aaj Kya Sasta Mila? 😱 Best Deals Today 🛒",
+          "views": 48
         }
       ]
     },
@@ -478,6 +723,81 @@
         }
       ]
     },
+    "interior": {
+      "videos": 48,
+      "median_views": 309500,
+      "hit_rate": 0.31,
+      "features": {
+        "price_in_hook": {
+          "n": 13,
+          "confidence": "medium",
+          "median_with": 348000,
+          "median_without": 271000,
+          "lift": 4.39,
+          "hit_rate_with": 0.33,
+          "hit_rate_without": 0.3
+        },
+        "transformation": {
+          "n": 13,
+          "confidence": "low",
+          "median_with": 442000,
+          "median_without": 199000,
+          "lift": 1.39,
+          "hit_rate_with": 0.27,
+          "hit_rate_without": 0.33
+        },
+        "named_place": {
+          "n": 9,
+          "confidence": "medium",
+          "median_with": 271000,
+          "median_without": 369000,
+          "lift": 0.29,
+          "hit_rate_with": 0.22,
+          "hit_rate_without": 0.33
+        }
+      },
+      "hashtag_spam": {
+        "median_4plus_tags": 657500,
+        "median_under_4": 309500,
+        "n_4plus": 2
+      },
+      "top_examples": [
+        {
+          "title": "Luxury interior design | 3bhk interior By Surekh Interior #shortvideo",
+          "views": 13000000
+        },
+        {
+          "title": "Sleek & Modern Modular Kitchen with Acrylic Finish & Smart Storage | Kitchenlane",
+          "views": 9600000
+        },
+        {
+          "title": "Most Beautiful Modular Kitchen 2025 #interiordesign #modularkitchen",
+          "views": 6800000
+        },
+        {
+          "title": "Luxury Modular Kitchen in Just ₹350000? Unbelievable! 😱🔥",
+          "views": 6500000
+        },
+        {
+          "title": "Interior Design Transformation 🤩 #Home",
+          "views": 5900000
+        }
+      ],
+      "flop_examples": [
+        {
+          "title": "I Would Completely Redesign This Typical Indian Living Room 😍 Before & After",
+          "views": 13
+        },
+        {
+          "title": "3BHK Home Interior Transformation 🏠 Modern Interior Design #shorts #viral",
+          "views": 145
+        },
+        {
+          "title": "Top 5 Luxury Modular Kitchen Designs 2026 😍 Don't Miss End! #shorts",
+          "views": 681
+        }
+      ]
+    },
     "jewellery": {
       "videos": 54,
       "median_views": 260500,
@@ -501,6 +821,15 @@
           "hit_rate_with": 0.33,
           "hit_rate_without": 0.15
         },
+        "named_place": {
+          "n": 7,
+          "confidence": "low",
+          "median_with": 242000,
+          "median_without": 324065,
+          "lift": 1.29,
+          "hit_rate_with": 0.0,
+          "hit_rate_without": 0.19
+        },
         "price_in_hook": {
           "n": 16,
           "confidence": "low",
@@ -509,15 +838,6 @@
           "lift": 1.19,
           "hit_rate_with": 0.06,
           "hit_rate_without": 0.21
-        },
-        "named_place": {
-          "n": 6,
-          "confidence": "low",
-          "median_with": 158000,
-          "median_without": 325797,
-          "lift": 0.75,
-          "hit_rate_with": 0.0,
-          "hit_rate_without": 0.19
         },
         "process_how_made": {
           "n": 9,
@@ -568,6 +888,363 @@
         {
           "title": "Gold Jewellery Price Calculation EXPLAINED 💎 | Ft. SS Alam | #SanjayKathuriaPodcast",
           "views": 7652
+        }
+      ]
+    },
+    "laundry": {
+      "videos": 30,
+      "median_views": 215675,
+      "hit_rate": 0.23,
+      "features": {
+        "named_place": {
+          "n": 5,
+          "confidence": "low",
+          "median_with": 221000,
+          "median_without": 210350,
+          "lift": 1.05,
+          "hit_rate_with": 0.0,
+          "hit_rate_without": 0.28
+        }
+      },
+      "hashtag_spam": {
+        "median_4plus_tags": 649000,
+        "median_under_4": 215675,
+        "n_4plus": 2
+      },
+      "top_examples": [
+        {
+          "title": "The process of removing 🩸 stains at a dry cleaners. #stainremoval #howto",
+          "views": 36000000
+        },
+        {
+          "title": "How shirts get pressed & ironed at the dry cleaner #behindthescenes",
+          "views": 6800000
+        },
+        {
+          "title": "First Day Of My Dry Clean Shop 😂",
+          "views": 3100000
+        },
+        {
+          "title": "Dry Cleaning Explained By A Dry Cleaner #explained",
+          "views": 1269806
+        },
+        {
+          "title": "#laundry #dryclean #design #drycleaning #laundryroutine #viralshort",
+          "views": 1200000
+        }
+      ],
+      "flop_examples": [
+        {
+          "title": "LAUNDRY BUSINESS मे USED PETROL से साड़ी कैसे DRY CLEAN करते है, #drycleaning",
+          "views": 16733
+        },
+        {
+          "title": "Tumbledry – Bharatpur's Premium Shoe & Garment Dry Cleaning Service! #laundry",
+          "views": 17000
+        },
+        {
+          "title": "All Drycleaning Services available &Free Home Delivery pickup service Sahil dry Cleaners",
+          "views": 26577
+        }
+      ]
+    },
+    "mobile_repair": {
+      "videos": 55,
+      "median_views": 173000,
+      "hit_rate": 0.2,
+      "features": {
+        "named_place": {
+          "n": 13,
+          "confidence": "low",
+          "median_with": 186000,
+          "median_without": 149500,
+          "lift": 1.91,
+          "hit_rate_with": 0.31,
+          "hit_rate_without": 0.17
+        },
+        "price_in_hook": {
+          "n": 4,
+          "confidence": "low",
+          "median_with": 22000,
+          "median_without": 179000,
+          "lift": 0.14,
+          "hit_rate_with": 0.0,
+          "hit_rate_without": 0.22
+        }
+      },
+      "hashtag_spam": {
+        "median_4plus_tags": 455000,
+        "median_under_4": 167500,
+        "n_4plus": 1
+      },
+      "top_examples": [
+        {
+          "title": "Pov of a mobile repair shop #comedyshorts #khushaalpawaar #mobilerepairing",
+          "views": 40000000
+        },
+        {
+          "title": "Gaffar Market मै किआ अपने iPhone को रिपेयर 😯#shorts",
+          "views": 24000000
+        },
+        {
+          "title": "Fastest Glass Change in samsung Amoled screen in china",
+          "views": 12000000
+        },
+        {
+          "title": "Samsung Galaxy S23 Ultra Replacement Screen",
+          "views": 4500000
+        },
+        {
+          "title": "Best Quality Mobile Display #shorts #mobilerepair #nicemobilecare",
+          "views": 3900000
+        }
+      ],
+      "flop_examples": [
+        {
+          "title": "Samsung S24 Ultra Service Pack LCD Replacement | Original Display Change",
+          "views": 15
+        },
+        {
+          "title": "aaaj hamri shop par Vivo y300 pro mobile repair ke liya aaya he 😱please",
+          "views": 129
+        },
+        {
+          "title": "Samsung S24 ultra display replacement , Doorstep mobile repair service in Sharjah",
+          "views": 582
+        }
+      ]
+    },
+    "optician": {
+      "videos": 50,
+      "median_views": 77000,
+      "hit_rate": 0.18,
+      "features": {
+        "named_place": {
+          "n": 6,
+          "confidence": "low",
+          "median_with": 63500,
+          "median_without": 77000,
+          "lift": 1.92,
+          "hit_rate_with": 0.0,
+          "hit_rate_without": 0.2
+        },
+        "question_hook": {
+          "n": 9,
+          "confidence": "low",
+          "median_with": 306000,
+          "median_without": 65000,
+          "lift": 1.9,
+          "hit_rate_with": 0.44,
+          "hit_rate_without": 0.12
+        },
+        "price_in_hook": {
+          "n": 10,
+          "confidence": "low",
+          "median_with": 57000,
+          "median_without": 84000,
+          "lift": 1.1,
+          "hit_rate_with": 0.0,
+          "hit_rate_without": 0.23
+        },
+        "process_how_made": {
+          "n": 9,
+          "confidence": "medium",
+          "median_with": 68000,
+          "median_without": 84500,
+          "lift": 0.1,
+          "hit_rate_with": 0.2,
+          "hit_rate_without": 0.17
+        }
+      },
+      "hashtag_spam": {
+        "median_4plus_tags": 86000,
+        "median_under_4": 71000,
+        "n_4plus": 5
+      },
+      "top_examples": [
+        {
+          "title": "High Glasses Prescription? Choose Hi-Index for thinner and lighter lenses!",
+          "views": 2100000
+        },
+        {
+          "title": "Get Eyes Tested From The Comfort Of Your Home | Lenskart At Home",
+          "views": 1900000
+        },
+        {
+          "title": "Making Process of Spectacle Lenses (CR39) #eyewear #glasses #spectacle",
+          "views": 1800000
+        },
+        {
+          "title": "Signs You Need an Eye Exam | Lenskart FREE Eye Test | #Shorts",
+          "views": 1800000
+        },
+        {
+          "title": "Lenskart vs local store",
+          "views": 1500000
+        }
+      ],
+      "flop_examples": [
+        {
+          "title": "Golden Mari Premium Lenses for a Premium Lifestyle #eyeglasses",
+          "views": 148
+        },
+        {
+          "title": "Extreme Lens Cutting ASMR 👓🔥 Satisfying Optical Precision! #shorts #asmr",
+          "views": 416
+        },
+        {
+          "title": "Tulip Eyewear shop Lucknow #shorts #eyes #eyewear #chasma #glasses",
+          "views": 3300
+        }
+      ]
+    },
+    "pet_care": {
+      "videos": 50,
+      "median_views": 190000,
+      "hit_rate": 0.36,
+      "features": {
+        "price_in_hook": {
+          "n": 18,
+          "confidence": "low",
+          "median_with": 1350000,
+          "median_without": 1550,
+          "lift": 1.23,
+          "hit_rate_with": 0.55,
+          "hit_rate_without": 0.23
+        },
+        "named_place": {
+          "n": 23,
+          "confidence": "low",
+          "median_with": 1000000,
+          "median_without": 1600,
+          "lift": 1.2,
+          "hit_rate_with": 0.52,
+          "hit_rate_without": 0.22
+        },
+        "transformation": {
+          "n": 13,
+          "confidence": "low",
+          "median_with": 932,
+          "median_without": 596000,
+          "lift": 0.75,
+          "hit_rate_with": 0.08,
+          "hit_rate_without": 0.46
+        },
+        "shock_emoji_words": {
+          "n": 4,
+          "confidence": "low",
+          "median_with": 932,
+          "median_without": 399000,
+          "lift": 0.64,
+          "hit_rate_with": 0.0,
+          "hit_rate_without": 0.4
+        }
+      },
+      "hashtag_spam": {
+        "median_4plus_tags": 1700,
+        "median_under_4": 397000,
+        "n_4plus": 7
+      },
+      "top_examples": [
+        {
+          "title": "Dog Pat Market Kolkata /lowest price puppy dog/Gallif Street dogs",
+          "views": 73000000
+        },
+        {
+          "title": "New Labrador puppy| cute puppy video| Indian family dog| pet shop|",
+          "views": 31000000
+        },
+        {
+          "title": "galiff street pet market | dog market Kolkata",
+          "views": 30000000
+        },
+        {
+          "title": "Pomeranian dog price in India | teacup dog price #shorts #viral",
+          "views": 5500000
+        },
+        {
+          "title": "Pet Market Kolkata 😍/lowest price puppy dog/Gallif Street dogs #viral",
+          "views": 5400000
+        }
+      ],
+      "flop_examples": [
+        {
+          "title": "Glow Up ✨#PetGrooming #PunePetGrooming #DogGrooming #PetGroomingPune",
+          "views": 30
+        },
+        {
+          "title": "Toy Breed Grooming Transformation 🐶✂️ Professional Pet Grooming & Care",
+          "views": 133
+        },
+        {
+          "title": "Cutiepie mode: ON. 🥰 Rate this little bundle of joy! #DogGrooming #CutePuppy",
+          "views": 295
+        }
+      ]
+    },
+    "photography": {
+      "videos": 50,
+      "median_views": 34000,
+      "hit_rate": 0.22,
+      "features": {
+        "process_how_made": {
+          "n": 18,
+          "confidence": "medium",
+          "median_with": 17000,
+          "median_without": 354500,
+          "lift": 0.06,
+          "hit_rate_with": 0.0,
+          "hit_rate_without": 0.34
+        },
+        "named_place": {
+          "n": 6,
+          "confidence": "low",
+          "median_with": 4400,
+          "median_without": 44000,
+          "lift": 0.0,
+          "hit_rate_with": 0.0,
+          "hit_rate_without": 0.26
+        }
+      },
+      "hashtag_spam": {
+        "median_4plus_tags": 302000,
+        "median_under_4": 29000,
+        "n_4plus": 7
+      },
+      "top_examples": [
+        {
+          "title": "Pre Wedding ❤ Couple | Sabse Bst Wedding Couple #prewedding #couple",
+          "views": 43000000
+        },
+        {
+          "title": "Wedding Photography Tips 😍#wedding#photography#creativephotography#ideas",
+          "views": 14000000
+        },
+        {
+          "title": "Behind the shoot scenes ll Ranjith photography ll Pre wedding shoot",
+          "views": 3600000
+        },
+        {
+          "title": "Best Pre wedding Photography | Priyanka Subhrojit Forever | Qpidindia",
+          "views": 3300000
+        },
+        {
+          "title": "Pre-wedding shoot ll RANJITH PHOTOGRAPHY ll BTS and results ll Maredmilli",
+          "views": 2700000
+        }
+      ],
+      "flop_examples": [
+        {
+          "title": "Prefect itinerary for prewedding shoot in Udaipur..",
+          "views": 157
+        },
+        {
+          "title": "With the charm of Kanyakumari as their backdrop, this pre-wedding shoot♥️",
+          "views": 343
+        },
+        {
+          "title": "Pre-Wedding Shoot in Jaipur | Cinematic Love Story 💍 Royal Couple | KK Films",
+          "views": 801
         }
       ]
     },
@@ -796,6 +1473,72 @@
         }
       ]
     },
+    "spa_wellness": {
+      "videos": 46,
+      "median_views": 813609,
+      "hit_rate": 0.43,
+      "features": {
+        "satisfying_asmr": {
+          "n": 19,
+          "confidence": "low",
+          "median_with": 1198097,
+          "median_without": 470512,
+          "lift": 0.84,
+          "hit_rate_with": 0.6,
+          "hit_rate_without": 0.31
+        },
+        "named_place": {
+          "n": 7,
+          "confidence": "low",
+          "median_with": 451830,
+          "median_without": 874000,
+          "lift": 0.21,
+          "hit_rate_with": 0.22,
+          "hit_rate_without": 0.49
+        }
+      },
+      "hashtag_spam": {
+        "median_4plus_tags": 1288500,
+        "median_under_4": 813609,
+        "n_4plus": 10
+      },
+      "top_examples": [
+        {
+          "title": "🇰🇷🇮🇳 Korean kids trying Indian head massage",
+          "views": 28000000
+        },
+        {
+          "title": "High Pressure Head Massage ASMR",
+          "views": 17857678
+        },
+        {
+          "title": "When Barber Realizes You Don't Have Money For Pay | Neck Crack | Big Eyes Barber",
+          "views": 15933821
+        },
+        {
+          "title": "ASMR: Amazing Indian Head Shirodhara Massage! #shorts",
+          "views": 12887430
+        },
+        {
+          "title": "Waris Barber Head Massage #asmr",
+          "views": 9329857
+        }
+      ],
+      "flop_examples": [
+        {
+          "title": "Indian Spa Ajman | Massage Spa Sharjah | Full Service | Call 05 579 16922",
+          "views": 19530
+        },
+        {
+          "title": "#Shirodhara at Veda5 #Ayurveda #Retreat & #Resort, #Rishikesh, #Goa & #Kerala",
+          "views": 20621
+        },
+        {
+          "title": "Indian Street Barber Head Massage 😴💆 Real ASMR #shorts",
+          "views": 28474
+        }
+      ]
+    },
     "sweets": {
       "videos": 50,
       "median_views": 70500,
@@ -850,6 +1593,119 @@
         {
           "title": "Halwai Jaisi Perfect Mithai Making! 🤤🔥 | Desi Sweet Recipe #SweetMaking #IndianSweet #Mithai #Shorts",
           "views": 1800
+        }
+      ]
+    },
+    "tailor": {
+      "videos": 50,
+      "median_views": 20500,
+      "hit_rate": 0.2,
+      "features": {},
+      "hashtag_spam": {
+        "median_4plus_tags": 33000,
+        "median_under_4": 14000,
+        "n_4plus": 11
+      },
+      "top_examples": [
+        {
+          "title": "Sabyasachi Blouse Cutting and Stitching😍✨#Newpopularblousecutting #stitching",
+          "views": 20000000
+        },
+        {
+          "title": "blouse back neck design cutting and stitching/New blouse design cutting #diy",
+          "views": 14000000
+        },
+        {
+          "title": "Boat neck blouse design cutting and stitching Gauri Rawal.",
+          "views": 7000000
+        },
+        {
+          "title": "34\" Size 4 Tucks Blouse Cutting stitching #shorts #trending #blouse #reels",
+          "views": 5900000
+        },
+        {
+          "title": "New blouse design cutting ✂️#blouse #blousedesign #fashion #stitching",
+          "views": 5200000
+        }
+      ],
+      "flop_examples": [
+        {
+          "title": "Behtareen fitting haadsa nahin hoti... behtareen darzi banata hai #fashion",
+          "views": 21
+        },
+        {
+          "title": "stitching suit #brand #AATailoring #darzi #sewing #learning #tailor",
+          "views": 36
+        },
+        {
+          "title": "Ready for Stitching || Stitching by LTII || #tailoring #ladiestailor #darzi",
+          "views": 49
+        }
+      ]
+    },
+    "travel": {
+      "videos": 50,
+      "median_views": 176000,
+      "hit_rate": 0.16,
+      "features": {
+        "named_place": {
+          "n": 15,
+          "confidence": "low",
+          "median_with": 349000,
+          "median_without": 156000,
+          "lift": 1.93,
+          "hit_rate_with": 0.33,
+          "hit_rate_without": 0.09
+        },
+        "price_in_hook": {
+          "n": 21,
+          "confidence": "low",
+          "median_with": 173000,
+          "median_without": 194000,
+          "lift": 0.87,
+          "hit_rate_with": 0.1,
+          "hit_rate_without": 0.21
+        }
+      },
+      "hashtag_spam": {
+        "median_4plus_tags": 6700000,
+        "median_under_4": 173000,
+        "n_4plus": 1
+      },
+      "top_examples": [
+        {
+          "title": "How to travel without money around India 🇮🇳 || Homeout Traveller",
+          "views": 37000000
+        },
+        {
+          "title": "Nepal kitna mehanga hai ? #nepaltravel #nepal #travel #indiatonepal",
+          "views": 6700000
+        },
+        {
+          "title": "Darjeeling Tour Budget | Darjeeling Tour Travel Tips | Darjeeling Tour",
+          "views": 3000000
+        },
+        {
+          "title": "Manali in Budget | Budget friendly trip to Manali | manali itinerary",
+          "views": 2200000
+        },
+        {
+          "title": "5 Budget Weekend Getaways from DELHI #budgettravel #travelcouple",
+          "views": 1500000
+        }
+      ],
+      "flop_examples": [
+        {
+          "title": "DM us for your next holiday package!",
+          "views": 16
+        },
+        {
+          "title": "INTERNATIONAL TRAVEL OFFERS ARE HERE! 🔥",
+          "views": 30
+        },
+        {
+          "title": "Thailand Tour Package 2026 🇹🇭 Pattaya & Bangkok Package from Delhi",
+          "views": 137
         }
       ]
     },
@@ -953,14 +1809,14 @@
       "geo_mean_lift": 3.81,
       "niches_positive": 2
     },
-    "price_in_hook": {
-      "niches_measured": 6,
-      "geo_mean_lift": 2.35,
-      "niches_positive": 4
-    },
     "warning_mistake_scam": {
       "niches_measured": 1,
       "geo_mean_lift": 2.3,
+      "niches_positive": 1
+    },
+    "owner_or_client_story": {
+      "niches_measured": 2,
+      "geo_mean_lift": 2.09,
       "niches_positive": 1
     },
     "number_list": {
@@ -968,49 +1824,49 @@
       "geo_mean_lift": 1.74,
       "niches_positive": 1
     },
-    "process_how_made": {
-      "niches_measured": 3,
-      "geo_mean_lift": 1.22,
-      "niches_positive": 1
-    },
     "contact_in_title": {
       "niches_measured": 1,
       "geo_mean_lift": 1.18,
       "niches_positive": 1
     },
-    "owner_or_client_story": {
-      "niches_measured": 1,
-      "geo_mean_lift": 0.8,
-      "niches_positive": 0
+    "price_in_hook": {
+      "niches_measured": 13,
+      "geo_mean_lift": 1.07,
+      "niches_positive": 8
+    },
+    "question_hook": {
+      "niches_measured": 9,
+      "geo_mean_lift": 0.87,
+      "niches_positive": 7
+    },
+    "transformation": {
+      "niches_measured": 6,
+      "geo_mean_lift": 0.81,
+      "niches_positive": 2
     },
     "shock_emoji_words": {
-      "niches_measured": 6,
+      "niches_measured": 8,
       "geo_mean_lift": 0.74,
       "niches_positive": 1
     },
-    "transformation": {
-      "niches_measured": 4,
-      "geo_mean_lift": 0.72,
-      "niches_positive": 1
-    },
     "named_place": {
-      "niches_measured": 6,
-      "geo_mean_lift": 0.58,
-      "niches_positive": 1
-    },
-    "question_hook": {
-      "niches_measured": 6,
-      "geo_mean_lift": 0.52,
-      "niches_positive": 4
+      "niches_measured": 14,
+      "geo_mean_lift": 0.5,
+      "niches_positive": 7
     },
     "famous_legacy": {
       "niches_measured": 3,
       "geo_mean_lift": 0.47,
       "niches_positive": 1
     },
+    "process_how_made": {
+      "niches_measured": 5,
+      "geo_mean_lift": 0.4,
+      "niches_positive": 1
+    },
     "satisfying_asmr": {
-      "niches_measured": 1,
-      "geo_mean_lift": 0.01,
+      "niches_measured": 2,
+      "geo_mean_lift": 0.08,
       "niches_positive": 0
     }
   }

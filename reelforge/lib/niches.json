@@ -427,6 +427,542 @@
       "cautions": [
         "no false purity or investment-return claims"
       ]
+    },
+    {
+      "id": "pet_care",
+      "label": "Pet Care (grooming, pet shop, vet, boarding)",
+      "mode": "B2C",
+      "pillars": [
+        "breed price and care explainers",
+        "grooming before/after",
+        "pet behaviour tips",
+        "owner-pet moments",
+        "first day home"
+      ],
+      "trust_triggers": [
+        "certified groomer or vet",
+        "gentle handling on camera",
+        "clean premises",
+        "vaccination/records shown"
+      ],
+      "visuals": [
+        "before/after fluff reveal",
+        "puppy close-ups",
+        "owner reaction",
+        "walkthrough of kennels"
+      ],
+      "peaks": [
+        "Diwali (fireworks anxiety tips)",
+        "summer heat care",
+        "monsoon tick season",
+        "adoption drives"
+      ],
+      "mistakes": [
+        "only showing the cute final look",
+        "loud trending audio over a scared pet"
+      ],
+      "cautions": [
+        "no medical claims without a vet",
+        "never show distressed or unsafe handling",
+        "no 'pure breed' or pedigree claims without papers"
+      ]
+    },
+    {
+      "id": "travel",
+      "label": "Travel Agency / Tours",
+      "mode": "B2C",
+      "pillars": [
+        "exact trip budget breakdowns",
+        "itinerary in 30 seconds",
+        "hidden-cost warnings",
+        "customer trip moments",
+        "visa/document explainers"
+      ],
+      "trust_triggers": [
+        "real customer trip photos with consent",
+        "transparent inclusions",
+        "registered agency details",
+        "reviews"
+      ],
+      "visuals": [
+        "map route animations",
+        "budget on-screen tally",
+        "destination B-roll",
+        "airport/hotel check-in moments"
+      ],
+      "peaks": [
+        "summer vacations",
+        "long weekends",
+        "honeymoon/wedding season",
+        "Diwali/Christmas breaks",
+        "Char Dham/Umrah seasons"
+      ],
+      "mistakes": [
+        "package posters with no story",
+        "'DM for offers' with no price"
+      ],
+      "cautions": [
+        "no 'lowest price guaranteed'",
+        "state what is and isn't included",
+        "no visa guarantees"
+      ]
+    },
+    {
+      "id": "interior",
+      "label": "Interior Design / Modular Kitchen / Furniture",
+      "mode": "B2C",
+      "pillars": [
+        "price-vs-look comparisons",
+        "before/after rooms",
+        "small-space hacks",
+        "material explainers",
+        "client home tours"
+      ],
+      "trust_triggers": [
+        "real completed projects",
+        "material samples up close",
+        "transparent per-sq-ft pricing",
+        "warranty"
+      ],
+      "visuals": [
+        "walkthrough reveal",
+        "split-screen before/after",
+        "drawer/hardware close-ups",
+        "timelapse install"
+      ],
+      "peaks": [
+        "new flat possession season",
+        "Diwali home makeover",
+        "Akshaya Tritiya/griha pravesh"
+      ],
+      "mistakes": [
+        "glossy renders instead of real homes",
+        "no price range",
+        "spec lists with no hook"
+      ],
+      "cautions": [
+        "no fake 'luxury at half price' claims",
+        "show realistic timelines and warranty terms"
+      ]
+    },
+    {
+      "id": "photography",
+      "label": "Photography / Videography Studio",
+      "mode": "B2C",
+      "pillars": [
+        "BTS plus final result",
+        "pose and location ideas",
+        "couple stories",
+        "quick shooting tips",
+        "editing before/after"
+      ],
+      "trust_triggers": [
+        "real client shoots with consent",
+        "equipment and team shown",
+        "delivery timelines",
+        "portfolio"
+      ],
+      "visuals": [
+        "BTS-to-final cut",
+        "raw vs edited split",
+        "location reveal",
+        "slow-mo couple moments"
+      ],
+      "peaks": [
+        "wedding season",
+        "pre-wedding season",
+        "festivals",
+        "baby/maternity shoots",
+        "graduation"
+      ],
+      "mistakes": [
+        "generic 'behind the scenes' with no payoff",
+        "only showing gear"
+      ],
+      "cautions": [
+        "get couple/client consent",
+        "no fake celebrity-client claims"
+      ]
+    },
+    {
+      "id": "mobile_repair",
+      "label": "Mobile / Electronics Repair Shop",
+      "mode": "B2C",
+      "pillars": [
+        "fast repair process",
+        "'repair or replace?' explainers",
+        "real damage stories",
+        "cost transparency",
+        "shop-life comedy"
+      ],
+      "trust_triggers": [
+        "genuine/original parts shown",
+        "warranty on repair",
+        "experienced technician",
+        "bill provided"
+      ],
+      "visuals": [
+        "cracked-to-new reveal",
+        "satisfying glass removal",
+        "microscope close-ups",
+        "customer handover"
+      ],
+      "peaks": [
+        "new phone launch season",
+        "festive sales",
+        "exam season (laptops)",
+        "monsoon water damage"
+      ],
+      "mistakes": [
+        "only boring parts close-ups",
+        "no price or time shown"
+      ],
+      "cautions": [
+        "no 'original' claim for compatible parts",
+        "never show customer data on screen",
+        "no unsafe battery DIY"
+      ]
+    },
+    {
+      "id": "events",
+      "label": "Events / Wedding Planner / Decor",
+      "mode": "B2C",
+      "pillars": [
+        "decor reveal with budget",
+        "setup timelapse",
+        "theme ideas",
+        "client celebration moments",
+        "budget breakdowns"
+      ],
+      "trust_triggers": [
+        "real events delivered",
+        "team setting up",
+        "transparent package pricing",
+        "vendor network"
+      ],
+      "visuals": [
+        "empty-to-decorated timelapse",
+        "stage reveal",
+        "entry walk POV",
+        "drone/wide shots"
+      ],
+      "peaks": [
+        "wedding season",
+        "birthdays",
+        "Diwali/Navratri",
+        "anniversaries",
+        "corporate year-end"
+      ],
+      "mistakes": [
+        "only final photos",
+        "no budget anywhere"
+      ],
+      "cautions": [
+        "no copyrighted characters in themes",
+        "no claims about venues you don't partner with"
+      ]
+    },
+    {
+      "id": "tailor",
+      "label": "Tailor / Alteration / Boutique Stitching",
+      "mode": "B2C",
+      "pillars": [
+        "cutting-and-stitching process",
+        "design inspiration recreated",
+        "size/fit fixes",
+        "fabric-to-final",
+        "customer try-on"
+      ],
+      "trust_triggers": [
+        "neat finishing close-ups",
+        "measurements shown",
+        "delivery on time",
+        "repeat customers"
+      ],
+      "visuals": [
+        "fabric-to-final transition",
+        "scissor cutting close-up",
+        "try-on reveal",
+        "before/after fit"
+      ],
+      "peaks": [
+        "wedding season",
+        "Eid",
+        "Diwali",
+        "Raksha Bandhan",
+        "school uniform season"
+      ],
+      "mistakes": [
+        "shop promos with no garment shown",
+        "long silent videos"
+      ],
+      "cautions": [
+        "no 'designer original' claims when recreating",
+        "credit inspiration"
+      ]
+    },
+    {
+      "id": "spa_wellness",
+      "label": "Spa / Massage / Wellness Centre",
+      "mode": "B2C",
+      "pillars": [
+        "therapy explainers",
+        "relaxing ASMR moments",
+        "first-timer experiences",
+        "price-value packages",
+        "therapist expertise"
+      ],
+      "trust_triggers": [
+        "certified therapists",
+        "hygiene and fresh linen",
+        "calm ambience",
+        "clear menu pricing"
+      ],
+      "visuals": [
+        "slow close-ups of technique",
+        "ambience pans",
+        "before/after calm expression",
+        "oil pour"
+      ],
+      "peaks": [
+        "stress seasons (year-end, exams)",
+        "summer",
+        "weddings (bridal relax packages)",
+        "festivals"
+      ],
+      "mistakes": [
+        "generic spa ads with only a phone number",
+        "over-sexualised framing"
+      ],
+      "cautions": [
+        "no medical or cure claims",
+        "keep framing professional and family-safe",
+        "mention consult a doctor for conditions"
+      ]
+    },
+    {
+      "id": "optician",
+      "label": "Optician / Eyewear Store",
+      "mode": "B2C",
+      "pillars": [
+        "lens explainers (blue-cut, anti-glare, high-index)",
+        "frame-for-face-shape tips",
+        "store vs online comparisons",
+        "eye-test process",
+        "price ranges"
+      ],
+      "trust_triggers": [
+        "qualified optometrist",
+        "branded lens certificates",
+        "free eye test",
+        "clear pricing"
+      ],
+      "visuals": [
+        "lens test demos",
+        "try-on transitions",
+        "thick vs thin lens comparison",
+        "frame wall pan"
+      ],
+      "peaks": [
+        "back-to-school",
+        "screen-heavy exam season",
+        "festive sales",
+        "summer sunglasses"
+      ],
+      "mistakes": [
+        "only frame catalogues",
+        "lens-making factory clips with no customer angle"
+      ],
+      "cautions": [
+        "no medical claims about curing eyesight",
+        "recommend proper eye tests"
+      ]
+    },
+    {
+      "id": "grocery",
+      "label": "Kirana / Grocery / Supermarket",
+      "mode": "B2C",
+      "pillars": [
+        "owner money talk (margins, daily sales)",
+        "product comparisons",
+        "daily-needs hacks",
+        "local delivery",
+        "new arrivals"
+      ],
+      "trust_triggers": [
+        "fresh stock shown",
+        "honest prices",
+        "home delivery",
+        "owner known in the area"
+      ],
+      "visuals": [
+        "shelf pans",
+        "billing counter moments",
+        "price tags close-up",
+        "delivery POV"
+      ],
+      "peaks": [
+        "festive stocking (Diwali, Eid)",
+        "monthly ration days",
+        "summer drinks",
+        "monsoon"
+      ],
+      "mistakes": [
+        "'sabse sasta' claims with no proof",
+        "long shop vlogs"
+      ],
+      "cautions": [
+        "no false MRP or discount claims",
+        "follow food labelling norms"
+      ]
+    },
+    {
+      "id": "driving_school",
+      "label": "Driving School",
+      "mode": "B2C",
+      "pillars": [
+        "one beginner fear solved (clutch, judgement, parking)",
+        "traffic rule explainers",
+        "learner progress",
+        "licence process"
+      ],
+      "trust_triggers": [
+        "certified instructors",
+        "dual-control cars",
+        "learner success stories with consent"
+      ],
+      "visuals": [
+        "dashboard POV",
+        "feet/pedal close-ups",
+        "top-down parking diagram",
+        "learner first drive"
+      ],
+      "peaks": [
+        "summer vacations",
+        "college start",
+        "new-car season"
+      ],
+      "mistakes": [
+        "generic 'driving tips part 11' with no single question"
+      ],
+      "cautions": [
+        "never show unsafe driving",
+        "follow traffic law on camera"
+      ]
+    },
+    {
+      "id": "dance_music",
+      "label": "Dance / Music / Art Academy",
+      "mode": "B2C",
+      "pillars": [
+        "student progress over time",
+        "popular song taught simply",
+        "teacher personality",
+        "performance clips",
+        "beginner mistakes"
+      ],
+      "trust_triggers": [
+        "qualified teacher",
+        "real student progress with consent",
+        "performance stage",
+        "batch timings"
+      ],
+      "visuals": [
+        "then-vs-now progress",
+        "close-up of hands/feet",
+        "recital stage",
+        "group class energy"
+      ],
+      "peaks": [
+        "summer camps",
+        "annual day",
+        "festivals (Navratri, Ganesh)",
+        "new school year"
+      ],
+      "mistakes": [
+        "only class promos with a phone number",
+        "no student shown improving"
+      ],
+      "cautions": [
+        "get parent consent for minors",
+        "no guaranteed competition results"
+      ]
+    },
+    {
+      "id": "laundry",
+      "label": "Laundry / Dry Cleaning / Shoe Cleaning",
+      "mode": "B2C",
+      "pillars": [
+        "stain-removal process",
+        "dirty-to-clean reveals",
+        "how items are pressed/packed",
+        "fabric care tips",
+        "shop-life moments"
+      ],
+      "trust_triggers": [
+        "careful handling",
+        "eco/safe solvents",
+        "pickup and delivery",
+        "packaging quality"
+      ],
+      "visuals": [
+        "stain close-up before/after",
+        "steam press slow-mo",
+        "shoe clean reveal",
+        "packing"
+      ],
+      "peaks": [
+        "wedding season (lehenga, sherwani)",
+        "winter blankets",
+        "monsoon",
+        "Diwali cleaning"
+      ],
+      "mistakes": [
+        "franchise pitch videos aimed at customers",
+        "no item shown"
+      ],
+      "cautions": [
+        "no unsafe chemical DIY at home",
+        "no 'guaranteed' stain removal on every fabric"
+      ]
+    },
+    {
+      "id": "printing",
+      "label": "Printing / Packaging (B2B)",
+      "mode": "B2B",
+      "pillars": [
+        "sample-to-bulk process",
+        "packaging unboxing for brands",
+        "cost per piece explainers",
+        "turnaround stories",
+        "quality tests"
+      ],
+      "trust_triggers": [
+        "GST billing",
+        "machine capacity",
+        "brand clients shown with permission",
+        "sample before bulk"
+      ],
+      "visuals": [
+        "machine run close-ups",
+        "stack of finished boxes",
+        "brand unboxing",
+        "colour proof checks"
+      ],
+      "peaks": [
+        "festive gifting season",
+        "wedding cards season",
+        "financial-year-end corporate orders",
+        "startup launch seasons"
+      ],
+      "mistakes": [
+        "catalogue-only posts",
+        "no price-per-piece"
+      ],
+      "cautions": [
+        "no false certification (FSC, food-grade) claims",
+        "brand logos only with permission"
+      ]
     }
   ],
   "other": {

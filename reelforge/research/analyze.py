@@ -24,7 +24,7 @@ FEATURES = {
     "warning_mistake_scam": r"(scam|don'?t|avoid|mistake|galti|beware|mat karna|stop|ignore mat|ripping|deceptive|warning|roko)",
     "myth_secret_truth": r"(myth|truth|secret|sach|reveal|exposed|nobody|no one tells|never tell|real reason|why )",
     "number_list": r"(\btop \d|\b\d+ (things|tips|ways|steps|signs|rules|hacks|myths|mistakes|sweets|wholesale|tricks)|\b\d+ (cheezein|galti))",
-    "named_place": r"(delhi|mumbai|kolkata|gurgaon|gurugram|noida|pune|jaipur|surat|chandni chowk|sadar bazar|bangalore|bengaluru|hyderabad|chennai|indore|ludhiana|thane|dwarka|madurai|kerala|punjab|chandigarh|uttam nagar|karol bagh)",
+    "named_place": r"(delhi|mumbai|kolkata|gurgaon|gurugram|noida|pune|jaipur|surat|chandni chowk|sadar bazar|bangalore|bengaluru|hyderabad|chennai|indore|ludhiana|thane|dwarka|madurai|kerala|punjab|chandigarh|uttam nagar|karol bagh|kolkata|guwahati|bhopal|lucknow|patna|udaipur|coimbatore|nagpur|varanasi|ranchi|nehru place|gaffar|ballimaran|manali|kashmir|darjeeling|andaman)",
     "famous_legacy": r"(famous|king of|oldest|iconic|legend|best .* in|biggest|world'?s|india'?s (first|biggest))",
     "shock_emoji_words": r"(😱|🤯|😳|shocking|shock|unbelievable|won'?t believe|insane|extreme|omg)",
     "comedy_relatable": r"(😂|🤣|funny|comedy|\bvs\b|pov|when the|reaction|drama|meme)",
@@ -38,7 +38,7 @@ HIT = 1_000_000
 
 def load():
     seen, rows = set(), []
-    for name in ("round1.tsv", "round2a.tsv", "round2b.tsv"):
+    for name in sorted(p.name for p in HERE.glob("round*.tsv")):
         with open(HERE / name, encoding="utf8") as f:
             for r in csv.DictReader(f, delimiter="\t"):
                 if r["video_id"] in seen:
@@ -46,7 +46,7 @@ def load():
                 seen.add(r["video_id"])
                 # One search query per niche per round: the batch is the unit of comparison,
                 # so a feature isn't credited for the query that happened to find it.
-                r["batch"] = f'{r["niche"]}:{"r1" if name == "round1.tsv" else "r2"}'
+                r["batch"] = f'{r["niche"]}:{name[:6]}'
                 r["views"] = int(r["views"])
                 t = r["title"].lower()
                 r["features"] = [k for k, rx in FEATURES.items() if re.search(rx, t)]

@@ -1,8 +1,11 @@
-# Viral pattern research: 591 Indian Shorts, 12 niches
+# Viral pattern research: 1,169 Indian Shorts, 25 niches
 
 ## What was studied
-- **591 unique YouTube Shorts** (Indian region, sorted by views), 34–55 per niche, from 2 searches per niche: one broad (e.g. "salon makeup transformation"), one local-shop angle in Hinglish (e.g. "parlour bridal makeup price kitna").
-- **Title + view count** for all 591 (`round1.tsv`, `round2a.tsv`, `round2b.tsv`).
+- **1,169 unique YouTube Shorts** (Indian region, sorted by views) across **25 niches**.
+  - Rounds 1–2: the original 12 niches, 2 searches each. One broad (e.g. "salon makeup transformation"), one local-shop angle in Hinglish (e.g. "parlour bridal makeup price kitna").
+  - Rounds 3–4: 13 new niches (pet care, travel, interior, photography, mobile repair, events, tailor, spa/wellness, optician, kirana/grocery, driving school, dance/music, laundry), 1–2 searches each.
+  - Driving school, dance/music and laundry got 1 search each. Printing/packaging got none, so it has a playbook but no research lines yet. Nexlev's free tier hit its weekly cap (50 calls).
+- **Title + view count** for every video (`round*.tsv`).
 - **Transcripts** of 20 top or flop videos; 13 had usable speech. Nexlev's free tier allows 2 bulk transcript calls a day.
 
 ## Method (`analyze.py`)
@@ -24,6 +27,14 @@
 | Home services | "Dirty AC cleaning / satisfying" label | ~0.01x | 18 |
 | Jewellery | "How it's made" process | 0.28x | 9 |
 | Auto | City name instead of car/result | 0.13x | 9 |
+| Interior | Price in the hook | ~4.4x | 13 |
+| Interior | City name instead of price/result | 0.29x | 9 |
+| Grocery | Owner-style question ("kitna kama leta?") | ~2.9x | 14 |
+| Grocery | "Sabse sasta / loot" with no figure | 0.01x | 21 |
+| Photography | Generic "behind the scenes" title | 0.06x | 18 |
+| Optician | Factory "how lenses are made" | 0.1x | 9 |
+
+**Hashtags:** a first-pass "4+ hashtags hurt" signal did not hold across 25 niches and was dropped.
 
 **The cross-niche read:** a specific number or stake beats a category label. "Transformation", "famous", "dirty AC" and "best in city" are saturated. The winners add the twist: "DSP bride", "100-year-old AC", "135 kg to 63 kg", "2BHK for ₹6 lakh".
 
