@@ -4,6 +4,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import nichesData from "@/lib/niches.json";
 import { ApiError, streamGenerate, type Stage } from "@/lib/client";
+import { buildLearningContext } from "@/lib/learning";
+import { nicheLabelClient } from "@/lib/niche-label";
 import { BusinessInputSchema, LANGUAGE_LABELS, LANGUAGES, ON_CAMERA, TONES, type BusinessInput } from "@/lib/schema";
 import {
   clientKey,
@@ -11,6 +13,9 @@ import {
   getGeneration,
   getLearnings,
   getSettings,
+  listFeedback,
+  listGenerations,
+  listPerformance,
   listProfiles,
   saveGeneration,
   saveProfile,
@@ -80,7 +85,18 @@ export function GenerateForm() {
     else setForm((f) => ({ ...f, language: s.default_language, script_count: s.default_script_count }));
   }, [params]);
 
-  const learnings = useMemo(() => (form.business_name.trim() ? getLearnings(clientKey(form.business_name)) : undefined), [form.business_name]);
+  const learning = useMemo(() => {
+    const key = clientKey(form.business_name);
+    return buildLearningContext({
+      niche: form.niche,
+      nicheLabel: nicheLabelClient(form),
+      clientKey: key,
+      generations: listGenerations(),
+      feedback: listFeedback(),
+      performance: listPerformance(),
+      clientLearnings: key ? getLearnings(key) : undefined,
+    });
+  }, [form.business_name, form.niche, form.custom_niche]);
   const set = <K extends keyof FormState>(k: K, v: FormState[K]) => setForm((f) => ({ ...f, [k]: v }));
 
   function onNiche(id: string) {
@@ -113,7 +129,7 @@ export function GenerateForm() {
       setProfiles(listProfiles());
     }
     const settings = getSettings();
-    const past = usePast && learnings ? learnings.bullets.map((b) => `- ${b}`).join("\n") : undefined;
+    const past = usePast && learning.text ? learning.text : undefined;
     setStage("audience");
     try {
       const record = await streamGenerate(
@@ -307,13 +323,20 @@ export function GenerateForm() {
           <input type="checkbox" className="h-4 w-4 accent-brand" checked={saveAsProfile} onChange={(e) => setSaveAsProfile(e.target.checked)} />
           Save as client profile
         </label>
-        {learnings && (
+        {learning.text && (
           <label className="flex items-start gap-3 text-sm">
             <input type="checkbox" className="mt-1 h-4 w-4 accent-brand" checked={usePast} onChange={(e) => setUsePast(e.target.checked)} />
             <span>
-              Use past performance learnings for this client
+              Use what ReelForge learned from you
               <span className="block text-xs text-zinc-500">
-                {learnings.bullets.length} learnings from {learnings.posts} posted reels ({new Date(learnings.created_at).toLocaleDateString("en-IN")})
+                {[
+                  learning.counts.learnings && `${learning.counts.learnings} client learnings`,
+                  learning.counts.nichePosts && `${learning.counts.nichePosts} posted reels in this niche`,
+                  learning.counts.liked && `${learning.counts.liked} liked hooks`,
+                  learning.counts.disliked && `${learning.counts.disliked} disliked hooks`,
+                ]
+                  .filter(Boolean)
+                  .join(" · ")}
               </span>
             </span>
           </label>

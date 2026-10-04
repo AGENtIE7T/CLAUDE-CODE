@@ -2,7 +2,7 @@ import { z } from "zod";
 import nichesData from "./niches.json";
 
 /** Bump whenever generator.md / critic.md change in a way that could move scores. */
-export const PROMPT_VERSION = "2026-10-02.1";
+export const PROMPT_VERSION = "2026-10-04.1";
 
 export const NICHE_IDS = nichesData.niches.map((n) => n.id) as [string, ...string[]];
 export const LANGUAGES = ["hinglish", "hindi_roman", "english"] as const;
@@ -54,7 +54,7 @@ const ModelOverride = z
 
 export const GenerateRequestSchema = z.object({
   inputs: BusinessInputSchema,
-  past_performance: str(2000).optional(),
+  past_performance: str(4000).optional(),
   model: ModelOverride,
 });
 

@@ -35,6 +35,12 @@ Differences from the Next.js app:
 - Files are saved through Claude's download prompt. If that's unavailable, the text is shown for copy-paste.
 - Data lives in that artifact's browser storage, so export from Settings regularly.
 
+## Viral pattern research + learning loop
+
+- `research/` holds 591 real Indian YouTube Shorts across the 12 niches, the analysis, and `REPORT.md`, which covers findings, method and caveats.
+- `lib/viral_patterns.json` is built from that research. It feeds the generator (`{{VIRAL_PATTERNS}}`) and the critic, for the selected niche only.
+- `lib/learning.ts` is the self-improvement loop. Your 👍/👎 hooks, results from your posted reels, and client learnings are added to the next generation's `PAST PERFORMANCE & YOUR TASTE` section. Your own data overrides the general research.
+
 ## Environment variables
 
 | Variable | Required | Default | What it does |

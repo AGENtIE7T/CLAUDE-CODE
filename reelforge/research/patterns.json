@@ -1,0 +1,1017 @@
+{
+  "total_videos": 591,
+  "hit_threshold": 1000000,
+  "niches": {
+    "auto": {
+      "videos": 50,
+      "median_views": 12500,
+      "hit_rate": 0.16,
+      "features": {
+        "question_hook": {
+          "n": 6,
+          "confidence": "low",
+          "median_with": 1300,
+          "median_without": 13000,
+          "lift": 2.4,
+          "hit_rate_with": 0.14,
+          "hit_rate_without": 0.16
+        },
+        "named_place": {
+          "n": 9,
+          "confidence": "medium",
+          "median_with": 40000,
+          "median_without": 1300,
+          "lift": 0.13,
+          "hit_rate_with": 0.33,
+          "hit_rate_without": 0.12
+        }
+      },
+      "hashtag_spam": {
+        "median_4plus_tags": 726,
+        "median_under_4": 20000,
+        "n_4plus": 12
+      },
+      "top_examples": [
+        {
+          "title": "Scared of Scratches? I Got PPF Installed at HR26 Garage! | Car Detailing Gurgaon @SwaggerSharma",
+          "views": 12000000
+        },
+        {
+          "title": "Baleno Gets a Shinex Makeover | From Dirt to Dazzle ✨",
+          "views": 3800000
+        },
+        {
+          "title": "Touchless Wash for Fortuner #carcare #carwash #foamwash #toyota #autodetailing #automobile #ppf",
+          "views": 2400000
+        },
+        {
+          "title": "India's first professional Female detailer | Auto Detailing in chennai",
+          "views": 1700000
+        },
+        {
+          "title": "How to remove check engine light | Easy way to remove check engine light #checkenginelight #short",
+          "views": 1700000
+        }
+      ],
+      "flop_examples": [
+        {
+          "title": "Car Overheating Problem in Hindi, How to fix Car Overheating Problem ||₹#viral #shortvideo",
+          "views": 57
+        },
+        {
+          "title": "Clutch Headings Repair Process (In Hindi)",
+          "views": 76
+        },
+        {
+          "title": "Engine Oil Pressure Light ON? 🚨 Gaadi Turant Roko! | Oil Pressure Warning Explained | #oilpressure",
+          "views": 97
+        }
+      ]
+    },
+    "clinic": {
+      "videos": 55,
+      "median_views": 28568,
+      "hit_rate": 0.09,
+      "features": {
+        "price_in_hook": {
+          "n": 7,
+          "confidence": "low",
+          "median_with": 356399,
+          "median_without": 20625,
+          "lift": 9.49,
+          "hit_rate_with": 0.12,
+          "hit_rate_without": 0.09
+        },
+        "myth_secret_truth": {
+          "n": 16,
+          "confidence": "medium",
+          "median_with": 616,
+          "median_without": 43826,
+          "lift": 8.28,
+          "hit_rate_with": 0.06,
+          "hit_rate_without": 0.1
+        },
+        "question_hook": {
+          "n": 14,
+          "confidence": "low",
+          "median_with": 908,
+          "median_without": 37000,
+          "lift": 0.86,
+          "hit_rate_with": 0.0,
+          "hit_rate_without": 0.12
+        },
+        "named_place": {
+          "n": 12,
+          "confidence": "low",
+          "median_with": 56413,
+          "median_without": 13000,
+          "lift": 0.66,
+          "hit_rate_with": 0.17,
+          "hit_rate_without": 0.07
+        },
+        "transformation": {
+          "n": 4,
+          "confidence": "low",
+          "median_with": 28568,
+          "median_without": 26309,
+          "lift": 0.41,
+          "hit_rate_with": 0.14,
+          "hit_rate_without": 0.08
+        },
+        "famous_legacy": {
+          "n": 12,
+          "confidence": "medium",
+          "median_with": 40413,
+          "median_without": 13000,
+          "lift": 0.31,
+          "hit_rate_with": 0.07,
+          "hit_rate_without": 0.1
+        },
+        "shock_emoji_words": {
+          "n": 5,
+          "confidence": "low",
+          "median_with": 595,
+          "median_without": 34000,
+          "lift": 0.25,
+          "hit_rate_with": 0.0,
+          "hit_rate_without": 0.1
+        }
+      },
+      "hashtag_spam": {
+        "median_4plus_tags": 24000,
+        "median_under_4": 29784,
+        "n_4plus": 9
+      },
+      "top_examples": [
+        {
+          "title": "Award-Winning Dental Implants in Bangalore | Starting ₹15,999 | Dezy Dental",
+          "views": 3400000
+        },
+        {
+          "title": "Doing RCT with BMP process by Dr Vimal sir #dentalclinic #doctor #sujanganj jaunpur",
+          "views": 2300000
+        },
+        {
+          "title": "Weight Loss Myths Vs Facts | Raj Shamani #Shorts",
+          "views": 2200000
+        },
+        {
+          "title": "A day a Dontia Dental Care Kolkata | Family Dental Clinic #bestdentistinkolkata #dentistnearme #yt",
+          "views": 1200000
+        },
+        {
+          "title": "Income Of A Dentist In India | Best dentist in India speaks",
+          "views": 1095512
+        }
+      ],
+      "flop_examples": [
+        {
+          "title": "Hypertension Myths BUSTED! हाइपरटेंशन मिथक!",
+          "views": 9
+        },
+        {
+          "title": "15 sec me blockage pta kro..! #healthylifestyle #drvimal #heartattack #healthyfood",
+          "views": 10
+        },
+        {
+          "title": "Doctor Saanp Ki Aisi Advice 😂🐍 | Patient Ka Epic Reply 🤣",
+          "views": 10
+        }
+      ]
+    },
+    "coaching": {
+      "videos": 50,
+      "median_views": 1047000,
+      "hit_rate": 0.5,
+      "features": {
+        "transformation": {
+          "n": 6,
+          "confidence": "low",
+          "median_with": 5502550,
+          "median_without": 1047000,
+          "lift": 12.15,
+          "hit_rate_with": 0.5,
+          "hit_rate_without": 0.5
+        },
+        "myth_secret_truth": {
+          "n": 5,
+          "confidence": "low",
+          "median_with": 1100000,
+          "median_without": 994000,
+          "lift": 1.76,
+          "hit_rate_with": 0.57,
+          "hit_rate_without": 0.49
+        },
+        "number_list": {
+          "n": 4,
+          "confidence": "low",
+          "median_with": 1909500,
+          "median_without": 1047000,
+          "lift": 1.74,
+          "hit_rate_with": 0.5,
+          "hit_rate_without": 0.5
+        },
+        "shock_emoji_words": {
+          "n": 7,
+          "confidence": "low",
+          "median_with": 1100000,
+          "median_without": 601000,
+          "lift": 0.41,
+          "hit_rate_with": 0.56,
+          "hit_rate_without": 0.49
+        },
+        "question_hook": {
+          "n": 5,
+          "confidence": "low",
+          "median_with": 6900,
+          "median_without": 1650000,
+          "lift": 0.0,
+          "hit_rate_with": 0.17,
+          "hit_rate_without": 0.55
+        }
+      },
+      "hashtag_spam": {
+        "median_4plus_tags": 448000,
+        "median_under_4": 1400000,
+        "n_4plus": 15
+      },
+      "top_examples": [
+        {
+          "title": "Students vs Teachers of 2025 💀🤯 | Kuldeep Singhaniaa #shorts",
+          "views": 232000000
+        },
+        {
+          "title": "That 5-Star Experience #shorts #funny #school #teacher #classroom #comedy #food #delivery #explore",
+          "views": 194000000
+        },
+        {
+          "title": "Teacher student funny reels😂|#youtubeshorts #shorts #trending #fdccompany",
+          "views": 55000000
+        },
+        {
+          "title": "When The Student Trolls The Teacher.",
+          "views": 43000000
+        },
+        {
+          "title": "My First 10th Board Exam | English Paper #minivlog #shorts",
+          "views": 39000000
+        }
+      ],
+      "flop_examples": [
+        {
+          "title": "Board Exam Questions Ai prediction 😱 2 Insane Study AI Tools! #shorts #fyp",
+          "views": 307
+        },
+        {
+          "title": "Pre-Board Exams Mein 80%+ Kaise Score Kare? 📚 | 7 Best Study Tips",
+          "views": 636
+        },
+        {
+          "title": "Mike vs Teacher: The Funniest School Comedy! | Joke 🤣😂#shorts",
+          "views": 1200
+        }
+      ]
+    },
+    "fashion": {
+      "videos": 48,
+      "median_views": 36000,
+      "hit_rate": 0.27,
+      "features": {},
+      "hashtag_spam": {
+        "median_4plus_tags": 83000,
+        "median_under_4": 5500,
+        "n_4plus": 14
+      },
+      "top_examples": [
+        {
+          "title": "muh lagna bekar hai!\" 😱 | Ultimate Boutique Drama at Surat Wholesale Market",
+          "views": 55000000
+        },
+        {
+          "title": "Timeless Elegance Tissue Cotton Saree – Grace in Every Thread",
+          "views": 29000000
+        },
+        {
+          "title": "Myntra Ready To Wear Saree Haul 😱😱",
+          "views": 17000000
+        },
+        {
+          "title": "Saree Mini vlog😍❤️ EP-203 #neetubisht #minivlog #shopping #lifestyle",
+          "views": 14000000
+        },
+        {
+          "title": "I can't pick a favorite📍🇮🇳🍒let the india diaries begin. This is from QBIK! #india #saree",
+          "views": 10000000
+        }
+      ],
+      "flop_examples": [
+        {
+          "title": "Best Shop For Designer Suits | Wholesale Ethnic Wear",
+          "views": 98
+        },
+        {
+          "title": "✨ Unstitched Suit Collection | Latest Designs | Wholesale | Ajit Zone Surat | Starting from ₹165",
+          "views": 113
+        },
+        {
+          "title": "Premium Boutique Style Unstitched Suits | Mohan Textiles Amritsar",
+          "views": 208
+        }
+      ]
+    },
+    "gym": {
+      "videos": 50,
+      "median_views": 54500,
+      "hit_rate": 0.32,
+      "features": {
+        "question_hook": {
+          "n": 6,
+          "confidence": "low",
+          "median_with": 1350,
+          "median_without": 599000,
+          "lift": 1.44,
+          "hit_rate_with": 0.0,
+          "hit_rate_without": 0.36
+        },
+        "owner_or_client_story": {
+          "n": 4,
+          "confidence": "low",
+          "median_with": 1607000,
+          "median_without": 3850,
+          "lift": 0.8,
+          "hit_rate_with": 0.5,
+          "hit_rate_without": 0.3
+        },
+        "shock_emoji_words": {
+          "n": 5,
+          "confidence": "low",
+          "median_with": 689000,
+          "median_without": 3200,
+          "lift": 0.62,
+          "hit_rate_with": 0.43,
+          "hit_rate_without": 0.3
+        },
+        "transformation": {
+          "n": 20,
+          "confidence": "medium",
+          "median_with": 1000000,
+          "median_without": 1000,
+          "lift": 0.21,
+          "hit_rate_with": 0.52,
+          "hit_rate_without": 0.17
+        }
+      },
+      "hashtag_spam": {
+        "median_4plus_tags": 61500,
+        "median_under_4": 48550,
+        "n_4plus": 14
+      },
+      "top_examples": [
+        {
+          "title": "10M VIEWS 90 days of transformation 😱😱 #shortvideo #short #viralshorts",
+          "views": 10000000
+        },
+        {
+          "title": "Indian fat boy from 135 kgs to 63 kgs weight loss 🔥 #weightloss #motivation",
+          "views": 10000000
+        },
+        {
+          "title": "6 months is enough 💯 #gymmotivation",
+          "views": 8900000
+        },
+        {
+          "title": "2020 vs 2024 #shorts#fitness#gym",
+          "views": 8199999
+        },
+        {
+          "title": "❌Beginner's workout mistakes !! #youtubeshorts #beginnersmistakes❌",
+          "views": 8199999
+        }
+      ],
+      "flop_examples": [
+        {
+          "title": "Gym Me Ye Galti Mat Karna! 😱💪 #shorts",
+          "views": 2
+        },
+        {
+          "title": "Gym Ke Pehle Din ye 3 Galti Mat Karna ❌ 😰 #gym #shorts",
+          "views": 24
+        },
+        {
+          "title": "Beginner Gym Mistakes ❌ #gymtips #shorts",
+          "views": 26
+        }
+      ]
+    },
+    "home_services": {
+      "videos": 50,
+      "median_views": 207000,
+      "hit_rate": 0.36,
+      "features": {
+        "process_how_made": {
+          "n": 9,
+          "confidence": "medium",
+          "median_with": 322000,
+          "median_without": 128000,
+          "lift": 0.45,
+          "hit_rate_with": 0.36,
+          "hit_rate_without": 0.36
+        },
+        "shock_emoji_words": {
+          "n": 5,
+          "confidence": "low",
+          "median_with": 9900,
+          "median_without": 255000,
+          "lift": 0.11,
+          "hit_rate_with": 0.4,
+          "hit_rate_without": 0.36
+        },
+        "satisfying_asmr": {
+          "n": 18,
+          "confidence": "medium",
+          "median_with": 7500,
+          "median_without": 905500,
+          "lift": 0.01,
+          "hit_rate_with": 0.17,
+          "hit_rate_without": 0.47
+        }
+      },
+      "hashtag_spam": {
+        "median_4plus_tags": 29500,
+        "median_under_4": 290500,
+        "n_4plus": 16
+      },
+      "top_examples": [
+        {
+          "title": "Extreme AC Cleaning: Before & After Transformation!",
+          "views": 90000000
+        },
+        {
+          "title": "low pan pipe install #viralreelsシ #plumbing #reels #plumber #viralvideo #pan #sanitary",
+          "views": 32000000
+        },
+        {
+          "title": "DIY Plumbing Basics! How to Clamp a Faucet in a Tight Space #diy #plumbing #tips #hacks",
+          "views": 19000000
+        },
+        {
+          "title": "My Lungs Hurt Watching This! 😷 Cleaning a 100-Year-Old AC Unit?! #satisfying #hvaclife #omg",
+          "views": 16000000
+        },
+        {
+          "title": "AC cleaning ASMR Super satisfying #shorts",
+          "views": 10000000
+        }
+      ],
+      "flop_examples": [
+        {
+          "title": "Cleaning dirty AC outdoor unit #acservice #dubai #diy",
+          "views": 11
+        },
+        {
+          "title": "Plumbing Pipe Fitting कैसे करें? | Pipe Fitting Step by Step | Plumber Work #pipeWalaji",
+          "views": 273
+        },
+        {
+          "title": "Deep Clean Satisfaction: Restoring Your AC Unit!#AC Outdoor Unit Servicing#AC Outdoor Cleaning",
+          "views": 404
+        }
+      ]
+    },
+    "jewellery": {
+      "videos": 54,
+      "median_views": 260500,
+      "hit_rate": 0.17,
+      "features": {
+        "warning_mistake_scam": {
+          "n": 6,
+          "confidence": "low",
+          "median_with": 762907,
+          "median_without": 242500,
+          "lift": 2.3,
+          "hit_rate_with": 0.33,
+          "hit_rate_without": 0.15
+        },
+        "question_hook": {
+          "n": 6,
+          "confidence": "low",
+          "median_with": 529138,
+          "median_without": 260500,
+          "lift": 1.37,
+          "hit_rate_with": 0.33,
+          "hit_rate_without": 0.15
+        },
+        "price_in_hook": {
+          "n": 16,
+          "confidence": "low",
+          "median_with": 325797,
+          "median_without": 239500,
+          "lift": 1.19,
+          "hit_rate_with": 0.06,
+          "hit_rate_without": 0.21
+        },
+        "named_place": {
+          "n": 6,
+          "confidence": "low",
+          "median_with": 158000,
+          "median_without": 325797,
+          "lift": 0.75,
+          "hit_rate_with": 0.0,
+          "hit_rate_without": 0.19
+        },
+        "process_how_made": {
+          "n": 9,
+          "confidence": "medium",
+          "median_with": 163406,
+          "median_without": 278000,
+          "lift": 0.28,
+          "hit_rate_with": 0.11,
+          "hit_rate_without": 0.18
+        }
+      },
+      "hashtag_spam": {
+        "median_4plus_tags": 697000,
+        "median_under_4": 237000,
+        "n_4plus": 9
+      },
+      "top_examples": [
+        {
+          "title": "How much gst is charged on gold purchase?",
+          "views": 19922932
+        },
+        {
+          "title": "💛 Full gold bridal set in our main video — check related tab",
+          "views": 4500000
+        },
+        {
+          "title": "Avoid this Gold Jewellery Scam 🤯💰 #shorts",
+          "views": 4500000
+        },
+        {
+          "title": "How to calculate the exact value of Gold? 🪙#Shorts #pw #commercewallahbypw",
+          "views": 2800000
+        },
+        {
+          "title": "Designer Ready-to-Wear Handmade Bridal Jewelry Collection💥😍#shorts #jewellery #bridal #collection",
+          "views": 2700000
+        }
+      ],
+      "flop_examples": [
+        {
+          "title": "beautiful golden wedding set for bride 💖😘✨ #bridal #foryou to d #gold",
+          "views": 984
+        },
+        {
+          "title": "Elegance redefined ✨ Complete your bridal look with our exquisite antique gold bridal collection! 👑",
+          "views": 1500
+        },
+        {
+          "title": "Gold Jewellery Price Calculation EXPLAINED 💎 | Ft. SS Alam | #SanjayKathuriaPodcast",
+          "views": 7652
+        }
+      ]
+    },
+    "real_estate": {
+      "videos": 50,
+      "median_views": 199500,
+      "hit_rate": 0.2,
+      "features": {
+        "price_in_hook": {
+          "n": 26,
+          "confidence": "medium",
+          "median_with": 176500,
+          "median_without": 211500,
+          "lift": 7.12,
+          "hit_rate_with": 0.19,
+          "hit_rate_without": 0.21
+        },
+        "contact_in_title": {
+          "n": 6,
+          "confidence": "low",
+          "median_with": 604000,
+          "median_without": 146000,
+          "lift": 1.18,
+          "hit_rate_with": 0.25,
+          "hit_rate_without": 0.19
+        },
+        "named_place": {
+          "n": 34,
+          "confidence": "low",
+          "median_with": 123000,
+          "median_without": 358000,
+          "lift": 0.86,
+          "hit_rate_with": 0.21,
+          "hit_rate_without": 0.19
+        }
+      },
+      "hashtag_spam": {
+        "median_4plus_tags": 301500,
+        "median_under_4": 144000,
+        "n_4plus": 6
+      },
+      "top_examples": [
+        {
+          "title": "सबसे बड़ा 3 BHK FLAT / Code-360/ Contact- 9309106745 / 9834506815/ #housetour #realestate",
+          "views": 12000000
+        },
+        {
+          "title": "3 BHK For Rent for ONLY ₹50 Lakhs P.Y.",
+          "views": 5500000
+        },
+        {
+          "title": "2-BHK Flat Only Just ₹6 Lakh Rupees | Flat In Delhi | Registry Property",
+          "views": 3900000
+        },
+        {
+          "title": "2 bhk flat in just 20.50 lakh | Furnished flat in Delhi | Low budget flat in Delhi | Home loan",
+          "views": 2200000
+        },
+        {
+          "title": "🔥2 bed Apartment in Dubai for SALE🔥Business Bay, 5 mins away from Burj Khalifa🔥 #investment",
+          "views": 1900000
+        }
+      ],
+      "flop_examples": [
+        {
+          "title": "🚨 ₹70L Furnished Studio in Andheri East | ₹35K Rental Potential!",
+          "views": 20
+        },
+        {
+          "title": "पैसा वसूल 2 BHK FULL FURNISHED Flat for rent near DWARKA SECTOR 14 METRO | BRS SHOW RS409",
+          "views": 50
+        },
+        {
+          "title": "Affordable 3BHK Raw Flat for Rent in Habitat 102 Sector 102 Gurugram | Dwarka Expressway",
+          "views": 84
+        }
+      ]
+    },
+    "restaurant": {
+      "videos": 34,
+      "median_views": 560000,
+      "hit_rate": 0.44,
+      "features": {
+        "price_in_hook": {
+          "n": 9,
+          "confidence": "low",
+          "median_with": 354000,
+          "median_without": 1000000,
+          "lift": 0.99,
+          "hit_rate_with": 0.22,
+          "hit_rate_without": 0.52
+        },
+        "named_place": {
+          "n": 5,
+          "confidence": "low",
+          "median_with": 593000,
+          "median_without": 560000,
+          "lift": 0.52,
+          "hit_rate_with": 0.33,
+          "hit_rate_without": 0.46
+        },
+        "famous_legacy": {
+          "n": 8,
+          "confidence": "medium",
+          "median_with": 354000,
+          "median_without": 568000,
+          "lift": 0.12,
+          "hit_rate_with": 0.44,
+          "hit_rate_without": 0.44
+        }
+      },
+      "hashtag_spam": {
+        "median_4plus_tags": 2000000,
+        "median_under_4": 224000,
+        "n_4plus": 8
+      },
+      "top_examples": [
+        {
+          "title": "Egg Roti Street Food: The Viral Snack You Can't Miss! ##shorts",
+          "views": 28000000
+        },
+        {
+          "title": "Kolkata famous Chhangani club kachori #shorts",
+          "views": 18000000
+        },
+        {
+          "title": "SUPERFAST Vicky Tarri Poha 😱🔥#shorts #ashortaday #streetfood",
+          "views": 14000000
+        },
+        {
+          "title": "BUTTER CHICKEN😍 | Indian Street Food #shortvideo #shorts #trending #viralvideo",
+          "views": 14000000
+        },
+        {
+          "title": "CHEESE BURST OMELETTE😍 | Indian Street Food #trending #shortvideo #shorts #viralvideo",
+          "views": 13000000
+        }
+      ],
+      "flop_examples": [
+        {
+          "title": "Cleared an 18 Lakh debt, without paying a penny! 😲 The full story #restaurant #delhi #food #short...",
+          "views": 63
+        },
+        {
+          "title": "I Built My Dream Dhaba in India 🇮🇳 | My Story",
+          "views": 68
+        },
+        {
+          "title": "💚 Hulk Opens a ₹1 Restaurant | Funny Story|🍔 Sirf ₹1 Mein Pizza, Burger Aur Samosa! #cartoon #funny",
+          "views": 69
+        }
+      ]
+    },
+    "salon": {
+      "videos": 50,
+      "median_views": 460000,
+      "hit_rate": 0.38,
+      "features": {
+        "shock_emoji_words": {
+          "n": 4,
+          "confidence": "low",
+          "median_with": 1850000,
+          "median_without": 311000,
+          "lift": 34.91,
+          "hit_rate_with": 0.75,
+          "hit_rate_without": 0.35
+        },
+        "price_in_hook": {
+          "n": 10,
+          "confidence": "medium",
+          "median_with": 574000,
+          "median_without": 249000,
+          "lift": 0.44,
+          "hit_rate_with": 0.27,
+          "hit_rate_without": 0.41
+        },
+        "transformation": {
+          "n": 20,
+          "confidence": "medium",
+          "median_with": 206000,
+          "median_without": 661000,
+          "lift": 0.26,
+          "hit_rate_with": 0.3,
+          "hit_rate_without": 0.44
+        }
+      },
+      "hashtag_spam": {
+        "median_4plus_tags": 352000,
+        "median_under_4": 574000,
+        "n_4plus": 9
+      },
+      "top_examples": [
+        {
+          "title": "From Competition to Beauty Salon: A Gymnast's Makeup Transformation #shorts",
+          "views": 32000000
+        },
+        {
+          "title": "From Braids 💋 Glam: Her Stunning Makeover Journey #makeover #beauty",
+          "views": 26000000
+        },
+        {
+          "title": "OLD MONEY AESTHETIC BRIDAL MAKEUP",
+          "views": 17000000
+        },
+        {
+          "title": "SHOCKING😱😱 TRANSFORMATION CONTACT: 9003069771 #groommakeup #hairstyle #groom",
+          "views": 16000000
+        },
+        {
+          "title": "DSP bride ❤️ #parulgargmakeup",
+          "views": 9900000
+        }
+      ],
+      "flop_examples": [
+        {
+          "title": "💄 FREE Bridal Makeup Course for Girls | Learn Bridal Makeup Step by Step✨",
+          "views": 254
+        },
+        {
+          "title": "✨ Garba Makeup Transition | Navratri Glam Look 💃🔥 | Garba Makeup Transformation #garbamakeuplook",
+          "views": 405
+        },
+        {
+          "title": "Step-by-Step Makeup Tutorial 💄 | Glam Makeup Transformation #trendingshorts",
+          "views": 1000
+        }
+      ]
+    },
+    "sweets": {
+      "videos": 50,
+      "median_views": 70500,
+      "hit_rate": 0.3,
+      "features": {
+        "process_how_made": {
+          "n": 14,
+          "confidence": "medium",
+          "median_with": 171500,
+          "median_without": 61500,
+          "lift": 14.58,
+          "hit_rate_with": 0.36,
+          "hit_rate_without": 0.28
+        }
+      },
+      "hashtag_spam": {
+        "median_4plus_tags": 38000,
+        "median_under_4": 74000,
+        "n_4plus": 17
+      },
+      "top_examples": [
+        {
+          "title": "DREAM Cake Making Process😍 #streetfood #viral #cake #india #making #explore #shorts",
+          "views": 123000000
+        },
+        {
+          "title": "Fruit cake making #shorts",
+          "views": 56000000
+        },
+        {
+          "title": "Halwai Making Kaju Katli😳😳 #kajukatli #mithai #streetfood #shorts",
+          "views": 24000000
+        },
+        {
+          "title": "Amazing Bomb Cake💣🎂 Guess the price?🤔 #shorts",
+          "views": 20000000
+        },
+        {
+          "title": "Rajasthani Malai Ghevar recipe 🤌🏻 #youtubeshorts #sweets",
+          "views": 16000000
+        }
+      ],
+      "flop_examples": [
+        {
+          "title": "Mouth-Watering Kalakand Sweets | Perfect Halwai Style Kalakand 🤤#shorts #kalakand #ytshorts #food",
+          "views": 466
+        },
+        {
+          "title": "Juicy Mouth Melting Sweet ASMR 🤤 | Halwai Style Desi Mithai #shorts #ytshorts #asmr #food #viral",
+          "views": 1100
+        },
+        {
+          "title": "Halwai Jaisi Perfect Mithai Making! 🤤🔥 | Desi Sweet Recipe #SweetMaking #IndianSweet #Mithai #Shorts",
+          "views": 1800
+        }
+      ]
+    },
+    "wholesale": {
+      "videos": 50,
+      "median_views": 235000,
+      "hit_rate": 0.28,
+      "features": {
+        "price_in_hook": {
+          "n": 11,
+          "confidence": "medium",
+          "median_with": 1106000,
+          "median_without": 148500,
+          "lift": 4.83,
+          "hit_rate_with": 0.5,
+          "hit_rate_without": 0.19
+        },
+        "famous_legacy": {
+          "n": 4,
+          "confidence": "low",
+          "median_with": 1625500,
+          "median_without": 197000,
+          "lift": 2.91,
+          "hit_rate_with": 0.5,
+          "hit_rate_without": 0.26
+        },
+        "question_hook": {
+          "n": 5,
+          "confidence": "low",
+          "median_with": 80000,
+          "median_without": 238000,
+          "lift": 2.86,
+          "hit_rate_with": 0.4,
+          "hit_rate_without": 0.27
+        },
+        "named_place": {
+          "n": 18,
+          "confidence": "low",
+          "median_with": 585000,
+          "median_without": 57000,
+          "lift": 1.3,
+          "hit_rate_with": 0.39,
+          "hit_rate_without": 0.22
+        },
+        "shock_emoji_words": {
+          "n": 4,
+          "confidence": "low",
+          "median_with": 376000,
+          "median_without": 232000,
+          "lift": 0.68,
+          "hit_rate_with": 0.29,
+          "hit_rate_without": 0.28
+        }
+      },
+      "hashtag_spam": {
+        "median_4plus_tags": 53500,
+        "median_under_4": 270500,
+        "n_4plus": 6
+      },
+      "top_examples": [
+        {
+          "title": "Ever Seen How Matchsticks Are Made? 😱🔥 | Indian Factory Process #shortsvideo #woodworking",
+          "views": 41000000
+        },
+        {
+          "title": "How ₹10 Coins Are Made! 🪙🔥 | Complete Coin Manufacturing Process #coin #making #ytshorts",
+          "views": 22000000
+        },
+        {
+          "title": "120/-₹ में साड़ी 😱😱दिवाली धमाका 💯 #explore #wholesale #textilesboutique #wholesalefashion #saree",
+          "views": 21000000
+        },
+        {
+          "title": "Surat biggest shoes factory cheapest branded shoes factory price",
+          "views": 16000000
+        },
+        {
+          "title": "cheapest Branded T-shirts #karolbaghmondaymarket #mondaypatrimarket",
+          "views": 7600000
+        }
+      ],
+      "flop_examples": [
+        {
+          "title": "Ek Khali Space Ko Banayenge Delhi Ka Next Wholesale Hub.#FMCG #WholesalePrices #BusinessVlog #delhi",
+          "views": 37
+        },
+        {
+          "title": "🇮🇳 Tiranga Colour Plastic Lathi Pressing Factory | Ashok Chakra Print #india #viral",
+          "views": 1300
+        },
+        {
+          "title": "Tricolour Soap Making Factory🧼🇮🇳#viral #soap #process #tricolor #factory#indian #shorts",
+          "views": 2500
+        }
+      ]
+    }
+  },
+  "overall": {
+    "myth_secret_truth": {
+      "niches_measured": 2,
+      "geo_mean_lift": 3.81,
+      "niches_positive": 2
+    },
+    "price_in_hook": {
+      "niches_measured": 6,
+      "geo_mean_lift": 2.35,
+      "niches_positive": 4
+    },
+    "warning_mistake_scam": {
+      "niches_measured": 1,
+      "geo_mean_lift": 2.3,
+      "niches_positive": 1
+    },
+    "number_list": {
+      "niches_measured": 1,
+      "geo_mean_lift": 1.74,
+      "niches_positive": 1
+    },
+    "process_how_made": {
+      "niches_measured": 3,
+      "geo_mean_lift": 1.22,
+      "niches_positive": 1
+    },
+    "contact_in_title": {
+      "niches_measured": 1,
+      "geo_mean_lift": 1.18,
+      "niches_positive": 1
+    },
+    "owner_or_client_story": {
+      "niches_measured": 1,
+      "geo_mean_lift": 0.8,
+      "niches_positive": 0
+    },
+    "shock_emoji_words": {
+      "niches_measured": 6,
+      "geo_mean_lift": 0.74,
+      "niches_positive": 1
+    },
+    "transformation": {
+      "niches_measured": 4,
+      "geo_mean_lift": 0.72,
+      "niches_positive": 1
+    },
+    "named_place": {
+      "niches_measured": 6,
+      "geo_mean_lift": 0.58,
+      "niches_positive": 1
+    },
+    "question_hook": {
+      "niches_measured": 6,
+      "geo_mean_lift": 0.52,
+      "niches_positive": 4
+    },
+    "famous_legacy": {
+      "niches_measured": 3,
+      "geo_mean_lift": 0.47,
+      "niches_positive": 1
+    },
+    "satisfying_asmr": {
+      "niches_measured": 1,
+      "geo_mean_lift": 0.01,
+      "niches_positive": 0
+    }
+  }
+}

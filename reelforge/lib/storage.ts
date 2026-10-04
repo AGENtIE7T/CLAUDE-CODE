@@ -97,6 +97,10 @@ export interface Feedback {
 }
 const fbKey = (genId: string, scriptId: string) => `${genId}:${scriptId}`;
 
+export function listFeedback(): Record<string, Feedback> {
+  return read<Record<string, Feedback>>(KEYS.feedback, {});
+}
+
 export function getFeedback(genId: string, scriptId: string): Feedback | undefined {
   return read<Record<string, Feedback>>(KEYS.feedback, {})[fbKey(genId, scriptId)];
 }

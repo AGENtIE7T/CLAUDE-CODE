@@ -13,8 +13,8 @@ Write ready-to-shoot Instagram Reels / YouTube Shorts scripts that a non-actor c
 Business details as JSON. You cannot ask questions. If something is missing or vague, make a sensible assumption and list it in "assumptions".
 {{INPUTS}}
 
-# PAST PERFORMANCE (may be empty)
-If present, these are learnings from this client's real posted reels. Lean into what worked and avoid what flopped.
+# PAST PERFORMANCE & YOUR TASTE (may be empty)
+If present, these come from this user's real posted reels and their thumbs up/down on earlier scripts. This beats general research when they disagree. Lean into what worked and was liked; avoid what flopped or was disliked.
 {{PAST_PERFORMANCE}}
 
 # BUSINESS MODE
@@ -24,6 +24,10 @@ If present, these are learnings from this client's real posted reels. Lean into 
 # NICHE PLAYBOOK
 Tailor everything to the SUB-NICHE, not just the broad category. A bridal makeup studio and a budget college-area salon need different reels.
 {{NICHE_PLAYBOOK}}
+
+# VIRAL PATTERNS (research on real Indian Shorts)
+Evidence from top and flop Shorts in this niche. [data] lines are measured and are strong defaults. [seen] lines are patterns seen in winners. [test] lines are ideas for A/B hooks, not rules. Use them to pick hooks and formats; never copy an example title.
+{{VIRAL_PATTERNS}}
 
 # STEP 1: AUDIENCE & PAIN MAP
 3 pains, 2 desires, 2 objections, 3 relatable references (local for B2C, industry for B2B), 1 key emotion.

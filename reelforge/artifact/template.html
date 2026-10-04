@@ -388,10 +388,16 @@ function inputsJson(i) {
     things_to_avoid: i.avoid || "(none given)", reference_hooks: i.reference_hooks, number_of_scripts: i.script_count, mode: modeOf(i),
   }, null, 2);
 }
-const generatorBase = (i, past) => fill(DATA.prompts.generator, { INPUTS: inputsJson(i), PAST_PERFORMANCE: (past || "").trim() || "(none)", NICHE_PLAYBOOK: playbookText(i) });
+function viralPatternsText(i) {
+  const V = DATA.viral, n = V.niches[i.niche];
+  const L = [`Source: ${V.source}`, `Caveat: ${V.caveats}`, "", "Across niches:", ...V.cross_niche.map((x) => `- ${x}`)];
+  if (n) L.push("", "This niche: do", ...n.do.map((x) => `- ${x}`), "", "This niche: avoid", ...n.avoid.map((x) => `- ${x}`), "", "Real top performers (for pattern only, never copy):", ...n.winning.map((x) => `- ${x}`), "Real flops:", ...n.flops.map((x) => `- ${x}`));
+  return L.join("\n");
+}
+const generatorBase = (i, past) => fill(DATA.prompts.generator, { INPUTS: inputsJson(i), PAST_PERFORMANCE: (past || "").trim() || "(none)", NICHE_PLAYBOOK: playbookText(i), VIRAL_PATTERNS: viralPatternsText(i) });
 const generatorPrompt = (i, past) => [generatorBase(i, past), "", "---", `Write ${i.script_count} script(s) now, following every step.`, "", "# OUTPUT SCHEMA (return exactly this JSON shape)", "Top-level shape:", DATA.schemas.generator, 'Each item in "scripts" (ids s1, s2, s3, ...):', DATA.schemas.script, 'Each item in "hook_analysis":', DATA.schemas.hook].join("\n");
 const replacementPrompt = (i, id, keep) => [generatorBase(i), "", "---", `Write exactly ONE new script with id "${id}" to replace a weak script in an existing batch.`, "It must use a hook type, content pillar and emotion that are DIFFERENT from these scripts that are staying:", JSON.stringify(keep, null, 2), "Follow every timing rule and non-negotiable rule.", "", "# OUTPUT SCHEMA", 'Return ONLY: {"scripts": [ <one script object> ]} where the script object is:', DATA.schemas.script].join("\n");
-const criticPrompt = ({ inputs, scripts, failed, context }) => [DATA.prompts.critic, "", "---", "# BUSINESS INPUTS", inputsJson(inputs), "", "# NICHE PLAYBOOK", playbookText(inputs), "", "# GENERATOR SCRIPTS", JSON.stringify(scripts, null, 2),
+const criticPrompt = ({ inputs, scripts, failed, context }) => [DATA.prompts.critic, "", "---", "# BUSINESS INPUTS", inputsJson(inputs), "", "# NICHE PLAYBOOK", playbookText(inputs), "", "# VIRAL PATTERNS FOR THIS NICHE", viralPatternsText(inputs), "", "# GENERATOR SCRIPTS", JSON.stringify(scripts, null, 2),
   context ? `\n# OTHER SCRIPTS IN THE BATCH (for similarity only; do not score these)\n${JSON.stringify(context, null, 2)}` : "", "", "# FAILED AUTOMATED CHECKS",
   failed.length ? failed.map((f) => `- [${f.script_id ?? "batch"}] ${f.check}: ${f.message}`).join("\n") : "(none)", "", "# OUTPUT SCHEMA", DATA.schemas.critic, "Each rewritten script uses this schema:", DATA.schemas.script, "Score every script listed under GENERATOR SCRIPTS exactly once."].join("\n");
 function hooksPrompt(hooks, niche, language) {
@@ -546,6 +552,28 @@ function aggregate(es) {
     by_hook_type: groupBy(es, "hook_type"), by_pillar: groupBy(es, "content_pillar"), by_niche: groupBy(es, "niche"), by_emotion: groupBy(es, "emotion"), insights: insights(es) };
 }
 
+/* ---------------- self-improvement loop (port of lib/learning.ts) ---------------- */
+function buildLearningContext(f) {
+  const key = clientKey(f.business_name), label = nicheLabel(f), parts = [];
+  const learn = key ? store.learnings(key) : null;
+  if (learn?.bullets?.length) parts.push(`Learnings for this client from ${learn.posts} posted reels:`, ...learn.bullets.map((b) => `- ${b}`));
+  const nichePosts = store.perf().filter((p) => p.niche.toLowerCase() === label.toLowerCase());
+  if (nichePosts.length >= 3) { const ins = insights(nichePosts).slice(0, 5); if (ins.length) parts.push("", `What your own ${nichePosts.length} posted ${label} reels show:`, ...ins.map((x) => `- ${x}`)); }
+  const fb = store.fb(), liked = [], disliked = [];
+  for (const g of store.gens()) {
+    if (g.inputs.niche !== f.niche) continue;
+    for (const s of g.output.scripts) {
+      const v = fb[`${g.id}:${s.id}`]; if (!v?.vote) continue;
+      const line = `"${s.hook.spoken}" (${s.hook_type}, ${s.content_pillar})${v.note ? `. Note: ${v.note}` : ""}`;
+      if (v.vote === "up" && liked.length < 4) liked.push(line);
+      if (v.vote === "down" && disliked.length < 4) disliked.push(line);
+    }
+  }
+  if (liked.length) parts.push("", "Hooks the user LIKED (write in this spirit, don't copy):", ...liked.map((x) => `- ${x}`));
+  if (disliked.length) parts.push("", "Hooks the user DISLIKED (avoid what made these weak):", ...disliked.map((x) => `- ${x}`));
+  return { text: parts.join("\n").trim().slice(0, 3800), counts: { learnings: learn?.bullets?.length || 0, nichePosts: nichePosts.length, liked: liked.length, disliked: disliked.length } };
+}
+
 /* ---------------- exporters (port of lib/format.ts) ---------------- */
 const scoreFor = (rec, id) => rec.critic.scores.find((s) => s.script_id === id);
 const captionText = (s) => `${s.caption.trim()}\n\n${s.hashtags.join(" ")}`;
@@ -660,8 +688,12 @@ const listHtml = (xs) => (xs?.length ? `<ul class="list">${xs.map((x) => `<li>${
 const armBtn = (act, id, label, armedLabel, cls = "btn") => { const on = ui.armed === `${act}:${id}`; return `<button class="${cls}${on ? " danger" : ""}" data-act="${act}" data-id="${h(id)}">${on ? armedLabel : label}</button>`; };
 
 /* ---------------- render: generate ---------------- */
-const currentLearnings = () => (ui.form?.business_name.trim() ? store.learnings(clientKey(ui.form.business_name)) : null);
-const learnSlot = (learn) => (learn ? `<label class="check"><input type="checkbox" id="usePast" data-act="toggle-use-past" ${ui.usePast ? "checked" : ""}><span>Use past performance learnings for this client<br><span class="hint">${learn.bullets.length} learnings from ${learn.posts} posted reels</span></span></label>` : "");
+const currentLearnings = () => (ui.form ? buildLearningContext(ui.form) : { text: "" });
+const learnSlot = (c) => {
+  if (!c.text) return `<p class="hint">ReelForge learns from your 👍/👎 on scripts and the results you log after posting. Once you have some, they'll be used here.</p>`;
+  const bits = [c.counts.learnings && `${c.counts.learnings} client learnings`, c.counts.nichePosts && `${c.counts.nichePosts} posted reels in this niche`, c.counts.liked && `${c.counts.liked} liked hooks`, c.counts.disliked && `${c.counts.disliked} disliked hooks`].filter(Boolean).join(" · ");
+  return `<label class="check"><input type="checkbox" id="usePast" data-act="toggle-use-past" ${ui.usePast ? "checked" : ""}><span>Use what ReelForge learned from you<br><span class="hint">${bits}</span></span></label>`;
+};
 function field(k, label, o) {
   const f = ui.form, v = h(f[k]);
   const ctl = o.textarea ? `<textarea class="input" id="f-${k}" data-f="${k}" maxlength="${o.max}" placeholder="${h(o.ph || "")}">${v}</textarea>` : `<input class="input" id="f-${k}" data-f="${k}" maxlength="${o.max}" placeholder="${h(o.ph || "")}" value="${v}">`;
@@ -840,7 +872,7 @@ function viewSettings() {
   <section class="card"><h2 class="h2">Your data</h2><p class="muted" style="margin:0;font-size:14px">History, feedback, performance logs, client profiles and learnings live in this browser only. Export regularly so nothing is lost.</p>
     <div class="grid-btn" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))"><button class="btn" data-act="export">Export all data</button><button class="btn" data-act="import">Import data</button>${armBtn("clear", "all", "Clear all data", "Pakka? Tap again", "btn danger")}</div>
     <p class="hint">Import merges with what's already here; matching items are replaced by the imported copy.</p></section>
-  <section class="card"><h2 class="h2">How scoring works</h2><p class="muted" style="margin:0;font-size:14px">A writer pass drafts the scripts. Code then checks timing, word counts, hashtags, CTAs and script. A separate critic pass scores each script out of 100 (hook 20, retention 20, niche fit 15, relatability 15, emotion 10, share/save 10, CTA 10), rewrites anything under 70 or breaking a rule, and re-scores it. Scores estimate potential. They do not guarantee views.</p><p class="hint">Prompt version ${h(DATA.promptVersion)}</p></section>`;
+  <section class="card"><h2 class="h2">How scoring works</h2><p class="muted" style="margin:0;font-size:14px">A writer pass drafts the scripts. Code then checks timing, word counts, hashtags, CTAs and script. A separate critic pass scores each script out of 100 (hook 20, retention 20, niche fit 15, relatability 15, emotion 10, share/save 10, CTA 10), rewrites anything under 70 or breaking a rule, and re-scores it. Scores estimate potential. They do not guarantee views.</p><p class="muted" style="margin:0;font-size:14px">Both passes also read a viral pattern library built from ${h(DATA.viral.source.split(" (")[0])}, plus what it learns from your own 👍/👎 and posted results.</p><p class="hint">Prompt version ${h(DATA.promptVersion)}</p></section>`;
 }
 
 /* ---------------- actions ---------------- */
@@ -883,8 +915,8 @@ document.addEventListener("click", async (ev) => {
       const { inputs, errs } = formToInputs(ui.form); ui.errors = errs;
       if (Object.keys(errs).length) { render(); $(`#f-${Object.keys(errs)[0]}`)?.focus(); return; }
       if (ui.saveProfile) store.saveProfile(inputs);
-      const learn = store.learnings(clientKey(inputs.business_name));
-      const past = ui.usePast && learn ? learn.bullets.map((b) => `- ${b}`).join("\n") : "";
+      const learnCtx = buildLearningContext(ui.form);
+      const past = ui.usePast && learnCtx.text ? learnCtx.text : "";
       runJob("generate", (run) => runPipeline(inputs, past, run)); break;
     }
     case "stop": ui.ctl?.abort(); break;

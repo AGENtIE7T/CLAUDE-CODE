@@ -1,0 +1,284 @@
+{
+  "source": "591 Indian YouTube Shorts (top results by views across 2 searches per niche, collected 2026-10). Titles and view counts, plus 13 usable transcripts.",
+  "caveats": "Correlational, not causal. Search results are biased toward already-popular videos and big creators; YouTube Shorts are a proxy for Instagram Reels. Treat [data] lines as strong defaults, [seen] as patterns worth using, [test] as A/B ideas.",
+  "cross_niche": [
+    "[data] A specific number in the first line beats an adjective. Price, quantity, kg, years or rupee-per-unit. Real estate (price in hook ~7x median views, n=26) and wholesale (~4.8x, n=11).",
+    "[data] Generic category labels are saturated. Titles leaning on 'transformation' (salon 0.26x, gym 0.21x), 'dirty AC cleaning/satisfying' (home services ~0.01x, n=18), 'famous' (restaurant 0.12x) or 'best X in city' (clinic 0.31x) did worse than others found by the same search. The winners add a twist or a stake: 'DSP bride', '100-year-old AC', '135 kg to 63 kg', '2BHK for ₹6 lakh'.",
+    "[seen] Many top transformation reels (groom makeover 16M, client fat-loss 2.3M, kaju katli making 24M) have no speech at all: music plus visual plus on-screen text. For visual niches a near-silent script is a valid choice. Let on-screen text carry the story.",
+    "[seen] An insider truth that breaks a common belief travels well. A wholesaler's '25 saal ka experience… sasta maal sirf patri pe chalta hai' rant (1.7M), 'gold jewellery scam' (4.5M), doctor myth framing (clinic myth/truth ~8x, n=16).",
+    "[seen] Real shop moments staged as a 15-second skit can explode. A bargaining skit in a Surat boutique ('Kitne ka hai? ₹15,000. ₹5,000. Pack kar.') got 55M.",
+    "[seen] Flops share openers: pity begging ('video pe views nahi aa rahe… comment karo hum saath hain'), slow vlog intros ('Hello doston, welcome to day six'), and 3-minute walkthroughs with no stake in the first 2 seconds.",
+    "[test] Titles with 4+ hashtags had lower median views in 7 of 12 niches. Keep 6-8 hashtags in the caption, not stuffed into the on-screen hook."
+  ],
+  "niches": {
+    "salon": {
+      "do": [
+        "[seen] Lead with a specific bride or client identity or twist, not the word 'transformation' ('DSP bride', 'village bride', 'groom makeover', 'mature skin'). Generic 'makeup transformation' titles were 0.26x in their own search [data].",
+        "[seen] Price-transparency explainers work when they justify the price with backstage problems solved. 'Why bridal is ₹25k but party is ₹5k' told through one real wedding-day story (blouse loose, dupatta colour mismatch).",
+        "[seen] Year-on-year price talk from a known artist got 5.8M. Concrete numbers ('2022 mein 40,000, ab 51,000') beat 'affordable'.",
+        "[seen] Near-silent before/after with trending audio is a valid format. Keep on-screen text to the twist."
+      ],
+      "avoid": [
+        "[data] Leaning on the word 'transformation' alone",
+        "[seen] Heavy filters on the reveal",
+        "[test] A bare price-list post with no story (0.44x in the price search)"
+      ],
+      "winning": [
+        "From Competition to Beauty Salon: A Gymnast's Makeup Transformation #shorts (32,000,000 views)",
+        "From Braids 💋 Glam: Her Stunning Makeover Journey #makeover #beauty (26,000,000 views)",
+        "OLD MONEY AESTHETIC BRIDAL MAKEUP (17,000,000 views)",
+        "SHOCKING😱😱 TRANSFORMATION CONTACT: 9003069771 #groommakeup #hairstyle #groom (16,000,000 views)"
+      ],
+      "flops": [
+        "💄 FREE Bridal Makeup Course for Girls | Learn Bridal Makeup Step by Step✨ (254 views)",
+        "✨ Garba Makeup Transition | Navratri Glam Look 💃🔥 | Garba Makeup Transformation #garbamake (405 views)"
+      ],
+      "median_views": 460000
+    },
+    "restaurant": {
+      "do": [
+        "[seen] Open on the one thing only this place does ('dharti ke seene mein tadka', a flaming-leaf serve, superfast poha) plus the price-value ('unlimited thali ₹60'). That got 2.3M.",
+        "[seen] Speed and skill close-ups of the cook (superfast poha 14M, cheese-burst omelette 13M) beat dish-name-only posts.",
+        "[test] Relatable or comedic food skits did well where present (n=4). Test one per batch."
+      ],
+      "avoid": [
+        "[data] Leaning on 'famous'/'iconic'/'king of' without showing why (0.12x, n=8)",
+        "[seen] Pity or 'please support' hooks",
+        "[seen] Dark kitchen lighting"
+      ],
+      "winning": [
+        "Egg Roti Street Food: The Viral Snack You Can't Miss! ##shorts (28,000,000 views)",
+        "Kolkata famous Chhangani club kachori #shorts (18,000,000 views)",
+        "SUPERFAST Vicky Tarri Poha 😱🔥#shorts #ashortaday #streetfood (14,000,000 views)",
+        "BUTTER CHICKEN😍 | Indian Street Food #shortvideo #shorts #trending #viralvideo (14,000,000 views)"
+      ],
+      "flops": [
+        "Cleared an 18 Lakh debt, without paying a penny! 😲 The full story #restaurant #delhi #food (63 views)",
+        "I Built My Dream Dhaba in India 🇮🇳 | My Story (68 views)"
+      ],
+      "median_views": 560000
+    },
+    "gym": {
+      "do": [
+        "[seen] Exact numbers in the first frame: '135 kg to 63 kg', '2020 vs 2024', '6 months'. These carried most 5M+ videos. A vague 'transformation' label was 0.21x [data].",
+        "[seen] A trainer's named client story ('My client Yash's fat loss', 2.3M) is mostly visual with music.",
+        "[seen] Beginner-mistake hooks are crowded: dozens of 'galti mat karna' shorts got under 3k views. If you use one, make the mistake visual and specific, not a list."
+      ],
+      "avoid": [
+        "[seen] Generic 'beginner ho? ye galti mat karna' with no visual demo",
+        "[seen] Only very muscular bodies (scares beginners)",
+        "Any guaranteed kg or timeline claim"
+      ],
+      "winning": [
+        "10M VIEWS 90 days of transformation 😱😱 #shortvideo #short #viralshorts (10,000,000 views)",
+        "Indian fat boy from 135 kgs to 63 kgs weight loss 🔥 #weightloss #motivation (10,000,000 views)",
+        "6 months is enough 💯 #gymmotivation (8,900,000 views)",
+        "2020 vs 2024 #shorts#fitness#gym (8,199,999 views)"
+      ],
+      "flops": [
+        "Gym Me Ye Galti Mat Karna! 😱💪 #shorts (2 views)",
+        "Gym Ke Pehle Din ye 3 Galti Mat Karna ❌ 😰 #gym #shorts (24 views)"
+      ],
+      "median_views": 54500
+    },
+    "clinic": {
+      "do": [
+        "[data] Myth/truth framing: 'X normal hai? Galat.', 'Biggest skincare myths in India'. About 8x within its own search (n=16).",
+        "[seen] Transparent price explainers ('Braces cost in India', 'Implants starting ₹15,999'). 580k-3.4M.",
+        "[seen] A procedure shown calmly on camera (RCT process 2.3M, aligner fitting 618k) builds trust without fear."
+      ],
+      "avoid": [
+        "[data] 'Best dental clinic in <city>' brochure titles (0.31x, n=12)",
+        "Fear-bait, cure claims, before/after without consent"
+      ],
+      "winning": [
+        "Award-Winning Dental Implants in Bangalore | Starting ₹15,999 | Dezy Dental (3,400,000 views)",
+        "Doing RCT with BMP process by Dr Vimal sir #dentalclinic #doctor #sujanganj jaunpur (2,300,000 views)",
+        "Weight Loss Myths Vs Facts | Raj Shamani #Shorts (2,200,000 views)",
+        "A day a Dontia Dental Care Kolkata | Family Dental Clinic #bestdentistinkolkata #dentistne (1,200,000 views)"
+      ],
+      "flops": [
+        "Hypertension Myths BUSTED! हाइपरटेंशन मिथक! (9 views)",
+        "15 sec me blockage pta kro..! #healthylifestyle #drvimal #heartattack #healthyfood (10 views)"
+      ],
+      "median_views": 28568
+    },
+    "coaching": {
+      "do": [
+        "[seen] Insider 'how marking really works' content (step marking 2.9M, 'secret rules teachers never tell' 2.8M).",
+        "[seen] A concrete score target in the hook ('95+', '98%') plus a numbered method.",
+        "[test] A student's before/after marks story (n=6, strong but low-confidence)."
+      ],
+      "avoid": [
+        "[seen] Result banners with no teaching shown",
+        "Guaranteed ranks or marks",
+        "[seen] AI-tool gimmick hooks (300 views)"
+      ],
+      "winning": [
+        "Students vs Teachers of 2025 💀🤯 | Kuldeep Singhaniaa #shorts (232,000,000 views)",
+        "That 5-Star Experience #shorts #funny #school #teacher #classroom #comedy #food #delivery  (194,000,000 views)",
+        "Teacher student funny reels😂|#youtubeshorts #shorts #trending #fdccompany (55,000,000 views)",
+        "When The Student Trolls The Teacher. (43,000,000 views)"
+      ],
+      "flops": [
+        "Board Exam Questions Ai prediction 😱 2 Insane Study AI Tools! #shorts #fyp (307 views)",
+        "Pre-Board Exams Mein 80%+ Kaise Score Kare? 📚 | 7 Best Study Tips (636 views)"
+      ],
+      "median_views": 1047000
+    },
+    "real_estate": {
+      "do": [
+        "[data] Put the price in the first line. Price-in-hook videos had ~7x the median views of others in the same search (n=26). '2BHK for ₹6 lakh' got 3.9M; '₹21 lakh in Uttam Nagar' 1.4M.",
+        "[seen] The price must feel surprising for the area (cheap for the city, or rent framed shockingly: '₹50 lakh per year rent').",
+        "[test] A phone number or 'call' in the caption didn't hurt (n=6)."
+      ],
+      "avoid": [
+        "[seen] Luxury spec-sheet titles with sq ft, tower names and no hook. Several got under 1,000 views",
+        "Guaranteed-returns claims"
+      ],
+      "winning": [
+        "सबसे बड़ा 3 BHK FLAT / Code-360/ Contact- 9309106745 / 9834506815/ #housetour #realestate (12,000,000 views)",
+        "3 BHK For Rent for ONLY ₹50 Lakhs P.Y. (5,500,000 views)",
+        "2-BHK Flat Only Just ₹6 Lakh Rupees | Flat In Delhi | Registry Property (3,900,000 views)",
+        "2 bhk flat in just 20.50 lakh | Furnished flat in Delhi | Low budget flat in Delhi | Home  (2,200,000 views)"
+      ],
+      "flops": [
+        "🚨 ₹70L Furnished Studio in Andheri East | ₹35K Rental Potential! (20 views)",
+        "पैसा वसूल 2 BHK FULL FURNISHED Flat for rent near DWARKA SECTOR 14 METRO | BRS SHOW RS409 (50 views)"
+      ],
+      "median_views": 199500
+    },
+    "wholesale": {
+      "do": [
+        "[data] Rate-per-unit up front ('1,100 mein 10 jodi', '₹130 jeans', '₹120 saree'). About 4.8x within its own search (n=11). The Surat shoe factory video did it in 10 seconds and got 16M.",
+        "[seen] Market or area names that buyers already know (Sadar Bazar, Gandhi Nagar, Surat, Khari Baoli) signal 'insider source'.",
+        "[seen] Insider straight-talk to shop owners ('25 saal ka experience… 25,000 mein business? Kya aata hai?') builds B2B trust."
+      ],
+      "avoid": [
+        "[seen] Slow vlog openers ('Hello doston, day six of opening…', 37 views)",
+        "[data] Generic factory-process content with no buyer angle (process 0.07x in wholesale market search)"
+      ],
+      "winning": [
+        "Ever Seen How Matchsticks Are Made? 😱🔥 | Indian Factory Process #shortsvideo #woodworking (41,000,000 views)",
+        "How ₹10 Coins Are Made! 🪙🔥 | Complete Coin Manufacturing Process #coin #making #ytshorts (22,000,000 views)",
+        "120/-₹ में साड़ी 😱😱दिवाली धमाका 💯 #explore #wholesale #textilesboutique #wholesalefashion  (21,000,000 views)",
+        "Surat biggest shoes factory cheapest branded shoes factory price (16,000,000 views)"
+      ],
+      "flops": [
+        "Ek Khali Space Ko Banayenge Delhi Ka Next Wholesale Hub.#FMCG #WholesalePrices #BusinessVl (37 views)",
+        "🇮🇳 Tiranga Colour Plastic Lathi Pressing Factory | Ashok Chakra Print #india #viral (1,300 views)"
+      ],
+      "median_views": 235000
+    },
+    "fashion": {
+      "do": [
+        "[seen] Shop-floor skits around bargaining or customer behaviour (55M). Comedy rooted in a real shop moment.",
+        "[seen] Fabric or texture named in the title with elegant slow visuals ('tissue cotton saree', 29M).",
+        "[seen] Ready-to-wear or 'ready in 5 seconds' convenience hooks (728k-17M)."
+      ],
+      "avoid": [
+        "[seen] Bare 'Rs 199 offer' with no visual hook",
+        "[seen] Long collection catalogue posts (most under 5k views)"
+      ],
+      "winning": [
+        "muh lagna bekar hai!\" 😱 | Ultimate Boutique Drama at Surat Wholesale Market (55,000,000 views)",
+        "Timeless Elegance Tissue Cotton Saree – Grace in Every Thread (29,000,000 views)",
+        "Myntra Ready To Wear Saree Haul 😱😱 (17,000,000 views)",
+        "Saree Mini vlog😍❤️ EP-203 #neetubisht #minivlog #shopping #lifestyle (14,000,000 views)"
+      ],
+      "flops": [
+        "Best Shop For Designer Suits | Wholesale Ethnic Wear (98 views)",
+        "✨ Unstitched Suit Collection | Latest Designs | Wholesale | Ajit Zone Surat | Starting fro (113 views)"
+      ],
+      "median_views": 36000
+    },
+    "home_services": {
+      "do": [
+        "[seen] Extreme stakes on a specific unit ('100-year-old AC', 'my lungs hurt watching this', 16M) rather than 'dirty AC cleaning'.",
+        "[seen] Fast, specific installation tricks ('how to clamp a faucet in a tight space', 19M) work when they look like expert skill, not a manual."
+      ],
+      "avoid": [
+        "[data] Generic 'dirty AC cleaning / satisfying' titles (~0.01x, n=18)",
+        "[seen] 3-minute walkthroughs about labour charges",
+        "Unsafe DIY electrical or gas steps"
+      ],
+      "winning": [
+        "Extreme AC Cleaning: Before & After Transformation! (90,000,000 views)",
+        "low pan pipe install #viralreelsシ #plumbing #reels #plumber #viralvideo #pan #sanitary (32,000,000 views)",
+        "DIY Plumbing Basics! How to Clamp a Faucet in a Tight Space #diy #plumbing #tips #hacks (19,000,000 views)",
+        "My Lungs Hurt Watching This! 😷 Cleaning a 100-Year-Old AC Unit?! #satisfying #hvaclife #om (16,000,000 views)"
+      ],
+      "flops": [
+        "Cleaning dirty AC outdoor unit #acservice #dubai #diy (11 views)",
+        "Plumbing Pipe Fitting कैसे करें? | Pipe Fitting Step by Step | Plumber Work #pipeWalaji (273 views)"
+      ],
+      "median_views": 207000
+    },
+    "sweets": {
+      "do": [
+        "[data] Show the making. Process videos had ~14.6x the median views within their own search (n=14). A halwai making kaju katli in bulk got 24M.",
+        "[seen] Bulk or festive-scale production ('balushahi in bulk for Diwali', 1.4M) adds stakes.",
+        "[test] A 'guess the price?' question on a showpiece cake (20M, n=4)."
+      ],
+      "avoid": [
+        "[seen] 'Halwai jaisi mithai at home' recipe clones (most under 30k)",
+        "Unbacked '100% pure' claims"
+      ],
+      "winning": [
+        "DREAM Cake Making Process😍 #streetfood #viral #cake #india #making #explore #shorts (123,000,000 views)",
+        "Fruit cake making #shorts (56,000,000 views)",
+        "Halwai Making Kaju Katli😳😳 #kajukatli #mithai #streetfood #shorts (24,000,000 views)",
+        "Amazing Bomb Cake💣🎂 Guess the price?🤔 #shorts (20,000,000 views)"
+      ],
+      "flops": [
+        "Mouth-Watering Kalakand Sweets | Perfect Halwai Style Kalakand 🤤#shorts #kalakand #ytshort (466 views)",
+        "Juicy Mouth Melting Sweet ASMR 🤤 | Halwai Style Desi Mithai #shorts #ytshorts #asmr #food  (1,100 views)"
+      ],
+      "median_views": 70500
+    },
+    "auto": {
+      "do": [
+        "[seen] A named car plus a visible result ('Baleno: dirt to dazzle', 3.8M; 'Fortuner touchless wash', 2.4M).",
+        "[seen] Customer fear made specific ('Scared of scratches? Got PPF at HR26 Garage', 12M).",
+        "[test] Question hooks about a symptom ('Is your car jerking?', n=6)."
+      ],
+      "avoid": [
+        "[data] Leaning on a city name instead of a car/result hook (0.13x, n=9)",
+        "[seen] Long Hindi repair tutorials (mostly under 1,000 views)",
+        "Safety-risk DIY"
+      ],
+      "winning": [
+        "Scared of Scratches? I Got PPF Installed at HR26 Garage! | Car Detailing Gurgaon @SwaggerS (12,000,000 views)",
+        "Baleno Gets a Shinex Makeover | From Dirt to Dazzle ✨ (3,800,000 views)",
+        "Touchless Wash for Fortuner #carcare #carwash #foamwash #toyota #autodetailing #automobile (2,400,000 views)",
+        "India's first professional Female detailer | Auto Detailing in chennai (1,700,000 views)"
+      ],
+      "flops": [
+        "Car Overheating Problem in Hindi, How to fix Car Overheating Problem ||₹#viral #shortvideo (57 views)",
+        "Clutch Headings Repair Process (In Hindi) (76 views)"
+      ],
+      "median_views": 12500
+    },
+    "jewellery": {
+      "do": [
+        "[seen] Buyer-protection hooks: making-charge truth, GST maths, hallmark/HUID check ('0% making charges ka sach' 2.6M, 'gold jewellery scam' 4.5M, 'GST on gold' 19M).",
+        "[seen] Weight-specific bridal sets ('full wedding set in just 50 grams', 989k) answer the real budget question."
+      ],
+      "avoid": [
+        "[data] 'How X jewellery is made' process content (0.28x, n=9)",
+        "False purity or investment-return claims"
+      ],
+      "winning": [
+        "How much gst is charged on gold purchase? (19,922,932 views)",
+        "💛 Full gold bridal set in our main video — check related tab (4,500,000 views)",
+        "Avoid this Gold Jewellery Scam 🤯💰 #shorts (4,500,000 views)",
+        "How to calculate the exact value of Gold? 🪙#Shorts #pw #commercewallahbypw (2,800,000 views)"
+      ],
+      "flops": [
+        "beautiful golden wedding set for bride 💖😘✨ #bridal #foryou to d #gold (984 views)",
+        "Elegance redefined ✨ Complete your bridal look with our exquisite antique gold bridal coll (1,500 views)"
+      ],
+      "median_views": 260500
+    }
+  }
+}

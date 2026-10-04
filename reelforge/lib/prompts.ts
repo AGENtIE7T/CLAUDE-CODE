@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import nichesData from "./niches.json";
+import viralData from "./viral_patterns.json";
 import { LANGUAGE_LABELS, type BusinessInput } from "./schema";
 
 const DIR = path.join(process.cwd(), "lib", "prompts");
@@ -44,6 +45,17 @@ export function playbookText(inputs: Pick<BusinessInput, "niche" | "custom_niche
   }
   const { id: _id, ...rest } = n;
   return JSON.stringify({ ...rest, sub_niche: inputs.sub_niche }, null, 2);
+}
+
+/** Research patterns for the selected niche only (cross-niche rules for "Other"). */
+export function viralPatternsText(inputs: Pick<BusinessInput, "niche">): string {
+  const n = (viralData.niches as Record<string, { do: string[]; avoid: string[]; winning: string[]; flops: string[] }>)[inputs.niche];
+  const lines = [`Source: ${viralData.source}`, `Caveat: ${viralData.caveats}`, "", "Across niches:", ...viralData.cross_niche.map((x) => `- ${x}`)];
+  if (n) {
+    lines.push("", "This niche: do", ...n.do.map((x) => `- ${x}`), "", "This niche: avoid", ...n.avoid.map((x) => `- ${x}`));
+    lines.push("", "Real top performers (for pattern only, never copy):", ...n.winning.map((x) => `- ${x}`), "Real flops:", ...n.flops.map((x) => `- ${x}`));
+  }
+  return lines.join("\n");
 }
 
 export function inputsJson(inputs: BusinessInput): string {
@@ -90,6 +102,7 @@ export function generatorSystem(inputs: BusinessInput, pastPerformance?: string)
     INPUTS: inputsJson(inputs),
     PAST_PERFORMANCE: pastPerformance?.trim() || "(none)",
     NICHE_PLAYBOOK: playbookText(inputs),
+    VIRAL_PATTERNS: viralPatternsText(inputs),
   });
 }
 
@@ -131,6 +144,9 @@ export function criticUser(args: {
     "",
     "# NICHE PLAYBOOK",
     playbookText(args.inputs),
+    "",
+    "# VIRAL PATTERNS FOR THIS NICHE",
+    viralPatternsText(args.inputs),
     "",
     "# GENERATOR SCRIPTS",
     JSON.stringify(args.scripts, null, 2),

@@ -7,7 +7,7 @@ const nextConfig = {
   outputFileTracingRoot: path.dirname(fileURLToPath(import.meta.url)),
   // Prompts are read from disk at runtime; make sure Vercel bundles them with the API routes.
   outputFileTracingIncludes: {
-    "/api/**": ["./lib/prompts/**/*", "./lib/niches.json"],
+    "/api/**": ["./lib/prompts/**/*", "./lib/niches.json", "./lib/viral_patterns.json"],
   },
 };
 

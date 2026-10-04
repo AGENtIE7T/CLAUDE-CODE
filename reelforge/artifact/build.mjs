@@ -13,6 +13,7 @@ const version = schemaTs.match(/PROMPT_VERSION = "([^"]+)"/)[1];
 const DATA = {
   promptVersion: version,
   niches: JSON.parse(read("lib/niches.json")),
+  viral: JSON.parse(read("lib/viral_patterns.json")),
   prompts: {
     generator: read("lib/prompts/generator.md"),
     critic: read("lib/prompts/critic.md"),
