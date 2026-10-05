@@ -260,14 +260,15 @@ out = {
         "niches": {k: {**v, "winning": [], "flops": []} for k, v in CREATOR.items()},
     },
 }
-# Deep Instagram study (research/instagram), merged in when it exists. Same
+# Deep-watch study (research/instagram: Instagram + YouTube batches), merged in when it exists. Same
 # JSON shape, so the app needs no code change. "everyone" lines go to both
 # businesses and creators; kind-specific lines go only to that kind.
 ig_file = HERE / "instagram" / "patterns_ig.json"
 if ig_file.exists():
     ig = json.loads(ig_file.read_text())
     if ig.get("reels"):
-        out["source"] += f' Plus a deep watch of {ig["reels"]} Instagram Reels ({ig["by_kind"].get("business", 0)} business, {ig["by_kind"].get("creator", 0)} creator): hook, first frame, cuts, audio, format and CTA, scored against each niche\'s median.'
+        plat = ig.get("by_platform", {})
+        out["source"] += f' Plus a frame-by-frame deep watch of {ig["reels"]} reels ({plat.get("instagram", 0)} Instagram, {plat.get("youtube", 0)} YouTube Shorts; {ig["by_kind"].get("business", 0)} business, {ig["by_kind"].get("creator", 0)} creator): hook, first frame, cuts, audio, format and CTA, scored against each niche\'s median.'
         out["cross_niche"] += ig["everyone"] + [f"(businesses) {x}" for x in ig["business"]]
         out["creators"]["cross"] += ig["creator"]
         for niche, v in ig["niches"].items():
@@ -276,6 +277,7 @@ if ig_file.exists():
             t["do"] = v["do"] + t["do"]
             t["winning"] = v["winning"] + t["winning"]
             t["flops"] = v["flops"] + t["flops"]
+            t["avoid"] = v.get("avoid", []) + t["avoid"]
 
 (ROOT / "lib" / "viral_patterns.json").write_text(json.dumps(out, ensure_ascii=False, indent=2))
 print("wrote lib/viral_patterns.json:", ", ".join(out["niches"]))

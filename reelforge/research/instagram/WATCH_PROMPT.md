@@ -18,5 +18,8 @@ Watch this whole reel (visuals AND audio). Return ONLY one JSON object, no prose
   "language": "hindi" | "hinglish" | "english" | "regional" | "none",
   "dominant_emotion": "curiosity" | "humour" | "aspiration" | "fear_of_loss" | "satisfaction" | "nostalgia" | "outrage" | "inspiration" | "trust",
   "why_it_works_or_fails": "one sentence",
+  "swipe_risk_sec": number   (the second where a typical viewer is most likely to swipe away; 0 if they'd swipe on the first frame),
+  "what_goes_wrong": "one sentence: the biggest mistake in this reel, even if it went viral; what a sharper creator would fix",
+  "failure_mode": "slow_start" | "unclear_hook" | "no_payoff" | "too_long" | "low_energy" | "bad_audio" | "no_story" | "generic_copy" | "text_overload" | "begging_or_pity" | "hard_sell" | "none",
   "reusable_pattern": "one sentence describing the transferable pattern, no names"
 }
