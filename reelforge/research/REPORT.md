@@ -60,4 +60,7 @@
 
 The research is the starting prior. **Your own data overrides it.** `lib/learning.ts` adds your posted-reel results (computed insights per niche, once 3+ are logged), your 👍/👎 hooks with notes, and saved client learnings. The prompt tells the model your data wins when the two disagree.
 
+## Next: a deep Instagram study
+`instagram/` holds a 208-reel plan (104 business, 104 creator, hits and flops in every niche), the watch prompt, and a stricter analyzer (permutation test + false-discovery correction). It is waiting on a data source: Instagram is blocked from this environment and Nexlev's free tier resets on 2026-10-11. See `instagram/README.md`.
+
 Re-run anytime: `python3 research/analyze.py && python3 research/build_patterns.py && node artifact/build.mjs`.
