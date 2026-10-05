@@ -968,6 +968,488 @@
   "other": {
     "id": "other",
     "label": "Other",
-    "instruction": "No preset playbook. Build a custom playbook with the same fields (pillars, trust_triggers, visuals, peaks, mistakes, cautions) based on how customers in this niche actually decide to buy, then use it for niche_strategy."
-  }
+    "instruction": "No preset playbook. Build a custom playbook with the same fields (pillars, trust_triggers, visuals, peaks, mistakes, cautions) based on how customers in this niche actually decide to buy, then use it for niche_strategy.",
+    "creator_instruction": "No preset playbook. Build a custom creator playbook with the same fields (pillars, trust_triggers, visuals, peaks, mistakes, cautions) based on what makes viewers in this content niche follow, save and share, then use it for niche_strategy."
+  },
+  "creators": [
+    {
+      "id": "c_comedy",
+      "label": "Comedy / Skits / Relatable",
+      "mode": "CREATOR",
+      "pillars": [
+        "'That one ___' archetypes",
+        "X vs Y situations",
+        "POV skits",
+        "desi family moments",
+        "recurring characters"
+      ],
+      "trust_triggers": [
+        "consistent characters",
+        "a signature line or format",
+        "real-life observation, not copied jokes"
+      ],
+      "visuals": [
+        "single-location skits",
+        "quick costume or angle switches for multiple characters",
+        "reaction close-ups"
+      ],
+      "peaks": [
+        "exam season",
+        "festivals",
+        "cricket matches",
+        "wedding season",
+        "school/college reopening"
+      ],
+      "mistakes": [
+        "jokes that need context",
+        "long setups before the first laugh",
+        "copying trending skits word for word"
+      ],
+      "cautions": [
+        "no punching down at caste, religion, gender or body",
+        "no real person defamed",
+        "no copyrighted clips"
+      ]
+    },
+    {
+      "id": "c_lifestyle",
+      "label": "Lifestyle / Daily Vlogs",
+      "mode": "CREATOR",
+      "pillars": [
+        "numbered series (Day 32, EP-203)",
+        "day-in-my-life with a twist",
+        "first-time experiences",
+        "honest reviews of daily life",
+        "small wins"
+      ],
+      "trust_triggers": [
+        "consistency (episode numbers)",
+        "honest moments",
+        "real routine"
+      ],
+      "visuals": [
+        "fast cuts every 1-2s",
+        "POV handheld",
+        "on-screen running counter",
+        "morning-to-night timelapse"
+      ],
+      "peaks": [
+        "festivals",
+        "travel season",
+        "new year resolutions",
+        "birthdays"
+      ],
+      "mistakes": [
+        "boring 'aaj main uthi' openers",
+        "no story arc",
+        "60-second slow vlog"
+      ],
+      "cautions": [
+        "no sharing others' faces without consent",
+        "no fake 'paid nothing' claims on sponsored items"
+      ]
+    },
+    {
+      "id": "c_fitness",
+      "label": "Fitness Creator",
+      "mode": "CREATOR",
+      "pillars": [
+        "exact-number transformations",
+        "form corrections",
+        "myth-busting",
+        "what I eat in a day",
+        "beginner journeys"
+      ],
+      "trust_triggers": [
+        "real progress with dates",
+        "honest about time it took",
+        "certified or experienced if teaching"
+      ],
+      "visuals": [
+        "then-vs-now split",
+        "rep close-ups",
+        "mirror check-ins",
+        "scale or tape close-up"
+      ],
+      "peaks": [
+        "January",
+        "post-Diwali",
+        "summer",
+        "wedding season"
+      ],
+      "mistakes": [
+        "only flexing a finished body",
+        "generic 'galti mat karna' lists with no demo"
+      ],
+      "cautions": [
+        "no guaranteed kg/timeline claims",
+        "no supplement or medical advice",
+        "no body shaming"
+      ]
+    },
+    {
+      "id": "c_food",
+      "label": "Food / Recipe Creator",
+      "mode": "CREATOR",
+      "pillars": [
+        "speed and skill close-ups",
+        "1-minute recipes",
+        "street food finds with price",
+        "budget meals",
+        "regional dishes"
+      ],
+      "trust_triggers": [
+        "taste reaction",
+        "real ingredients",
+        "local price shown",
+        "consistency of format"
+      ],
+      "visuals": [
+        "overhead cooking",
+        "sizzle and pull moments",
+        "first bite",
+        "price tag close-up"
+      ],
+      "peaks": [
+        "monsoon",
+        "winter",
+        "festivals",
+        "Ramadan",
+        "cricket nights"
+      ],
+      "mistakes": [
+        "'halwai jaisi at home' clones",
+        "dark lighting",
+        "long intros"
+      ],
+      "cautions": [
+        "no false health claims",
+        "tag paid collaborations"
+      ]
+    },
+    {
+      "id": "c_travel",
+      "label": "Travel Creator",
+      "mode": "CREATOR",
+      "pillars": [
+        "exact budget breakdowns",
+        "'kitna mehenga hai?' destination checks",
+        "hidden gems",
+        "travel hacks",
+        "first-time abroad"
+      ],
+      "trust_triggers": [
+        "real spends shown",
+        "honest negatives",
+        "consistent budget format"
+      ],
+      "visuals": [
+        "map route",
+        "running cost tally on screen",
+        "arrival reveal",
+        "POV walk"
+      ],
+      "peaks": [
+        "summer vacations",
+        "long weekends",
+        "winter snow",
+        "honeymoon season"
+      ],
+      "mistakes": [
+        "pretty montage with no info",
+        "no cost anywhere"
+      ],
+      "cautions": [
+        "no unsafe stunts",
+        "respect local rules and people",
+        "tag paid stays"
+      ]
+    },
+    {
+      "id": "c_beauty_fashion",
+      "label": "Beauty / Fashion Creator",
+      "mode": "CREATOR",
+      "pillars": [
+        "hauls with honest verdicts",
+        "styling one piece many ways",
+        "try-on reels",
+        "budget vs expensive",
+        "GRWM with a story"
+      ],
+      "trust_triggers": [
+        "honest negatives in reviews",
+        "real skin/body",
+        "price shown"
+      ],
+      "visuals": [
+        "outfit transitions",
+        "mirror reveals",
+        "texture close-ups",
+        "swatch arm"
+      ],
+      "peaks": [
+        "wedding season",
+        "festivals",
+        "sale seasons (EORS, Big Billion Days)"
+      ],
+      "mistakes": [
+        "only positive reviews",
+        "heavy filters"
+      ],
+      "cautions": [
+        "disclose paid collabs",
+        "no medical skin claims"
+      ]
+    },
+    {
+      "id": "c_finance",
+      "label": "Personal Finance / Money Creator",
+      "mode": "CREATOR",
+      "pillars": [
+        "money mistakes",
+        "hidden charges explained",
+        "'how much does X really earn'",
+        "tax/GST explainers",
+        "salary-to-savings breakdowns"
+      ],
+      "trust_triggers": [
+        "credentials (CA, CFP) if giving advice",
+        "sources for numbers",
+        "no hype"
+      ],
+      "visuals": [
+        "big number on screen",
+        "simple whiteboard math",
+        "calculator close-up"
+      ],
+      "peaks": [
+        "tax-filing season (July)",
+        "budget day",
+        "festive shopping",
+        "salary day"
+      ],
+      "mistakes": [
+        "stock tips",
+        "jargon",
+        "'get rich fast' hooks"
+      ],
+      "cautions": [
+        "no investment advice or guaranteed-return claims without SEBI registration",
+        "add 'not financial advice' where relevant"
+      ]
+    },
+    {
+      "id": "c_education",
+      "label": "Education / Study / Career Creator",
+      "mode": "CREATOR",
+      "pillars": [
+        "marks hacks",
+        "how exams are really checked",
+        "topper strategies",
+        "career reality checks",
+        "study-with-me"
+      ],
+      "trust_triggers": [
+        "real results or credentials",
+        "teaching shown",
+        "specific exams named"
+      ],
+      "visuals": [
+        "whiteboard",
+        "notebook close-ups",
+        "student POV",
+        "timer on screen"
+      ],
+      "peaks": [
+        "board exam season",
+        "result day",
+        "admission season",
+        "JEE/NEET dates"
+      ],
+      "mistakes": [
+        "vague motivation",
+        "no actual method"
+      ],
+      "cautions": [
+        "no fake paper-leak claims",
+        "no guaranteed marks"
+      ]
+    },
+    {
+      "id": "c_tech",
+      "label": "Tech / Gadgets Creator",
+      "mode": "CREATOR",
+      "pillars": [
+        "cheapest vs expensive tests",
+        "hidden features",
+        "is it worth it?",
+        "myth tests",
+        "setup tours"
+      ],
+      "trust_triggers": [
+        "hands-on testing",
+        "honest verdict",
+        "price shown"
+      ],
+      "visuals": [
+        "unboxing close-ups",
+        "side-by-side tests",
+        "screen recordings",
+        "macro shots"
+      ],
+      "peaks": [
+        "phone launch weeks",
+        "festive sales",
+        "back-to-college"
+      ],
+      "mistakes": [
+        "spec-sheet reading",
+        "no verdict"
+      ],
+      "cautions": [
+        "disclose review units",
+        "no unsafe battery or electrical hacks"
+      ]
+    },
+    {
+      "id": "c_motivation",
+      "label": "Motivation / Self-Improvement",
+      "mode": "CREATOR",
+      "pillars": [
+        "one lesson from a real story",
+        "habit experiments (30 days of X)",
+        "reframes",
+        "hard truths"
+      ],
+      "trust_triggers": [
+        "your own story or credible sources",
+        "specific actions"
+      ],
+      "visuals": [
+        "talking head with bold text",
+        "B-roll of the habit",
+        "journal close-ups"
+      ],
+      "peaks": [
+        "new year",
+        "exam season",
+        "Monday mornings",
+        "birthdays"
+      ],
+      "mistakes": [
+        "generic quotes over stock footage",
+        "preachy tone"
+      ],
+      "cautions": [
+        "no mental-health treatment claims",
+        "point to professional help for serious issues"
+      ]
+    },
+    {
+      "id": "c_parenting",
+      "label": "Parenting / Family",
+      "mode": "CREATOR",
+      "pillars": [
+        "relatable parent moments",
+        "kid-friendly hacks",
+        "honest 'what nobody tells you'",
+        "family traditions"
+      ],
+      "trust_triggers": [
+        "real family moments",
+        "humility",
+        "experts cited for advice"
+      ],
+      "visuals": [
+        "kid-eye-level shots",
+        "before/after messy room",
+        "reaction faces"
+      ],
+      "peaks": [
+        "school reopening",
+        "exam season",
+        "festivals",
+        "summer holidays"
+      ],
+      "mistakes": [
+        "oversharing kids' private moments"
+      ],
+      "cautions": [
+        "child safety and consent first",
+        "no medical advice",
+        "avoid showing school names or location"
+      ]
+    },
+    {
+      "id": "c_gaming",
+      "label": "Gaming Creator",
+      "mode": "CREATOR",
+      "pillars": [
+        "clutch moments",
+        "funny fails",
+        "tips in 15 seconds",
+        "challenge runs",
+        "reactions"
+      ],
+      "trust_triggers": [
+        "skill shown in clips",
+        "consistent games",
+        "honest reactions"
+      ],
+      "visuals": [
+        "facecam plus gameplay split",
+        "zoom on key moment",
+        "replay slow-mo"
+      ],
+      "peaks": [
+        "new game launches",
+        "tournaments",
+        "festive sales"
+      ],
+      "mistakes": [
+        "long gameplay with no highlight",
+        "no facecam reaction"
+      ],
+      "cautions": [
+        "no gambling/betting promotion",
+        "follow game IP rules for clips"
+      ]
+    },
+    {
+      "id": "c_music_dance",
+      "label": "Music / Dance Performer",
+      "mode": "CREATOR",
+      "pillars": [
+        "progress over time",
+        "famous song simplified",
+        "trending choreography with a twist",
+        "behind-the-practice",
+        "duets"
+      ],
+      "trust_triggers": [
+        "real practice footage",
+        "consistent quality",
+        "credits to original artists"
+      ],
+      "visuals": [
+        "first-take vs final",
+        "slow-mo moves",
+        "mirror practice",
+        "stage shots"
+      ],
+      "peaks": [
+        "festivals (Navratri, Ganesh)",
+        "wedding sangeet season",
+        "trending song weeks"
+      ],
+      "mistakes": [
+        "only finished performances",
+        "poor audio"
+      ],
+      "cautions": [
+        "credit composers",
+        "no full copyrighted tracks outside the platform's library"
+      ]
+    }
+  ]
 }

@@ -35,6 +35,15 @@ Differences from the Next.js app:
 - Files are saved through Claude's download prompt. If that's unavailable, the text is shown for copy-paste.
 - Data lives in that artifact's browser storage, so export from Settings regularly.
 
+## Business mode and Creator mode
+
+The Generate form opens with a toggle: **A business** or **A creator (me)**.
+
+- **Creator mode** asks for a handle, content niche, content angle, audience, goal and what makes the creator different. City is optional.
+- It uses 13 creator playbooks (`niches.json` → `creators`, ids `c_*`) and creator CTA rules: one growth action tied to the goal, never an ad.
+- The critic uses a creator rubric ("ye toh main hoon" relatability) and flags creator scripts that sound like shop ads.
+- Creator viral patterns (`viral_patterns.json` → `creators`) come from creator videos already in the research dataset and are tagged `[seen]`/`[test]`. No creator-specific searches have been run yet.
+
 ## Viral pattern research + learning loop
 
 - `research/` holds 1,169 real Indian YouTube Shorts across 25 of the 26 niches, the analysis, and `REPORT.md`, which covers findings, method and caveats.

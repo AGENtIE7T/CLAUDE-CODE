@@ -219,6 +219,29 @@ NICHE = {
 }
 
 
+# Creator patterns: drawn from creator videos already in the 1,169-video dataset
+# (no creator-specific searches yet, so everything is [seen] or [test]).
+CREATOR_CROSS = [
+    "[seen] The biggest numbers in the whole dataset are relatable archetype skits about a shared experience: 'Students vs Teachers of 2025' (232M), 'That 5-star experience' (194M), 'POV of a mobile repair shop' (40M), 'That one music teacher in school' (4.3M). The format is 'That one ___' / 'X vs Y' / 'POV:'.",
+    "[seen] Numbered series build a habit: 'Saree mini vlog EP-203' (14M), 'Day-32 dry fruits margin reveal' (2.3M), 'Day 5/100 fat to fit' (2.2M). Give each script a series hook the creator can repeat.",
+    "[seen] Personal milestones with a time span: 'My 6-year guitar progress' (9M), '2020 vs 2024' (8.2M), 'My first 10th board exam' (39M).",
+    "[seen] An honest number about your own life (money, kg, marks, budget) beats a vague claim, the same rule as the business data.",
+    "[seen] Flops: pity/begging hooks, 'Hello doston, welcome back' intros, and generic tip lists with no demo.",
+]
+CREATOR = {
+    "c_comedy": {"do": ["[seen] One relatable archetype per reel ('That one teacher', 'Students vs Teachers') played by the creator, payoff in the last 3 seconds.", "[seen] Shop or workplace POVs ('POV of a mobile repair shop' 40M; 'First day of my dry clean shop' 3.1M)."], "avoid": ["Punching down", "[seen] Long setups before the first laugh"]},
+    "c_lifestyle": {"do": ["[seen] Numbered episodes with an on-screen counter ('EP-203' 14M, 'Day-32' 2.3M).", "[seen] Firsts ('My first board exam' 39M) told as a mini story."], "avoid": ["[seen] Slow 'aaj main uthi' openers", "Undisclosed sponsorships"]},
+    "c_fitness": {"do": ["[seen] Exact numbers and dates ('135 kg to 63 kg' 10M; '2020 vs 2024' 8.2M; 'My 5 years of natural bodybuilding' 4.1M).", "[seen] Day-counter journeys ('Day 5/100', 2.2M)."], "avoid": ["[seen] Generic 'beginner galti mat karna' lists (dozens under 3k)", "Guaranteed results, supplements, body shaming"]},
+    "c_food": {"do": ["[seen] Speed and skill close-ups with a named dish ('Superfast poha' 14M; 'Cheese burst omelette' 13M).", "[seen] The price in the hook for street finds ('Chole bhature at just ₹99', 832k)."], "avoid": ["[seen] 'Halwai jaisi at home' recipe clones (mostly under 30k)", "Health claims"]},
+    "c_travel": {"do": ["[seen] An exact budget or cost question ('How to travel without money around India' 37M; 'Nepal kitna mehenga hai?' 6.7M; 'Manali around ₹3,500' 1.4M).", "[seen] A running cost tally on screen for trip breakdowns ('Vietnam budget breakdown', 1M)."], "avoid": ["[seen] Pretty montages with no information", "Unsafe stunts"]},
+    "c_beauty_fashion": {"do": ["[seen] Hauls with a strong verdict ('Myntra ready-to-wear saree haul' 17M; 'Huge saree haul EORS sale' 1.4M).", "[seen] Outsider-tries formats ('Foreigner tries a sari in India', 5.6M)."], "avoid": ["[seen] Only-positive reviews", "Undisclosed paid collabs"]},
+    "c_finance": {"do": ["[seen] One money question answered with real maths ('How much GST is charged on gold?' 19M; '3 deceptive ways jewellers rip you off' 975k).", "[seen] 'How much does X really earn' reveals ('Dukan se kitna kama leta ho?' 2M; 'Kirana store profit reality' 299k)."], "avoid": ["Stock tips or guaranteed returns", "Jargon walls"]},
+    "c_education": {"do": ["[seen] Concrete marks hacks with a target ('Secret study trick to score 95%+' 34M; 'Hacks to increase your marks' 15M).", "[seen] Insider 'how papers are checked' content (step marking, 2.9M)."], "avoid": ["Fake paper-leak claims", "[seen] AI-tool gimmicks (300 views)"]},
+    "c_tech": {"do": ["[test] Cheapest-vs-branded or local-vs-online tests ('Lenskart vs local store' 1.5M; 'I bought the cheapest spy contact lenses' 694k)."], "avoid": ["Spec-sheet reading with no verdict"]},
+    "c_music_dance": {"do": ["[seen] Progress over time ('6-year guitar progress' 9M; 'Played sitar for the first time' 11M).", "[seen] A famous song made simple ('3 Idiots song guitar lesson', 5.1M)."], "avoid": ["[seen] Promo posts where the phone number is the hook", "Using full copyrighted tracks outside the app library"]},
+}
+
+
 def examples(niche):
     n = data["niches"].get(niche, {})
     return {
@@ -232,6 +255,10 @@ out = {
     "caveats": "Correlational, not causal. Search results are biased toward already-popular videos and big creators; YouTube Shorts are a proxy for Instagram Reels. Treat [data] lines as strong defaults, [seen] as patterns worth using, [test] as A/B ideas.",
     "cross_niche": CROSS_NICHE,
     "niches": {k: {**v, **examples(k), "median_views": data["niches"].get(k, {}).get("median_views")} for k, v in NICHE.items()},
+    "creators": {
+        "cross": CREATOR_CROSS,
+        "niches": {k: {**v, "winning": [], "flops": []} for k, v in CREATOR.items()},
+    },
 }
 (ROOT / "lib" / "viral_patterns.json").write_text(json.dumps(out, ensure_ascii=False, indent=2))
 print("wrote lib/viral_patterns.json:", ", ".join(out["niches"]))

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { scoreColor } from "@/lib/client";
-import { nicheLabelClient } from "@/lib/niche-label";
+import { nicheLabelClient, placeText } from "@/lib/niche-label";
 import type { GenerationRecord } from "@/lib/schema";
 import { deleteGeneration, listGenerations, MAX_GENERATIONS } from "@/lib/storage";
 import { Empty, useHydrated } from "@/components/ui";
@@ -35,7 +35,7 @@ export default function HistoryPage() {
                   <Link href={`/results/${g.id}`} className="min-w-0">
                     <p className="truncate text-lg font-black">{g.inputs.business_name}</p>
                     <p className="truncate text-xs text-zinc-500">
-                      {nicheLabelClient(g.inputs)} · {g.inputs.area}, {g.inputs.city}
+                      {[nicheLabelClient(g.inputs), placeText(g.inputs)].filter(Boolean).join(" · ")}
                     </p>
                     <p className="text-xs text-zinc-500">
                       {new Date(g.created_at).toLocaleString("en-IN")} · {g.output.scripts.length} scripts · {g.mode}

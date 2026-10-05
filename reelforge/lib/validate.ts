@@ -4,7 +4,7 @@
 import type { BusinessInput, CheckFailure, CriticScore, Script } from "./schema";
 
 export interface CheckContext {
-  mode: "B2B" | "B2C";
+  mode: "B2B" | "B2C" | "CREATOR";
   language: BusinessInput["language"];
   city?: string;
   area?: string;

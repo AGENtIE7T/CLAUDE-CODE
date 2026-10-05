@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { placeText } from "@/lib/niche-label";
 import { allPlainText, scoreFor, toMarkdown } from "@/lib/format";
 import { ApiError, downloadFile, formatCost, slug, streamGenerate, type Stage } from "@/lib/client";
 import type { GenerationRecord } from "@/lib/schema";
@@ -60,7 +61,7 @@ export function ResultsView({ id }: { id: string }) {
         </p>
         <h1 className="h1">{rec.inputs.business_name}</h1>
         <p className="text-sm text-zinc-500">
-          {rec.inputs.sub_niche} · {rec.inputs.area}, {rec.inputs.city}
+          {[rec.inputs.sub_niche, placeText(rec.inputs)].filter(Boolean).join(" · ")}
         </p>
         <p className="mt-2 text-xs italic text-zinc-500">{rec.critic.honesty_note}</p>
       </div>

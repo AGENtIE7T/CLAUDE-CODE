@@ -22,23 +22,25 @@ export function fill(template: string, vars: Record<string, string>): string {
 export type Niche = (typeof nichesData.niches)[number];
 
 export function getNiche(id: string): Niche | undefined {
-  return nichesData.niches.find((n) => n.id === id);
+  return [...nichesData.niches, ...nichesData.creators].find((n) => n.id === id) as Niche | undefined;
 }
 
 export function nicheLabel(inputs: Pick<BusinessInput, "niche" | "custom_niche">): string {
   return inputs.niche === "other" ? inputs.custom_niche || "Other" : getNiche(inputs.niche)?.label ?? inputs.niche;
 }
 
-export function modeFor(inputs: BusinessInput): "B2B" | "B2C" {
+export function modeFor(inputs: Pick<BusinessInput, "kind" | "b2b">): "B2B" | "B2C" | "CREATOR" {
+  if (inputs.kind === "creator") return "CREATOR";
   return inputs.b2b ? "B2B" : "B2C";
 }
 
 /** Only the selected niche's playbook, never all 12. */
-export function playbookText(inputs: Pick<BusinessInput, "niche" | "custom_niche" | "sub_niche">): string {
+export function playbookText(inputs: Pick<BusinessInput, "niche" | "custom_niche" | "sub_niche"> & { kind?: BusinessInput["kind"] }): string {
   const n = getNiche(inputs.niche);
   if (!n) {
+    const instruction = inputs.kind === "creator" ? nichesData.other.creator_instruction : nichesData.other.instruction;
     return JSON.stringify(
-      { niche: inputs.custom_niche || "Other", sub_niche: inputs.sub_niche, playbook: null, instruction: nichesData.other.instruction },
+      { niche: inputs.custom_niche || "Other", sub_niche: inputs.sub_niche, playbook: null, instruction },
       null,
       2,
     );
@@ -48,9 +50,12 @@ export function playbookText(inputs: Pick<BusinessInput, "niche" | "custom_niche
 }
 
 /** Research patterns for the selected niche only (cross-niche rules for "Other"). */
-export function viralPatternsText(inputs: Pick<BusinessInput, "niche">): string {
-  const n = (viralData.niches as Record<string, { do: string[]; avoid: string[]; winning: string[]; flops: string[] }>)[inputs.niche];
+export function viralPatternsText(inputs: Pick<BusinessInput, "niche"> & { kind?: BusinessInput["kind"] }): string {
+  type P = { do: string[]; avoid: string[]; winning: string[]; flops: string[] };
+  const creator = inputs.kind === "creator";
+  const n = ((creator ? viralData.creators.niches : viralData.niches) as Record<string, P>)[inputs.niche];
   const lines = [`Source: ${viralData.source}`, `Caveat: ${viralData.caveats}`, "", "Across niches:", ...viralData.cross_niche.map((x) => `- ${x}`)];
+  if (creator) lines.push("", "Across creator content:", ...viralData.creators.cross.map((x) => `- ${x}`));
   if (n) {
     lines.push("", "This niche: do", ...n.do.map((x) => `- ${x}`), "", "This niche: avoid", ...n.avoid.map((x) => `- ${x}`));
     lines.push("", "Real top performers (for pattern only, never copy):", ...n.winning.map((x) => `- ${x}`), "Real flops:", ...n.flops.map((x) => `- ${x}`));
@@ -59,6 +64,29 @@ export function viralPatternsText(inputs: Pick<BusinessInput, "niche">): string 
 }
 
 export function inputsJson(inputs: BusinessInput): string {
+  if (inputs.kind === "creator") {
+    return JSON.stringify(
+      {
+        creator_name_or_handle: inputs.business_name,
+        content_niche: nicheLabel(inputs),
+        content_angle: inputs.sub_niche,
+        location: [inputs.area, inputs.city].filter(Boolean).join(", ") || "(not relevant)",
+        target_audience: inputs.target_customer,
+        goal_for_this_content: inputs.offer,
+        what_makes_this_creator_different: inputs.usp,
+        on_camera: inputs.on_camera,
+        language: LANGUAGE_LABELS[inputs.language],
+        tone: inputs.tones.length ? inputs.tones : ["(not specified: pick what fits)"],
+        upcoming_festival_season_event: inputs.festival || "(none given)",
+        things_to_avoid: inputs.avoid || "(none given)",
+        reference_hooks: inputs.reference_hooks,
+        number_of_scripts: inputs.script_count,
+        mode: "CREATOR",
+      },
+      null,
+      2,
+    );
+  }
   return JSON.stringify(
     {
       business_name: inputs.business_name,

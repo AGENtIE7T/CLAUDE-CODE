@@ -68,7 +68,8 @@ export default function HooksPage() {
           <div>
             <label className="label" htmlFor="niche">Niche</label>
             <select id="niche" className="input" value={niche} onChange={(e) => setNiche(e.target.value)}>
-              {nichesData.niches.map((n) => <option key={n.id} value={n.id}>{n.label}</option>)}
+              <optgroup label="Businesses">{nichesData.niches.map((n) => <option key={n.id} value={n.id}>{n.label}</option>)}</optgroup>
+              <optgroup label="Creators">{nichesData.creators.map((n) => <option key={n.id} value={n.id}>{n.label}</option>)}</optgroup>
               <option value="other">Other</option>
             </select>
           </div>

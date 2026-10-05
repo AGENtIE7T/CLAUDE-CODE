@@ -2,9 +2,10 @@ import { z } from "zod";
 import nichesData from "./niches.json";
 
 /** Bump whenever generator.md / critic.md change in a way that could move scores. */
-export const PROMPT_VERSION = "2026-10-04.2";
+export const PROMPT_VERSION = "2026-10-05.1";
 
-export const NICHE_IDS = nichesData.niches.map((n) => n.id) as [string, ...string[]];
+export const NICHE_IDS = [...nichesData.niches, ...nichesData.creators].map((n) => n.id) as [string, ...string[]];
+export const KINDS = ["business", "creator"] as const;
 export const LANGUAGES = ["hinglish", "hindi_roman", "english"] as const;
 export const LANGUAGE_LABELS: Record<(typeof LANGUAGES)[number], string> = {
   hinglish: "Hinglish (Roman script)",
@@ -12,21 +13,28 @@ export const LANGUAGE_LABELS: Record<(typeof LANGUAGES)[number], string> = {
   english: "English",
 };
 export const TONES = ["funny", "emotional", "premium", "raw/desi", "educational"] as const;
-export const ON_CAMERA = ["owner", "staff", "faceless", "customer"] as const;
+export const ON_CAMERA = ["owner", "staff", "faceless", "customer", "self", "friends"] as const;
+export const ON_CAMERA_BY_KIND = { business: ["owner", "staff", "faceless", "customer"], creator: ["self", "friends", "faceless"] } as const;
 
 const str = (max: number) => z.string().trim().max(max);
 const req = (max: number) => z.string().trim().min(1, "Required").max(max);
 
 // ---------- Inputs ----------
 
+/**
+ * One input shape for both kinds. For a creator, business_name is the creator
+ * name/handle, sub_niche the content angle, offer the goal, usp what makes
+ * them different, and city/area are optional.
+ */
 export const BusinessInputSchema = z
   .object({
+    kind: z.enum(KINDS).default("business"),
     business_name: req(80),
     niche: z.enum([...NICHE_IDS, "other"]),
     custom_niche: str(80).default(""),
     sub_niche: req(160),
-    city: req(60),
-    area: req(80),
+    city: str(60).default(""),
+    area: str(80).default(""),
     target_customer: req(300),
     offer: req(300),
     usp: req(300),
@@ -39,9 +47,15 @@ export const BusinessInputSchema = z
     script_count: z.number().int().min(1).max(5).default(3),
     b2b: z.boolean().default(false),
   })
-  .refine((v) => v.niche !== "other" || v.custom_niche.length > 0, {
-    message: "Custom niche is required when niche is Other",
-    path: ["custom_niche"],
+  .superRefine((v, ctx) => {
+    if (v.niche === "other" && !v.custom_niche) ctx.addIssue({ code: "custom", message: "Custom niche is required when niche is Other", path: ["custom_niche"] });
+    if (v.kind === "business") {
+      if (!v.city) ctx.addIssue({ code: "custom", message: "Required", path: ["city"] });
+      if (!v.area) ctx.addIssue({ code: "custom", message: "Required", path: ["area"] });
+    }
+    const isCreatorNiche = v.niche.startsWith("c_");
+    if (v.niche !== "other" && isCreatorNiche !== (v.kind === "creator")) ctx.addIssue({ code: "custom", message: "Pick a niche for this mode", path: ["niche"] });
+    if (!(ON_CAMERA_BY_KIND[v.kind] as readonly string[]).includes(v.on_camera)) ctx.addIssue({ code: "custom", message: "Pick who's on camera", path: ["on_camera"] });
   });
 export type BusinessInput = z.infer<typeof BusinessInputSchema>;
 
@@ -241,6 +255,8 @@ export const LearningsOutputSchema = z.object({ bullets: z.array(z.string()).min
 
 // ---------- What the app stores per generation ----------
 
+export type Mode = "B2B" | "B2C" | "CREATOR";
+
 export interface CheckFailure {
   script_id: string | null; // null = batch-level
   check: string;
@@ -260,7 +276,7 @@ export interface GenerationRecord {
   prompt_version: string;
   model: string;
   inputs: BusinessInput;
-  mode: "B2B" | "B2C";
+  mode: Mode;
   used_past_performance: boolean;
   output: GeneratorOutput; // scripts already merged with critic rewrites
   critic: CriticOutput;

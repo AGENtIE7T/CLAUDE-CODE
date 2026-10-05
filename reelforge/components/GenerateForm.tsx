@@ -6,7 +6,7 @@ import nichesData from "@/lib/niches.json";
 import { ApiError, streamGenerate, type Stage } from "@/lib/client";
 import { buildLearningContext } from "@/lib/learning";
 import { nicheLabelClient } from "@/lib/niche-label";
-import { BusinessInputSchema, LANGUAGE_LABELS, LANGUAGES, ON_CAMERA, TONES, type BusinessInput } from "@/lib/schema";
+import { BusinessInputSchema, LANGUAGE_LABELS, LANGUAGES, ON_CAMERA_BY_KIND, TONES, type BusinessInput } from "@/lib/schema";
 import {
   clientKey,
   deleteProfile,
@@ -27,6 +27,7 @@ import { ErrorBox, Progress } from "./ui";
 type FormState = Omit<BusinessInput, "reference_hooks"> & { reference_hooks_text: string };
 
 const EMPTY: FormState = {
+  kind: "business",
   business_name: "",
   niche: "salon",
   custom_niche: "",
@@ -103,6 +104,21 @@ export function GenerateForm() {
     const n = nichesData.niches.find((x) => x.id === id);
     setForm((f) => ({ ...f, niche: id, b2b: n ? n.mode === "B2B" : f.b2b }));
   }
+
+  function setKind(kind: FormState["kind"]) {
+    if (kind === form.kind) return;
+    setErrors({});
+    setForm((f) => ({
+      ...f,
+      kind,
+      niche: kind === "creator" ? nichesData.creators[0].id : nichesData.niches[0].id,
+      on_camera: kind === "creator" ? "self" : "owner",
+      b2b: false,
+    }));
+  }
+
+  const creator = form.kind === "creator";
+  const nicheList = creator ? nichesData.creators : nichesData.niches;
 
   function loadProfile(key: string) {
     const p = profiles.find((x) => x.key === key);
@@ -212,15 +228,33 @@ export function GenerateForm() {
         </div>
       )}
 
+      <div className="card space-y-3">
+        <span className="label">Who are these reels for?</span>
+        <div className="grid grid-cols-2 gap-2" role="group" aria-label="Mode">
+          {(["business", "creator"] as const).map((k) => (
+            <button
+              key={k}
+              type="button"
+              aria-pressed={form.kind === k}
+              onClick={() => setKind(k)}
+              className={`btn ${form.kind === k ? "bg-brand text-white" : "border border-zinc-300 dark:border-zinc-700"}`}
+            >
+              {k === "business" ? "🏪 A business" : "🎥 A creator (me)"}
+            </button>
+          ))}
+        </div>
+        <p className="hint">{creator ? "Personal brand: grow followers, get brand deals or sell your own product." : "A shop, clinic, studio or B2B supplier that wants customers."}</p>
+      </div>
+
       <div className="card space-y-4">
-        <h2 className="h2">The business</h2>
-        {field("business_name", "Business name", { max: 80, required: true, placeholder: "e.g. Glam Studio by Neha" })}
+        <h2 className="h2">{creator ? "The creator" : "The business"}</h2>
+        {field("business_name", creator ? "Your name / handle" : "Business name", { max: 80, required: true, placeholder: creator ? "e.g. @fitwithriya" : "e.g. Glam Studio by Neha" })}
         <div>
           <label className="label" htmlFor="f-niche">
-            Niche<span className="text-brand"> *</span>
+            {creator ? "Content niche" : "Niche"}<span className="text-brand"> *</span>
           </label>
           <select id="f-niche" className="input" value={form.niche} onChange={(e) => onNiche(e.target.value)}>
-            {nichesData.niches.map((n) => (
+            {nicheList.map((n) => (
               <option key={n.id} value={n.id}>
                 {n.label}
               </option>
@@ -228,37 +262,37 @@ export function GenerateForm() {
             <option value="other">Other</option>
           </select>
         </div>
-        {form.niche === "other" && field("custom_niche", "Custom niche", { max: 80, required: true, placeholder: "e.g. pet grooming, travel agency" })}
-        {field("sub_niche", "Sub-niche", { max: 160, required: true, placeholder: "e.g. bridal makeup studio, budget unisex salon near college" })}
+        {form.niche === "other" && field("custom_niche", "Custom niche", { max: 80, required: true, placeholder: creator ? "e.g. book reviews, cricket analysis" : "e.g. pet grooming, travel agency" })}
+        {field("sub_niche", creator ? "Your content angle" : "Sub-niche", { max: 160, required: true, placeholder: creator ? "e.g. desi mom comedy, budget student travel, home workouts for women" : "e.g. bridal makeup studio, budget unisex salon near college" })}
         <div className="grid gap-4 sm:grid-cols-2">
-          {field("city", "City", { max: 60, required: true, placeholder: "e.g. Gurugram" })}
-          {field("area", "Area / locality", { max: 80, required: true, placeholder: "e.g. Sector 56" })}
+          {field("city", creator ? "City (optional)" : "City", { max: 60, required: !creator, placeholder: "e.g. Gurugram" })}
+          {field("area", creator ? "Area (optional)" : "Area / locality", { max: 80, required: !creator, placeholder: creator ? "only if your content is local" : "e.g. Sector 56" })}
         </div>
-        <label className="flex items-start gap-3 rounded-xl bg-zinc-100 p-3 text-sm dark:bg-zinc-800">
+        {!creator && <label className="flex items-start gap-3 rounded-xl bg-zinc-100 p-3 text-sm dark:bg-zinc-800">
           <input type="checkbox" className="mt-1 h-4 w-4 accent-brand" checked={form.b2b} onChange={(e) => set("b2b", e.target.checked)} />
           <span>
             <b>Sells to businesses, not consumers</b>
             <span className="block text-xs text-zinc-500">Switches to B2B mode: trade hashtags, quote/call/WhatsApp CTAs.</span>
           </span>
-        </label>
+        </label>}
       </div>
 
       <div className="card space-y-4">
-        <h2 className="h2">Audience & offer</h2>
-        {field("target_customer", "Target customer", { max: 300, required: true, textarea: true, placeholder: "age, gender, income, what they care about" })}
-        {field("offer", "Main offer to push now", { max: 300, required: true, placeholder: "e.g. festive makeup + hair package" })}
-        {field("usp", "USP", { max: 300, required: true, placeholder: "even a small one counts" })}
+        <h2 className="h2">{creator ? "Audience & goal" : "Audience & offer"}</h2>
+        {field("target_customer", creator ? "Who you want watching" : "Target customer", { max: 300, required: true, textarea: true, placeholder: creator ? "age, interests, what they relate to, what they struggle with" : "age, gender, income, what they care about" })}
+        {field("offer", creator ? "Goal for these reels" : "Main offer to push now", { max: 300, required: true, placeholder: creator ? "e.g. reach 10k followers, get brand deals, sell my ₹499 workout plan" : "e.g. festive makeup + hair package" })}
+        {field("usp", creator ? "What makes you different" : "USP", { max: 300, required: true, placeholder: creator ? "your story, voice, skill or quirk" : "even a small one counts" })}
         <div>
           <span className="label">Who&apos;s on camera<span className="text-brand"> *</span></span>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-            {ON_CAMERA.map((o) => (
+            {ON_CAMERA_BY_KIND[form.kind].map((o) => (
               <button
                 type="button"
                 key={o}
                 onClick={() => set("on_camera", o)}
                 className={`btn capitalize ${form.on_camera === o ? "bg-brand text-white" : "border border-zinc-300 dark:border-zinc-700"}`}
               >
-                {o}
+                {o === "self" ? "Me" : o === "friends" ? "Me + friends" : o}
               </button>
             ))}
           </div>
@@ -314,14 +348,14 @@ export function GenerateForm() {
           max: 2100,
           textarea: true,
           placeholder: "Paste hooks you liked from other reels",
-          hint: "They'll be analysed and rewritten for this business.",
+          hint: creator ? "They'll be analysed and rewritten for your content." : "They'll be analysed and rewritten for this business.",
         })}
       </div>
 
       <div className="card space-y-3">
         <label className="flex items-center gap-3 text-sm">
           <input type="checkbox" className="h-4 w-4 accent-brand" checked={saveAsProfile} onChange={(e) => setSaveAsProfile(e.target.checked)} />
-          Save as client profile
+          {creator ? "Save as profile" : "Save as client profile"}
         </label>
         {learning.text && (
           <label className="flex items-start gap-3 text-sm">

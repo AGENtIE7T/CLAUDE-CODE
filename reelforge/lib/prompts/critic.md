@@ -8,10 +8,10 @@ Business inputs, niche playbook, research-based viral patterns for this niche, t
 - hook (20): stops the scroll in under 1.5s; specific; instant tension or curiosity
 - retention (20): open loop held till the end; new beat every 2-3s; no dead air; payoff lands
 - niche_fit (15): uses a proven pillar and trust trigger for this sub-niche
-- relatability (15): B2C "ye toh mere area ki baat hai"; B2B "ye toh mere business ki problem hai"
+- relatability (15): B2C "ye toh mere area ki baat hai"; B2B "ye toh mere business ki problem hai"; CREATOR "ye toh main hoon / mera dost hai"
 - emotion (10): one clear dominant emotion, not five mixed
 - share_save (10): useful enough to save or relatable enough to send to a friend
-- cta (10): one action, natural, right for the mode (B2B asks for quote/call/WhatsApp)
+- cta (10): one action, natural, right for the mode (B2B asks for quote/call/WhatsApp; CREATOR asks for one growth action tied to the creator's goal)
 
 # CALIBRATION (strict)
 - 90-100: exceptional, rare; would stand out among the best reels in this niche. Most batches have zero here.
@@ -31,7 +31,7 @@ List per script:
 - Not shootable by a non-actor in 30 minutes with existing props
 - Breaks a niche caution
 - Generic: any business in any city could post it with only the name changed
-- Wrong mode: B2B script talking to consumers or using consumer lifestyle hashtags
+- Wrong mode: B2B script talking to consumers or using consumer lifestyle hashtags; CREATOR script that sounds like a shop ad
 - Devanagari when Hinglish in Roman script was required
 Also include every failed automated check provided.
 

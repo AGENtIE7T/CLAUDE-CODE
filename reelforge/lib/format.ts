@@ -2,6 +2,7 @@
  * Plain-text (WhatsApp / Notes friendly: no tables, no JSON, no markdown) and
  * Markdown exporters.
  */
+import { placeText } from "./niche-label";
 import { CRITERIA, type CriticScore, type GenerationRecord, type Script } from "./schema";
 
 const t = (n: number) => `${Math.round(n * 10) / 10}s`;
@@ -55,7 +56,7 @@ export function scriptPlainText(s: Script, score?: CriticScore): string {
 
 export function allPlainText(rec: GenerationRecord): string {
   const L: string[] = [];
-  L.push(`REELFORGE SCRIPTS: ${rec.inputs.business_name} (${rec.inputs.area}, ${rec.inputs.city})`);
+  L.push(`REELFORGE SCRIPTS: ${rec.inputs.business_name}${placeText(rec.inputs) ? ` (${placeText(rec.inputs)})` : ""}`);
   L.push(`Generated ${new Date(rec.created_at).toLocaleString("en-IN")}`);
   L.push(rec.critic.honesty_note);
   for (const s of rec.output.scripts) {
@@ -86,7 +87,7 @@ export function toMarkdown(rec: GenerationRecord): string {
   const o = rec.output;
   const L: string[] = [];
   L.push(`# ReelForge scripts: ${rec.inputs.business_name}`);
-  L.push(`_${rec.inputs.sub_niche} · ${rec.inputs.area}, ${rec.inputs.city} · ${rec.mode} · ${new Date(rec.created_at).toLocaleString("en-IN")} · prompt ${rec.prompt_version} · ${rec.model}_`);
+  L.push(`_${[rec.inputs.sub_niche, placeText(rec.inputs)].filter(Boolean).join(" · ")} · ${rec.mode} · ${new Date(rec.created_at).toLocaleString("en-IN")} · prompt ${rec.prompt_version} · ${rec.model}_`);
   L.push("", `> ${rec.critic.honesty_note}`);
   L.push("", "## Assumptions", list(o.assumptions));
   L.push("", "## Audience & pain map");

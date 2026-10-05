@@ -189,7 +189,10 @@ const DATA = /*__DATA__*/null;
 const NICHES = DATA.niches.niches;
 const LANG_LABELS = { hinglish: "Hinglish (Roman script)", hindi_roman: "Hindi (Roman script)", english: "English" };
 const TONES = ["funny", "emotional", "premium", "raw/desi", "educational"];
-const ON_CAMERA = ["owner", "staff", "faceless", "customer"];
+const ON_CAMERA_BY_KIND = { business: ["owner", "staff", "faceless", "customer"], creator: ["self", "friends", "faceless"] };
+const ON_CAMERA = [...ON_CAMERA_BY_KIND.business, "self", "friends"];
+const CREATORS = DATA.niches.creators;
+const camLabel = (o) => (o === "self" ? "Me" : o === "friends" ? "Me + friends" : o);
 const CRITERIA = [["hook","Hook",20],["retention","Retention",20],["niche_fit","Niche fit",15],["relatability","Relatability",15],["emotion","Emotion",10],["share_save","Share / save",10],["cta","CTA",10]];
 const STAGES = { audience: "Audience padh rahe hain...", writing: "Scripts likh rahe hain...", critic: "Critic roast kar raha hai...", finalising: "Final touches de rahe hain..." };
 
@@ -199,7 +202,8 @@ const h = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<"
 const uid = (p) => `${p}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`;
 const fmtDate = (iso) => { try { return new Date(iso).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" }); } catch { return iso; } };
 const scoreCls = (n) => (n >= 75 ? "good" : n >= 60 ? "warn" : "bad");
-const nicheLabel = (i) => (i.niche === "other" ? i.custom_niche || "Other" : NICHES.find((n) => n.id === i.niche)?.label ?? i.niche);
+const nicheLabel = (i) => (i.niche === "other" ? i.custom_niche || "Other" : [...NICHES, ...CREATORS].find((n) => n.id === i.niche)?.label ?? i.niche);
+const placeText = (i) => [i.area, i.city].filter((x) => x && String(x).trim()).join(", ");
 const clientKey = (name) => String(name || "").trim().toLowerCase().replace(/\s+/g, " ");
 function toast(msg) {
   const t = document.createElement("div");
@@ -373,14 +377,20 @@ function finalChecks(scripts, critic, ctx) {
 
 /* ---------------- prompts ---------------- */
 const fill = (t, vars) => t.replace(/\{\{([A-Z_]+)\}\}/g, (m, k) => (k in vars ? vars[k] : m));
-const modeOf = (i) => (i.b2b ? "B2B" : "B2C");
+const modeOf = (i) => (i.kind === "creator" ? "CREATOR" : i.b2b ? "B2B" : "B2C");
 function playbookText(i) {
-  const n = NICHES.find((x) => x.id === i.niche);
-  if (!n) return JSON.stringify({ niche: i.custom_niche || "Other", sub_niche: i.sub_niche, playbook: null, instruction: DATA.niches.other.instruction }, null, 2);
+  const n = [...NICHES, ...CREATORS].find((x) => x.id === i.niche);
+  if (!n) return JSON.stringify({ niche: i.custom_niche || "Other", sub_niche: i.sub_niche, playbook: null, instruction: i.kind === "creator" ? DATA.niches.other.creator_instruction : DATA.niches.other.instruction }, null, 2);
   const { id, ...rest } = n;
   return JSON.stringify({ ...rest, sub_niche: i.sub_niche }, null, 2);
 }
 function inputsJson(i) {
+  if (i.kind === "creator") return JSON.stringify({
+    creator_name_or_handle: i.business_name, content_niche: nicheLabel(i), content_angle: i.sub_niche, location: placeText(i) || "(not relevant)",
+    target_audience: i.target_customer, goal_for_this_content: i.offer, what_makes_this_creator_different: i.usp, on_camera: i.on_camera, language: LANG_LABELS[i.language],
+    tone: i.tones.length ? i.tones : ["(not specified: pick what fits)"], upcoming_festival_season_event: i.festival || "(none given)",
+    things_to_avoid: i.avoid || "(none given)", reference_hooks: i.reference_hooks, number_of_scripts: i.script_count, mode: "CREATOR",
+  }, null, 2);
   return JSON.stringify({
     business_name: i.business_name, niche: nicheLabel(i), sub_niche: i.sub_niche, city: i.city, area_locality: i.area,
     target_customer: i.target_customer, main_offer: i.offer, usp: i.usp, on_camera: i.on_camera, language: LANG_LABELS[i.language],
@@ -389,8 +399,9 @@ function inputsJson(i) {
   }, null, 2);
 }
 function viralPatternsText(i) {
-  const V = DATA.viral, n = V.niches[i.niche];
+  const V = DATA.viral, creator = i.kind === "creator", n = (creator ? V.creators.niches : V.niches)[i.niche];
   const L = [`Source: ${V.source}`, `Caveat: ${V.caveats}`, "", "Across niches:", ...V.cross_niche.map((x) => `- ${x}`)];
+  if (creator) L.push("", "Across creator content:", ...V.creators.cross.map((x) => `- ${x}`));
   if (n) L.push("", "This niche: do", ...n.do.map((x) => `- ${x}`), "", "This niche: avoid", ...n.avoid.map((x) => `- ${x}`), "", "Real top performers (for pattern only, never copy):", ...n.winning.map((x) => `- ${x}`), "Real flops:", ...n.flops.map((x) => `- ${x}`));
   return L.join("\n");
 }
@@ -587,7 +598,7 @@ function scriptText(s, sc) {
 }
 const titleOf = (rec, id) => rec.output.scripts.find((s) => s.id === id)?.title ?? id;
 function allText(rec) {
-  const L = [`REELFORGE SCRIPTS: ${rec.inputs.business_name} (${rec.inputs.area}, ${rec.inputs.city})`, `Generated ${fmtDate(rec.created_at)}`, rec.critic.honesty_note];
+  const L = [`REELFORGE SCRIPTS: ${rec.inputs.business_name}${placeText(rec.inputs) ? ` (${placeText(rec.inputs)})` : ""}`, `Generated ${fmtDate(rec.created_at)}`, rec.critic.honesty_note];
   for (const s of rec.output.scripts) L.push("", "━━━━━━━━━━━━━━━━", "", scriptText(s, scoreFor(rec, s.id)));
   const tp = rec.output.testing_plan;
   L.push("", "━━━━━━━━━━━━━━━━", "", "TESTING PLAN", ...tp.post_first.map((p) => `Post first: ${titleOf(rec, p.script_id)}: ${p.reason}`), "Alternative hooks for the strongest script:", ...tp.ab_hooks.map((x, i) => ` ${i + 1}. ${x}`), `What to watch after 48h: ${tp.metrics}`, `If it flops: ${tp.if_flops}`, `If it works: ${tp.if_works}`, `Posting frequency: ${tp.posting_frequency}`, `Next seasonal moment: ${tp.next_seasonal_moment}`);
@@ -595,7 +606,7 @@ function allText(rec) {
 }
 function toMarkdown(rec) {
   const o = rec.output, md = (s) => String(s).replace(/\|/g, "\\|"), list = (xs) => xs.map((x) => `- ${x}`).join("\n");
-  const L = [`# ReelForge scripts: ${rec.inputs.business_name}`, `_${rec.inputs.sub_niche} · ${rec.inputs.area}, ${rec.inputs.city} · ${rec.mode} · ${fmtDate(rec.created_at)} · prompt ${rec.prompt_version}_`, "", `> ${rec.critic.honesty_note}`, "", "## Assumptions", list(o.assumptions), "", "## Audience & pain map", `**Pains**\n${list(o.audience_map.pains)}`, `\n**Desires**\n${list(o.audience_map.desires)}`, `\n**Objections**\n${list(o.audience_map.objections)}`, `\n**Relatable references**\n${list(o.audience_map.relatable_refs)}`, `\n**Key emotion:** ${o.audience_map.key_emotion}`, "", "## Niche strategy"];
+  const L = [`# ReelForge scripts: ${rec.inputs.business_name}`, `_${[rec.inputs.sub_niche, placeText(rec.inputs)].filter(Boolean).join(" · ")} · ${rec.mode} · ${fmtDate(rec.created_at)} · prompt ${rec.prompt_version}_`, "", `> ${rec.critic.honesty_note}`, "", "## Assumptions", list(o.assumptions), "", "## Audience & pain map", `**Pains**\n${list(o.audience_map.pains)}`, `\n**Desires**\n${list(o.audience_map.desires)}`, `\n**Objections**\n${list(o.audience_map.objections)}`, `\n**Relatable references**\n${list(o.audience_map.relatable_refs)}`, `\n**Key emotion:** ${o.audience_map.key_emotion}`, "", "## Niche strategy"];
   const ns = o.niche_strategy;
   for (const [k, t] of [["pillars", "Pillars"], ["trust_triggers", "Trust triggers"], ["visuals", "Visuals"], ["niche_hooks", "Niche hooks"], ["seasonal_moments", "Seasonal moments"], ["common_mistakes", "Common mistakes"], ["cautions", "Cautions"]]) L.push(`\n**${t}**\n${list(ns[k])}`);
   for (const s of o.scripts) {
@@ -635,18 +646,20 @@ const ui = { tab: "generate", resultId: null, form: null, errors: {}, saveProfil
   perfClient: "", perfMetric: "views", perfDim: "hook_type", logging: null, learnBusy: false, learnErr: null,
   hooks: { text: "", niche: "salon", custom: "", language: "hinglish", busy: false, res: null, err: null }, armed: null, modal: null };
 
-const EMPTY_FORM = { business_name: "", niche: "salon", custom_niche: "", sub_niche: "", city: "", area: "", target_customer: "", offer: "", usp: "", on_camera: "owner", language: "hinglish", tones: [], festival: "", avoid: "", reference_hooks_text: "", script_count: 3, b2b: false };
+const EMPTY_FORM = { kind: "business", business_name: "", niche: "salon", custom_niche: "", sub_niche: "", city: "", area: "", target_customer: "", offer: "", usp: "", on_camera: "owner", language: "hinglish", tones: [], festival: "", avoid: "", reference_hooks_text: "", script_count: 3, b2b: false };
 function freshForm() { const s = store.settings(); return { ...EMPTY_FORM, language: s.default_language, script_count: s.default_script_count }; }
 const toForm = (i) => ({ ...EMPTY_FORM, ...i, reference_hooks_text: (i.reference_hooks || []).join("\n") });
 function formToInputs(f) {
+  const creator = f.kind === "creator";
   const errs = {}; const req = (k, max, label) => { const v = String(f[k] || "").trim(); if (!v) errs[k] = `${label} is required`; else if (v.length > max) errs[k] = `Max ${max} characters`; return v.slice(0, max); };
   const opt = (k, max) => String(f[k] || "").trim().slice(0, max);
   const i = {
-    business_name: req("business_name", 80, "Business name"), niche: f.niche, custom_niche: opt("custom_niche", 80), sub_niche: req("sub_niche", 160, "Sub-niche"),
-    city: req("city", 60, "City"), area: req("area", 80, "Area"), target_customer: req("target_customer", 300, "Target customer"), offer: req("offer", 300, "Main offer"), usp: req("usp", 300, "USP"),
-    on_camera: ON_CAMERA.includes(f.on_camera) ? f.on_camera : "owner", language: LANG_LABELS[f.language] ? f.language : "hinglish", tones: f.tones.filter((t) => TONES.includes(t)),
+    kind: creator ? "creator" : "business",
+    business_name: req("business_name", 80, creator ? "Your name / handle" : "Business name"), niche: f.niche, custom_niche: opt("custom_niche", 80), sub_niche: req("sub_niche", 160, creator ? "Content angle" : "Sub-niche"),
+    city: creator ? opt("city", 60) : req("city", 60, "City"), area: creator ? opt("area", 80) : req("area", 80, "Area"), target_customer: req("target_customer", 300, creator ? "Audience" : "Target customer"), offer: req("offer", 300, creator ? "Goal" : "Main offer"), usp: req("usp", 300, creator ? "What makes you different" : "USP"),
+    on_camera: ON_CAMERA_BY_KIND[creator ? "creator" : "business"].includes(f.on_camera) ? f.on_camera : creator ? "self" : "owner", language: LANG_LABELS[f.language] ? f.language : "hinglish", tones: f.tones.filter((t) => TONES.includes(t)),
     festival: opt("festival", 120), avoid: opt("avoid", 300), reference_hooks: f.reference_hooks_text.split("\n").map((x) => x.trim().slice(0, 200)).filter(Boolean).slice(0, 10),
-    script_count: Math.max(1, Math.min(5, Number(f.script_count) || 3)), b2b: !!f.b2b,
+    script_count: Math.max(1, Math.min(5, Number(f.script_count) || 3)), b2b: !creator && !!f.b2b,
   };
   if (i.niche === "other" && !i.custom_niche) errs.custom_niche = "Custom niche is required when niche is Other";
   return { inputs: i, errs };
@@ -702,23 +715,25 @@ function field(k, label, o) {
 function viewGenerate() {
   if (ui.busy) return viewProgress();
   ui.form ??= freshForm();
-  const f = ui.form, profiles = store.profiles(), learn = currentLearnings();
-  return `<div><h1 class="h1">Reels that actually get shot</h1><p class="sub">Fill in the business. Get hook-first scripts a non-actor can film in 30 minutes, scored by a separate critic. Runs on your Claude account, no API key needed.</p></div>
+  const f = ui.form, profiles = store.profiles(), learn = currentLearnings(), C = f.kind === "creator";
+  return `<div><h1 class="h1">Reels that actually get shot</h1><p class="sub">Fill in a business or your creator profile. Get hook-first scripts a non-actor can film in 30 minutes, scored by a separate critic. Runs on your Claude account, no API key needed.</p></div>
   ${storageNote()}${ui.failure ? errorBox(ui.failure, "generate") : ""}
   ${profiles.length ? `<section class="card"><label class="lab" for="profile">Load a client profile</label><div class="row" style="flex-wrap:nowrap"><select class="input" id="profile" data-act="load-profile"><option value="">Choose a saved client…</option>${profiles.map((p) => `<option value="${h(p.key)}">${h(p.name)}</option>`).join("")}</select>${profiles.some((p) => p.key === clientKey(f.business_name)) ? armBtn("del-profile", clientKey(f.business_name), "Delete", "Tap again") : ""}</div></section>` : ""}
-  <section class="card"><h2 class="h2">The business</h2>
-    ${field("business_name", "Business name", { max: 80, req: 1, ph: "e.g. Glam Studio by Neha" })}
-    <div><label class="lab" for="f-niche">Niche <span class="req">*</span></label><select class="input" id="f-niche" data-f="niche">${NICHES.map((n) => `<option value="${n.id}" ${f.niche === n.id ? "selected" : ""}>${h(n.label)}</option>`).join("")}<option value="other" ${f.niche === "other" ? "selected" : ""}>Other</option></select></div>
-    ${f.niche === "other" ? field("custom_niche", "Custom niche", { max: 80, req: 1, ph: "e.g. pet grooming, travel agency" }) : ""}
-    ${field("sub_niche", "Sub-niche", { max: 160, req: 1, ph: "e.g. bridal makeup studio, budget unisex salon near college" })}
-    <div class="grid2">${field("city", "City", { max: 60, req: 1, ph: "e.g. Gurugram" })}${field("area", "Area / locality", { max: 80, req: 1, ph: "e.g. Sector 56" })}</div>
-    <label class="check boxed"><input type="checkbox" id="f-b2b" data-f="b2b" ${f.b2b ? "checked" : ""}><span><b>Sells to businesses, not consumers</b><br><span class="hint">B2B mode: trade hashtags, quote/call/WhatsApp CTAs.</span></span></label>
+  <section class="card"><span class="lab">Who are these reels for?</span><div class="seg" role="group" aria-label="Mode" style="width:100%;display:grid;grid-template-columns:1fr 1fr">${[["business", "🏪 A business"], ["creator", "🎥 A creator (me)"]].map(([k, l]) => `<button type="button" data-act="kind" data-v="${k}" aria-pressed="${(f.kind || "business") === k}" style="text-transform:none;min-height:40px">${l}</button>`).join("")}</div>
+    <p class="hint">${C ? "Personal brand: grow followers, land brand deals or sell your own product." : "A shop, clinic, studio or B2B supplier that wants customers."}</p></section>
+  <section class="card"><h2 class="h2">${C ? "The creator" : "The business"}</h2>
+    ${field("business_name", C ? "Your name / handle" : "Business name", { max: 80, req: 1, ph: C ? "e.g. @fitwithriya" : "e.g. Glam Studio by Neha" })}
+    <div><label class="lab" for="f-niche">${C ? "Content niche" : "Niche"} <span class="req">*</span></label><select class="input" id="f-niche" data-f="niche">${(C ? CREATORS : NICHES).map((n) => `<option value="${n.id}" ${f.niche === n.id ? "selected" : ""}>${h(n.label)}</option>`).join("")}<option value="other" ${f.niche === "other" ? "selected" : ""}>Other</option></select></div>
+    ${f.niche === "other" ? field("custom_niche", "Custom niche", { max: 80, req: 1, ph: C ? "e.g. book reviews, cricket analysis" : "e.g. pet grooming, travel agency" }) : ""}
+    ${field("sub_niche", C ? "Your content angle" : "Sub-niche", { max: 160, req: 1, ph: C ? "e.g. desi mom comedy, budget student travel, home workouts for women" : "e.g. bridal makeup studio, budget unisex salon near college" })}
+    <div class="grid2">${field("city", C ? "City (optional)" : "City", { max: 60, req: !C, ph: "e.g. Gurugram" })}${field("area", C ? "Area (optional)" : "Area / locality", { max: 80, req: !C, ph: C ? "only if your content is local" : "e.g. Sector 56" })}</div>
+    ${C ? "" : `<label class="check boxed"><input type="checkbox" id="f-b2b" data-f="b2b" ${f.b2b ? "checked" : ""}><span><b>Sells to businesses, not consumers</b><br><span class="hint">B2B mode: trade hashtags, quote/call/WhatsApp CTAs.</span></span></label>`}
   </section>
-  <section class="card"><h2 class="h2">Audience & offer</h2>
-    ${field("target_customer", "Target customer", { max: 300, req: 1, textarea: 1, ph: "age, gender, income, what they care about" })}
-    ${field("offer", "Main offer to push now", { max: 300, req: 1, ph: "e.g. festive makeup + hair package" })}
-    ${field("usp", "USP", { max: 300, req: 1, ph: "even a small one counts" })}
-    <div><span class="lab">Who's on camera <span class="req">*</span></span><div class="seg" role="group">${ON_CAMERA.map((o) => `<button type="button" data-act="oncam" data-v="${o}" aria-pressed="${f.on_camera === o}">${o}</button>`).join("")}</div></div>
+  <section class="card"><h2 class="h2">${C ? "Audience & goal" : "Audience & offer"}</h2>
+    ${field("target_customer", C ? "Who you want watching" : "Target customer", { max: 300, req: 1, textarea: 1, ph: C ? "age, interests, what they relate to, what they struggle with" : "age, gender, income, what they care about" })}
+    ${field("offer", C ? "Goal for these reels" : "Main offer to push now", { max: 300, req: 1, ph: C ? "e.g. reach 10k followers, get brand deals, sell my ₹499 workout plan" : "e.g. festive makeup + hair package" })}
+    ${field("usp", C ? "What makes you different" : "USP", { max: 300, req: 1, ph: C ? "your story, voice, skill or quirk" : "even a small one counts" })}
+    <div><span class="lab">Who's on camera <span class="req">*</span></span><div class="seg" role="group">${ON_CAMERA_BY_KIND[C ? "creator" : "business"].map((o) => `<button type="button" data-act="oncam" data-v="${o}" aria-pressed="${f.on_camera === o}">${camLabel(o)}</button>`).join("")}</div></div>
   </section>
   <section class="card"><h2 class="h2">Style</h2>
     <div><label class="lab" for="f-language">Language</label><select class="input" id="f-language" data-f="language">${Object.entries(LANG_LABELS).map(([k, l]) => `<option value="${k}" ${f.language === k ? "selected" : ""}>${l}</option>`).join("")}</select></div>
@@ -728,10 +743,10 @@ function viewGenerate() {
   <section class="card"><h2 class="h2">Optional extras</h2>
     ${field("festival", "Upcoming festival / season / event", { max: 120, ph: "e.g. Diwali, wedding season, new semester" })}
     ${field("avoid", "Things to avoid", { max: 300, ph: "e.g. no competitor names, no discount talk" })}
-    ${field("reference_hooks_text", "Reference hooks (one per line, max 10)", { max: 2100, textarea: 1, ph: "Paste hooks you liked from other reels", hint: "They'll be analysed and rewritten for this business." })}
+    ${field("reference_hooks_text", "Reference hooks (one per line, max 10)", { max: 2100, textarea: 1, ph: "Paste hooks you liked from other reels", hint: C ? "They'll be analysed and rewritten for your content." : "They'll be analysed and rewritten for this business." })}
   </section>
   <section class="card">
-    <label class="check"><input type="checkbox" id="saveProfile" data-act="toggle-save-profile" ${ui.saveProfile ? "checked" : ""}> Save as client profile</label>
+    <label class="check"><input type="checkbox" id="saveProfile" data-act="toggle-save-profile" ${ui.saveProfile ? "checked" : ""}> ${C ? "Save as profile" : "Save as client profile"}</label>
     <div id="learnSlot">${learnSlot(learn)}</div>
     <button class="btn primary block" data-act="generate" style="min-height:52px;font-size:16px">Generate ${f.script_count} script${f.script_count > 1 ? "s" : ""}</button>
     <p class="hint">The first run asks you to allow ReelForge to use Claude.</p>
@@ -770,7 +785,7 @@ function viewResults() {
   if (!rec) return `<section class="card empty"><div class="h2">Ye result nahi mila</div><p class="muted">It may have been deleted. Check History or generate new scripts.</p><div class="row" style="justify-content:center"><button class="btn primary" data-tab="generate">Generate</button><button class="btn" data-tab="history">History</button></div></section>`;
   const o = rec.output, am = o.audience_map, ns = o.niche_strategy, tp = o.testing_plan;
   const batch = rec.checks.final.filter((f) => f.script_id === null);
-  return `<div><div class="eyebrow">${rec.mode} · ${h(fmtDate(rec.created_at))}</div><h1 class="h1" style="margin-top:6px">${h(rec.inputs.business_name)}</h1><p class="sub">${h(rec.inputs.sub_niche)} · ${h(rec.inputs.area)}, ${h(rec.inputs.city)}</p><p class="hint" style="margin-top:6px;font-style:italic">${h(rec.critic.honesty_note)}</p></div>
+  return `<div><div class="eyebrow">${rec.mode} · ${h(fmtDate(rec.created_at))}</div><h1 class="h1" style="margin-top:6px">${h(rec.inputs.business_name)}</h1><p class="sub">${h([rec.inputs.sub_niche, placeText(rec.inputs)].filter(Boolean).join(" · "))}</p><p class="hint" style="margin-top:6px;font-style:italic">${h(rec.critic.honesty_note)}</p></div>
   ${ui.failure ? errorBox(ui.failure, ui.lastAct) : ""}
   ${batch.map((w) => `<div class="note warn"><b>Heads up</b>${h(w.message)}</div>`).join("")}
   <div class="grid-btn four"><button class="btn" data-act="copy-all">Copy all</button><button class="btn" data-act="download-md">Download .md</button><button class="btn" data-act="regenerate">Regenerate</button><button class="btn" data-act="regen-weakest" ${o.scripts.length < 2 ? "disabled" : ""}>Redo weakest</button></div>
@@ -797,7 +812,7 @@ function viewHooks() {
   const H = ui.hooks, list = H.text.split("\n").map((x) => x.trim()).filter(Boolean);
   return `<div><h1 class="h1">Hook Analyzer</h1><p class="sub">Paste hooks from reels you liked (or your own). Get a teardown, a score and a stronger rewrite for your niche.</p></div>
   <section class="card"><div><label class="lab" for="hk-text">Hooks (one per line, up to 10)</label><textarea class="input" id="hk-text" data-h="text" maxlength="2200" style="min-height:150px" placeholder="Gurgaon mein 99% log ye galti karte hain&#10;POV: tumhari mummy ne pehli baar cafe ka bill dekha">${h(H.text)}</textarea><p class="hint" id="hk-count">${list.length}/10 hooks${list.length > 10 ? " · remove some" : ""}</p></div>
-    <div class="grid2"><div><label class="lab" for="hk-niche">Niche</label><select class="input" id="hk-niche" data-h="niche">${NICHES.map((n) => `<option value="${n.id}" ${H.niche === n.id ? "selected" : ""}>${h(n.label)}</option>`).join("")}<option value="other" ${H.niche === "other" ? "selected" : ""}>Other</option></select></div>
+    <div class="grid2"><div><label class="lab" for="hk-niche">Niche</label><select class="input" id="hk-niche" data-h="niche"><optgroup label="Businesses">${NICHES.map((n) => `<option value="${n.id}" ${H.niche === n.id ? "selected" : ""}>${h(n.label)}</option>`).join("")}</optgroup><optgroup label="Creators">${CREATORS.map((n) => `<option value="${n.id}" ${H.niche === n.id ? "selected" : ""}>${h(n.label)}</option>`).join("")}</optgroup><option value="other" ${H.niche === "other" ? "selected" : ""}>Other</option></select></div>
     <div><label class="lab" for="hk-lang">Rewrite language</label><select class="input" id="hk-lang" data-h="language">${Object.entries(LANG_LABELS).map(([k, l]) => `<option value="${k}" ${H.language === k ? "selected" : ""}>${l}</option>`).join("")}</select></div></div>
     ${H.niche === "other" ? `<div><label class="lab" for="hk-custom">Custom niche</label><input class="input" id="hk-custom" data-h="custom" maxlength="80" value="${h(H.custom)}"></div>` : ""}
     <button class="btn primary block" data-act="analyse" ${H.busy ? "disabled" : ""}>${H.busy ? '<span class="spin" aria-hidden="true"></span> Hooks ka post-mortem chal raha hai...' : "Analyse hooks"}</button></section>
@@ -858,7 +873,7 @@ function viewHistory() {
   const gens = store.gens();
   return `<div><h1 class="h1">History</h1><p class="sub">Your last 50 generations, saved in this browser. Export from Settings to keep a backup.</p></div>${storageNote()}
   ${!gens.length ? `<section class="card empty"><div class="h2">Khaali hai abhi</div><p class="muted">Nothing generated yet. Fill the form and your scripts will show up here.</p><button class="btn primary" data-tab="generate">Fill the form</button></section>` :
-  gens.map((g) => { const top = Math.max(0, ...g.critic.scores.map((s) => s.total)), c = scoreCls(top); return `<section class="card"><div class="script-head"><div style="min-width:0"><b style="font-size:18px">${h(g.inputs.business_name)}</b><div class="hint">${h(nicheLabel(g.inputs))} · ${h(g.inputs.area)}, ${h(g.inputs.city)}</div><div class="hint">${h(fmtDate(g.created_at))} · ${g.output.scripts.length} scripts · ${g.mode}</div></div><div class="score bg-${c}" style="min-width:60px;padding:6px 10px"><div class="n s-${c}" style="font-size:30px">${top}</div><div class="of">TOP</div></div></div>
+  gens.map((g) => { const top = Math.max(0, ...g.critic.scores.map((s) => s.total)), c = scoreCls(top); return `<section class="card"><div class="script-head"><div style="min-width:0"><b style="font-size:18px">${h(g.inputs.business_name)}</b><div class="hint">${h([nicheLabel(g.inputs), placeText(g.inputs)].filter(Boolean).join(" · "))}</div><div class="hint">${h(fmtDate(g.created_at))} · ${g.output.scripts.length} scripts · ${g.mode}</div></div><div class="score bg-${c}" style="min-width:60px;padding:6px 10px"><div class="n s-${c}" style="font-size:30px">${top}</div><div class="of">TOP</div></div></div>
   <div class="grid-btn" style="grid-template-columns:repeat(3,1fr)"><button class="btn primary" data-act="open" data-id="${h(g.id)}">Open</button><button class="btn" data-act="duplicate" data-id="${h(g.id)}">Duplicate</button>${armBtn("del-gen", g.id, "Delete", "Tap again")}</div></section>`; }).join("")}`;
 }
 function viewSettings() {
@@ -906,6 +921,11 @@ document.addEventListener("click", async (ev) => {
   const rec = ui.resultId ? store.gen(ui.resultId) : null;
   switch (act) {
     case "oncam": readForm(); ui.form.on_camera = t.dataset.v; render(); break;
+    case "kind": {
+      readForm(); const k = t.dataset.v; if ((ui.form.kind || "business") === k) break;
+      ui.form = { ...ui.form, kind: k, niche: k === "creator" ? CREATORS[0].id : NICHES[0].id, on_camera: k === "creator" ? "self" : "owner", b2b: false };
+      ui.errors = {}; render(); break;
+    }
     case "tone": { readForm(); const v = t.dataset.v; ui.form.tones = ui.form.tones.includes(v) ? ui.form.tones.filter((x) => x !== v) : [...ui.form.tones, v]; render(); break; }
     case "toggle-save-profile": ui.saveProfile = t.checked; break;
     case "toggle-use-past": ui.usePast = t.checked; break;
