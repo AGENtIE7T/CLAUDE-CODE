@@ -1,0 +1,20 @@
+{
+  "evidence": "transcript",
+  "length_sec": null,
+  "length_is_estimate": true,
+  "speech": "none",
+  "spoken_first_2s": "",
+  "first_speech_sec": null,
+  "cta": "none",
+  "series_marker": false,
+  "language": "none",
+  "notes": {
+    "format": "before_after",
+    "hook": "exact numbers in the title ('135 kgs to 63 kgs') carried by a montage",
+    "payoff_in_last_3s": true,
+    "what_goes_wrong": "Music-only; whether the numbers are on screen in the first frame can't be checked from a transcript (needs a full watch).",
+    "failure_mode": "none",
+    "swipe_risk_sec": null,
+    "reusable_pattern": "Exact before/after numbers plus a montage and music; no talking needed."
+  }
+}

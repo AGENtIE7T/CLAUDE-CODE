@@ -1,0 +1,20 @@
+{
+  "evidence": "transcript",
+  "length_sec": 47,
+  "length_is_estimate": true,
+  "speech": "dialogue",
+  "spoken_first_2s": "आहा टमाटर बड़े मज़ेदार वाह टमाटर बड़े",
+  "first_speech_sec": 0.2,
+  "cta": "none",
+  "series_marker": false,
+  "language": "hindi",
+  "notes": {
+    "format": "skit",
+    "hook": "kids chanting a vegetable rhyme in class, then a delivery boy walks in asking for a 5-star rating",
+    "payoff_in_last_3s": true,
+    "what_goes_wrong": "The rating joke peaks at 26s and the last 20s repeat the chant; ending right after the payoff would raise completion.",
+    "failure_mode": "none",
+    "swipe_risk_sec": 30,
+    "reusable_pattern": "Collide two everyday worlds everyone knows (classroom plus delivery-app rating culture) in one absurd scene."
+  }
+}

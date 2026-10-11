@@ -1,0 +1,20 @@
+{
+  "evidence": "transcript",
+  "length_sec": 37,
+  "length_is_estimate": true,
+  "speech": "monologue",
+  "spoken_first_2s": "यह मैं हूं 44 साल का 5 फीट 8 इंच लंबा 85",
+  "first_speech_sec": 0.1,
+  "cta": "none",
+  "series_marker": true,
+  "language": "hindi",
+  "notes": {
+    "format": "story",
+    "hook": "exact starting numbers in the first line ('44 saal, 5 feet 8 inch, 85 kilo')",
+    "payoff_in_last_3s": false,
+    "what_goes_wrong": "Seconds 24-33 repeat the pledge ('six pack bana ke rahunga') instead of showing day 5's actual workout; the series promise is strong, the proof is missing.",
+    "failure_mode": "none",
+    "swipe_risk_sec": 24,
+    "reusable_pattern": "State your exact starting numbers in the first line and make a public day-by-day promise; 'phir milte hain kal' turns one reel into a series."
+  }
+}

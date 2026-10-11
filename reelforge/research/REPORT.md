@@ -60,6 +60,21 @@
 
 The research is the starting prior. **Your own data overrides it.** `lib/learning.ts` adds your posted-reel results (computed insights per niche, once 3+ are logged), your 👍/👎 hooks with notes, and saved client learnings. The prompt tells the model your data wins when the two disagree.
 
+## Deep study, batch 1 (in progress: 18 of 50 coded)
+Coded so far: 1 full watch and 17 timestamped transcripts (7 business, 11 creator). That's too few for any `[deep-data]` rule, so the output is qualitative and labelled.
+
+- **Where flops went wrong** (reviewer read of 8 transcripts, not blind):
+  - generic copy (3): an AI-cartoon Hulk story, recycled textbook jokes, a forwarded WhatsApp joke
+  - slow start (2): "Assalam walekum, is video ke andar do cheez…", a podcast clip whose insight arrives at 24s
+  - one each of: a 78-second store tour, a "what's cheap today" reel that never says a price, a room-by-room flat walkthrough
+- **What the hits did:**
+  - prices said out loud in the first 2 seconds: the haggling skit at 55M
+  - the viewer's situation named in the first words: "If you have a high prescription…", 8 seconds, 2.1M
+  - a character whose fear is exactly what the product fixes: the PPF skit at 12M
+  - exact starting numbers plus a daily promise: "44 saal, 85 kilo… phir milte hain kal"
+  - a money question held until the last line: "dukan se kitna kama leta hoon?" at 2M
+- **Music-only hits** (135 kg→63 kg, 5-year bodybuilding) can't be judged from transcripts. They're queued for full watches.
+
 ## Next: a deep Instagram study
 `instagram/` holds a 208-reel plan (104 business, 104 creator, hits and flops in every niche), the watch prompt, and a stricter analyzer (permutation test + false-discovery correction). It is waiting on a data source: Instagram is blocked from this environment and Nexlev's free tier resets on 2026-10-11. See `instagram/README.md`.
 

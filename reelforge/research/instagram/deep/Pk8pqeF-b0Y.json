@@ -1,0 +1,20 @@
+{
+  "evidence": "transcript",
+  "length_sec": 44,
+  "length_is_estimate": true,
+  "speech": "monologue",
+  "spoken_first_2s": "गोल्ड की जो ज्वेलरी है उसमें उसे खरीदते",
+  "first_speech_sec": 0.1,
+  "cta": "none",
+  "series_marker": false,
+  "language": "hindi",
+  "notes": {
+    "format": "talking_head",
+    "hook": "podcast clip: 'gold jewellery khareedte waqt pehli cheez...'",
+    "payoff_in_last_3s": false,
+    "what_goes_wrong": "The useful insight (a jeweller charges you three things: gold price, wastage, making) arrives only at 24-34s behind a rambling setup.",
+    "failure_mode": "slow_start",
+    "swipe_risk_sec": 5,
+    "reusable_pattern": "Lead with the money insight ('your jeweller charges you 3 things'); a podcast clip needs its punchline first."
+  }
+}

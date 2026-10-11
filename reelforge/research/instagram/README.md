@@ -5,6 +5,28 @@ One study for everyone: 104 business reels (4 in each of the 26 niches) and 104 
 ## Batch 1: 50 YouTube Shorts (runs when Nexlev resets, 2026-10-11)
 `pick_yt_batch.py` picks 50 Shorts from the 1,169 already collected, so no search calls are wasted. 25 are business (one per niche, alternating hit/flop) and 25 are creator-style (13 hits, 12 flops, max 2 of each per niche). The list is in `yt_slots.tsv`. Each one is watched with `WATCH_PROMPT.md` and saved as `deep/<video_id>.json`. Scores use views ÷ that niche's median.
 
+## What Nexlev's free plan actually allows (found 2026-10-11)
+- **1 full video watch per 24 hours** (`watch_*_video_and_ask`), inside the 50-calls-a-week cap.
+- **2 bulk transcript calls per day, 10 videos each** (`get_bulk_video_transcripts`). These return timestamped captions.
+- **Bulk subtitles only return signed YouTube links.** This environment can't open youtube.com, so they're useless here. A "Not Available" answer still hints the reel has no speech.
+
+So batch 1 runs on two kinds of evidence:
+- `evidence: "watch"`: a blind full watch with `WATCH_PROMPT.md`. Every field counts in the statistics.
+- `evidence: "transcript"`: coded by `code_transcripts.py` from the saved transcript in `transcripts/`.
+  - Only descriptive fields feed the statistics: opening words, number or question in the first line, greeting/"is video mein" opener, dialogue vs monologue vs no speech, spoken CTA, length.
+  - Judgement notes (format, hook, what goes wrong, failure mode, swipe second) were written knowing each reel's views. They appear only as labelled `[deep-seen]` lines ("reviewer read, not blind") and never in lifts or failure statistics.
+
+The analyzer treats unknown fields as unknown, not as "no". A transcript can't see the first frame, so that reel is left out of first-frame comparisons.
+
+## Batch 1 status
+| | Reels |
+|---|---|
+| Coded | 18 (1 full watch + 17 transcripts): 7 business, 11 creator |
+| No captions, needs a full watch | 3 (cB7qffhC5R4, wsU0BJ3kmkY, x-zfV8cMVfw) |
+| Not fetched yet | 29 (transcripts first; 5 of them showed no captions, so they likely need watches) |
+
+Hand review moved 5 reels to the other side. For example, a forwarded-joke "doctor" skit is creator content, not a clinic's reel, and a mechanic explaining his own job is a business reel. The split is now 22 business / 28 creator. `pick_yt_batch.py` records each move and its reason.
+
 ## Where reels go wrong
 Every reel, hit or flop, gets:
 - `swipe_risk_sec`: the second a viewer is most likely to swipe away
@@ -26,9 +48,12 @@ The analyzer turns these into "avoid" lines in three ways:
 ## How it avoids fooling itself
 - **Score = views ÷ followers**, when followers is known, then divided by that niche's median. A big account or a big niche can't fake a pattern.
 - **Lift = median score with a feature ÷ median without it.** Lifts are pooled for everyone, for businesses only, and for creators only. One niche's 4–8 reels are too few for a lift, so a single niche only gets qualitative `[deep-seen]` lines.
+- **Unknown is not "no".** Features return true/false/unknown, and unknown reels sit out that comparison.
 - **A line only becomes a rule (`[deep-data]`)** when it has at least 8 reels on each side, a lift of at least 1.6x (or at most 0.6x), and a permutation p-value that survives a Benjamini-Hochberg correction at 10% across all ~40 features tested.
   - In a dry run with random data plus one planted effect, a plain p<0.05 cut-off produced 4 fake rules.
   - With the correction, only the planted effect came through.
-- **Everything weaker becomes `[deep-test]`**: an A/B idea, never a rule.
+- **Everything weaker becomes `[deep-test]`**: an A/B idea, never a rule. It also needs at least 16 reels where the feature is known. On the first real batch, 11 creator reels produced "dialogue hurts" while the two biggest hits were dialogue skits.
+- **Small niches are partially pooled.** A niche holds 4-8 reels, so its baseline leans on its kind's baseline (in log space, K = 4). Mixing views÷followers with raw views in one median was a real bug: it scored every follower-normalised reel at about 0.
+- **The swipe-away line** needs at least 8 blind watches on each side, a gap of at least 2 seconds, and p < 0.01. On pure noise it fired once in 15 checks at p < 0.05.
 - **Lines report "% of reels that beat their niche median, with vs without the feature".** Batches are picked from both extremes, so a raw median ratio blew up to fake 10,000x figures in the dry run.
 - **The correction counts every feature tested (~40)**, not just the ones measurable in a batch. Otherwise a sparse batch let a random feature pass as a rule.

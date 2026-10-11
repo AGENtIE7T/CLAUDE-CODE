@@ -1,0 +1,20 @@
+{
+  "evidence": "transcript",
+  "length_sec": null,
+  "length_is_estimate": true,
+  "speech": "none",
+  "spoken_first_2s": "",
+  "first_speech_sec": null,
+  "cta": "none",
+  "series_marker": false,
+  "language": "none",
+  "notes": {
+    "format": "before_after",
+    "hook": "time-span claim in the title ('My 5 years of natural bodybuilding') carried by a progress montage",
+    "payoff_in_last_3s": true,
+    "what_goes_wrong": "No spoken or visible starting number in the transcript; an exact year-1 vs year-5 figure would make the jump undeniable.",
+    "failure_mode": "none",
+    "swipe_risk_sec": 8,
+    "reusable_pattern": "A time-span progress montage on an epic song; the years do the storytelling, no talking needed."
+  }
+}

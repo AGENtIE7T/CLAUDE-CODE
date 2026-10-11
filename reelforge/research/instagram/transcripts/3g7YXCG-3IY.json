@@ -1,0 +1,36 @@
+{
+ "video_id": "3g7YXCG-3IY",
+ "source": "nexlev get_bulk_video_transcripts (YouTube auto captions)",
+ "fetched": "2026-10-11",
+ "caption_language": "ko",
+ "lines": [
+  [
+   2620,
+   "[음악]"
+  ],
+  [
+   16520,
+   "듣던 보내고"
+  ],
+  [
+   18920,
+   "[음악]"
+  ],
+  [
+   20960,
+   "보는"
+  ],
+  [
+   23000,
+   "모르는"
+  ],
+  [
+   30370,
+   "[음악]"
+  ],
+  [
+   31560,
+   "jak"
+  ]
+ ]
+}

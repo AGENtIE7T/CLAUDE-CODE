@@ -1,0 +1,20 @@
+{
+  "evidence": "transcript",
+  "length_sec": 12,
+  "length_is_estimate": true,
+  "speech": "dialogue",
+  "spoken_first_2s": "डॉक्टर साहब मेरे को बहुत कमजोरी है और",
+  "first_speech_sec": 0.2,
+  "cta": "none",
+  "series_marker": false,
+  "language": "hindi",
+  "notes": {
+    "format": "skit",
+    "hook": "'Doctor sahab, mujhe bahut kamzori hai' -> 'badaam kaju daal ke phoonk maar ke piyo'",
+    "payoff_in_last_3s": true,
+    "what_goes_wrong": "A forwarded WhatsApp joke acted out word for word; no new character, twist or visual, so there is nothing to share.",
+    "failure_mode": "generic_copy",
+    "swipe_risk_sec": 3,
+    "reusable_pattern": "Avoid: acting out a joke that is already on WhatsApp; if people know the punchline, the reel is dead."
+  }
+}

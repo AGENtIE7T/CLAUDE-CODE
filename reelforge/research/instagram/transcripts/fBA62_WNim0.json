@@ -1,0 +1,36 @@
+{
+ "video_id": "fBA62_WNim0",
+ "source": "nexlev get_bulk_video_transcripts (YouTube auto captions)",
+ "fetched": "2026-10-11",
+ "caption_language": "en",
+ "lines": [
+  [
+   0,
+   "Mhm."
+  ],
+  [
+   3274,
+   "[music]"
+  ],
+  [
+   13100,
+   "[music]"
+  ],
+  [
+   19650,
+   "[music]"
+  ],
+  [
+   24890,
+   "[music]"
+  ],
+  [
+   30785,
+   "[music]"
+  ],
+  [
+   40960,
+   "Mhm."
+  ]
+ ]
+}

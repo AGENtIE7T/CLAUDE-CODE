@@ -1,0 +1,20 @@
+{
+  "evidence": "transcript",
+  "length_sec": 40,
+  "length_is_estimate": true,
+  "speech": "dialogue",
+  "spoken_first_2s": "",
+  "first_speech_sec": 2.6,
+  "cta": "none",
+  "series_marker": false,
+  "language": "hindi",
+  "notes": {
+    "format": "skit",
+    "hook": "a learner driver so scared of scratches he gets PPF, iron bumpers and bail papers ready",
+    "payoff_in_last_3s": true,
+    "what_goes_wrong": "Speech starts at 2.5s, so the first frame must already show the nervous character; the garage name is said nowhere in the dialogue.",
+    "failure_mode": "none",
+    "swipe_risk_sec": 3,
+    "reusable_pattern": "Build a character whose exaggerated fear is exactly what your product solves; the product appears inside the joke (at 13s), not after it."
+  }
+}

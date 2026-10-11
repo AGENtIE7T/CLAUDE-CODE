@@ -50,9 +50,34 @@ for i, n in enumerate(sorted(med)):
     r = g[-1] if want == "hit" else g[min(2, len(g) - 1)]
     pick.append({**r, "kind": "business", "want": want})
 
+# Hand review of the 50 picks (titles + transcripts): the regex split put some
+# reels on the wrong side. kind = who the lesson is for (a business posting
+# about itself vs a person/creator).
+KIND_OVERRIDES = {
+    "42qer-f2FBQ": ("creator", "forwarded-joke doctor skit, not a clinic's own reel"),
+    "gtk8KvbXcZg": ("creator", "comedy channel skit"),
+    "3g7YXCG-3IY": ("creator", "personal weight-loss montage"),
+    "JxWrZv1g7MM": ("creator", "Korean kids trying a head massage: a creator video"),
+    "cz-88P-QQc0": ("business", "a mechanic explaining his own workshop job"),
+}
+# ReelForge niche each creator lesson feeds (business rows keep their niche).
+CREATOR_NICHE = {
+    "RqA-0IX0DKc": "c_beauty_fashion", "1IvRkuzZXs8": "c_finance", "BK497h7lJvs": "c_comedy",
+    "T2OEqGXebLM": "c_comedy", "S9zv4HQSqdU": "c_education", "mGVq0ULuyqA": "c_fitness",
+    "qWTeQeui2T8": "c_beauty_fashion", "479195lfYeQ": "c_fitness", "19nH4sVfqwc": "c_beauty_fashion",
+    "Kl2qMXXWP60": "c_music_dance", "bZHZuzwt6sU": "c_comedy", "pRCd1TrZpWY": "c_comedy",
+    "IRYmRTYlSag": "c_lifestyle", "fGhZ3kSTjzQ": "c_comedy", "1Bsrmhjlud4": "c_comedy",
+    "1ulsq4rRf3Q": "c_comedy", "qCePVFRPQz8": "c_motivation", "OJkkW0m85tI": "c_lifestyle",
+    "x-zfV8cMVfw": "c_education", "E6Sj6gYiw68": "c_education", "ucJr66foT4w": "c_beauty_fashion",
+    "uIoDuoyYBMo": "c_lifestyle", "yHJ08miFRo4": "c_lifestyle", "UmExGFoYCh4": "c_fitness",
+    "42qer-f2FBQ": "c_comedy", "gtk8KvbXcZg": "c_comedy", "3g7YXCG-3IY": "c_fitness", "JxWrZv1g7MM": "c_travel",
+}
+
 with open(HERE / "yt_slots.tsv", "w", newline="") as f:
-    w = csv.DictWriter(f, ["kind", "niche", "want", "video_id", "views", "niche_median", "title"], delimiter="\t", extrasaction="ignore")
+    w = csv.DictWriter(f, ["kind", "niche", "target_niche", "want", "video_id", "views", "niche_median", "title", "kind_note"], delimiter="\t", extrasaction="ignore")
     w.writeheader()
     for r in pick:
-        w.writerow({**r, "niche_median": int(med[r["niche"]])})
-print(len(pick), "picked:", sum(p["kind"] == "business" for p in pick), "business,", sum(p["kind"] == "creator" for p in pick), "creator")
+        kind, note = KIND_OVERRIDES.get(r["video_id"], (r["kind"], ""))
+        target = CREATOR_NICHE.get(r["video_id"], r["niche"]) if kind == "creator" else r["niche"]
+        w.writerow({**r, "kind": kind, "target_niche": target, "kind_note": note, "niche_median": int(med[r["niche"]])})
+print(len(pick), "picked (before hand overrides):", sum(p["kind"] == "business" for p in pick), "business,", sum(p["kind"] == "creator" for p in pick), "creator")

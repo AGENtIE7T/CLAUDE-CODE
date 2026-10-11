@@ -1,0 +1,20 @@
+{
+  "evidence": "transcript",
+  "length_sec": 8,
+  "length_is_estimate": true,
+  "speech": "monologue",
+  "spoken_first_2s": "if you have a high prescription avoid",
+  "first_speech_sec": 0.0,
+  "cta": "none",
+  "series_marker": false,
+  "language": "english",
+  "notes": {
+    "format": "tutorial",
+    "hook": "'If you have a high prescription, avoid the coke bottle glasses look'",
+    "payoff_in_last_3s": true,
+    "what_goes_wrong": "Nothing major; at 8 seconds it could show the thick vs thin lens side by side to make the fix visual.",
+    "failure_mode": "none",
+    "swipe_risk_sec": null,
+    "reusable_pattern": "Name the viewer's exact situation in the first words ('high prescription?') and give the fix in one sentence; 8 seconds total."
+  }
+}

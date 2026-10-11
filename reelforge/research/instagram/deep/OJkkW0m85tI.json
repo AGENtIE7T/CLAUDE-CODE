@@ -1,0 +1,20 @@
+{
+  "evidence": "transcript",
+  "length_sec": 79,
+  "length_is_estimate": true,
+  "speech": "monologue",
+  "spoken_first_2s": "आज मैं आपको ले चलता हूं स्मार्ट बाजार जहां मैंने सुना इतने सस्ता ऑफर आ रहे हैं",
+  "first_speech_sec": 0.0,
+  "cta": "none",
+  "series_marker": false,
+  "language": "hindi",
+  "notes": {
+    "format": "vlog",
+    "hook": "'Aaj main aapko le chalta hoon Smart Bazaar' tour opener",
+    "payoff_in_last_3s": false,
+    "what_goes_wrong": "A tour opener, vague 'itna sasta' claims, 78 seconds with long music gaps, and an ending that sounds like the store's ad ('sabse sasta Smart Bazaar').",
+    "failure_mode": "too_long",
+    "swipe_risk_sec": 3,
+    "reusable_pattern": "Avoid: 'aaj main aapko le chalta hoon' tours with vague 'sasta' claims; lead with the single best price."
+  }
+}

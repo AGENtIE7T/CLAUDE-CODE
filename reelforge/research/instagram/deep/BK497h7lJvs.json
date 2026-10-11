@@ -1,0 +1,20 @@
+{
+  "evidence": "transcript",
+  "length_sec": 21,
+  "length_is_estimate": true,
+  "speech": "dialogue",
+  "spoken_first_2s": "",
+  "first_speech_sec": 6.4,
+  "cta": "none",
+  "series_marker": false,
+  "language": "hindi",
+  "notes": {
+    "format": "skit",
+    "hook": "near-silent school-exam scene; first line only at 6s",
+    "payoff_in_last_3s": true,
+    "what_goes_wrong": "No words for the first 6 seconds, so the opening frame alone has to stop the scroll; that only works for an already famous face.",
+    "failure_mode": "none",
+    "swipe_risk_sec": 3,
+    "reusable_pattern": "Play a shared school memory as a near-silent skit on music; one line of dialogue lands the twist."
+  }
+}

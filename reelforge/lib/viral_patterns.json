@@ -1,5 +1,5 @@
 {
-  "source": "1169 Indian YouTube Shorts across 25 niches (top results by views, 1-2 searches per niche, collected 2026-10). Titles and view counts, plus 13 usable transcripts.",
+  "source": "1169 Indian YouTube Shorts across 25 niches (top results by views, 1-2 searches per niche, collected 2026-10). Titles and view counts, plus 13 usable transcripts. Plus a deep study of 18 reels (0 Instagram, 18 YouTube Shorts; 7 business, 11 creator; 1 full video watch, 17 timestamped transcripts), scored against each niche's median. [deep-seen] lines from transcripts are a reviewer's read, not statistics.",
   "caveats": "Correlational, not causal. Search results are biased toward already-popular videos and big creators; YouTube Shorts are a proxy for Instagram Reels. Treat [data] lines as strong defaults, [seen] as patterns worth using, [test] as A/B ideas.",
   "cross_niche": [
     "[data] A specific number in the first line beats an adjective. Price, quantity, kg, years or rupee-per-unit. Real estate (price in hook ~7x median views, n=26), wholesale (~4.8x, n=11) and interior (~4.4x, n=13).",
@@ -10,7 +10,11 @@
     "[seen] An insider truth that breaks a common belief travels well. A wholesaler's '25 saal ka experience… sasta maal sirf patri pe chalta hai' rant (1.7M), 'gold jewellery scam' (4.5M), doctor myth framing (clinic myth/truth ~8x, n=16).",
     "[seen] Real shop moments staged as a 15-second skit can explode. A bargaining skit in a Surat boutique ('Kitne ka hai? ₹15,000. ₹5,000. Pack kar.') got 55M.",
     "[seen] Flops share openers: pity begging ('video pe views nahi aa rahe… comment karo hum saath hain'), slow vlog intros ('Hello doston, welcome to day six'), and 3-minute walkthroughs with no stake in the first 2 seconds.",
-    "[data] Hashtag count showed no consistent effect across 25 niches. Keep 6-8 relevant tags in the caption and spend the effort on the hook."
+    "[data] Hashtag count showed no consistent effect across 25 niches. Keep 6-8 relevant tags in the caption and spend the effort on the hook.",
+    "[deep-seen] Where all flops went wrong (reviewer read of 8 transcripts, not blind): generic copy (3), slow start (2), too long (1), no payoff (1), no story (1). Example: A magic spoon solves everything, so there is no real stake or payoff, and AI-cartoon versions of famous characters are a flooded format with no 'ye toh main hoon' moment."
+  ],
+  "business_cross": [
+    "[deep-seen] Where business flops went wrong (reviewer read of 4 transcripts, not blind): slow start (2), no payoff (1), no story (1). Example: Greeting plus an agenda fills the first 5 seconds, then jargon about piston rings with no visible cost of getting it wrong."
   ],
   "niches": {
     "salon": {
@@ -135,6 +139,7 @@
         "[test] A phone number or 'call' in the caption didn't hurt (n=6)."
       ],
       "avoid": [
+        "[deep-seen] 63 seconds of room sizes with no rent, no price and no standout feature in the opening; it reads like a listing, not a reel.",
         "[seen] Luxury spec-sheet titles with sq ft, tower names and no hook. Several got under 1,000 views",
         "Guaranteed-returns claims"
       ],
@@ -145,6 +150,7 @@
         "2 bhk flat in just 20.50 lakh | Furnished flat in Delhi | Low budget flat in Delhi | Home  (2,200,000 views)"
       ],
       "flops": [
+        "63 seconds of room sizes with no rent, no price and no standout feature in the opening; it reads like a listing, not a reel. (84 views, YT)",
         "🚨 ₹70L Furnished Studio in Andheri East | ₹35K Rental Potential! (20 views)",
         "पैसा वसूल 2 BHK FULL FURNISHED Flat for rent near DWARKA SECTOR 14 METRO | BRS SHOW RS409 (50 views)"
       ],
@@ -174,6 +180,7 @@
     },
     "fashion": {
       "do": [
+        "[deep-seen] A 15-20 second shop-counter haggling skit with real prices said out loud; the punchline is the shopkeeper's reaction.",
         "[seen] Shop-floor skits around bargaining or customer behaviour (55M). Comedy rooted in a real shop moment.",
         "[seen] Fabric or texture named in the title with elegant slow visuals ('tissue cotton saree', 29M).",
         "[seen] Ready-to-wear or 'ready in 5 seconds' convenience hooks (728k-17M)."
@@ -183,6 +190,7 @@
         "[seen] Long collection catalogue posts (most under 5k views)"
       ],
       "winning": [
+        "A 15-20 second shop-counter haggling skit with real prices said out loud; the punchline is the shopkeeper's reaction. (55,000,000 views, YT)",
         "muh lagna bekar hai!\" 😱 | Ultimate Boutique Drama at Surat Wholesale Market (55,000,000 views)",
         "Timeless Elegance Tissue Cotton Saree – Grace in Every Thread (29,000,000 views)",
         "Myntra Ready To Wear Saree Haul 😱😱 (17,000,000 views)",
@@ -240,22 +248,26 @@
     },
     "auto": {
       "do": [
+        "[deep-seen] Build a character whose exaggerated fear is exactly what your product solves; the product appears inside the joke (at 13s), not after it.",
         "[seen] A named car plus a visible result ('Baleno: dirt to dazzle', 3.8M; 'Fortuner touchless wash', 2.4M).",
         "[seen] Customer fear made specific ('Scared of scratches? Got PPF at HR26 Garage', 12M).",
         "[test] Question hooks about a symptom ('Is your car jerking?', n=6)."
       ],
       "avoid": [
+        "[deep-seen] Greeting plus an agenda fills the first 5 seconds, then jargon about piston rings with no visible cost of getting it wrong.",
         "[data] Leaning on a city name instead of a car/result hook (0.13x, n=9)",
         "[seen] Long Hindi repair tutorials (mostly under 1,000 views)",
         "Safety-risk DIY"
       ],
       "winning": [
+        "Build a character whose exaggerated fear is exactly what your product solves; the product appears inside the joke (at 13s), not after it. (12,000,000 views, YT)",
         "Scared of Scratches? I Got PPF Installed at HR26 Garage! | Car Detailing Gurgaon @SwaggerS (12,000,000 views)",
         "Baleno Gets a Shinex Makeover | From Dirt to Dazzle ✨ (3,800,000 views)",
         "Touchless Wash for Fortuner #carcare #carwash #foamwash #toyota #autodetailing #automobile (2,400,000 views)",
         "India's first professional Female detailer | Auto Detailing in chennai (1,700,000 views)"
       ],
       "flops": [
+        "Greeting plus an agenda fills the first 5 seconds, then jargon about piston rings with no visible cost of getting it wrong. (284 views, YT)",
         "Car Overheating Problem in Hindi, How to fix Car Overheating Problem ||₹#viral #shortvideo (57 views)",
         "Clutch Headings Repair Process (In Hindi) (76 views)"
       ],
@@ -267,6 +279,7 @@
         "[seen] Weight-specific bridal sets ('full wedding set in just 50 grams', 989k) answer the real budget question."
       ],
       "avoid": [
+        "[deep-seen] The useful insight (a jeweller charges you three things: gold price, wastage, making) arrives only at 24-34s behind a rambling setup.",
         "[data] 'How X jewellery is made' process content (0.28x, n=9)",
         "False purity or investment-return claims"
       ],
@@ -277,6 +290,7 @@
         "How to calculate the exact value of Gold? 🪙#Shorts #pw #commercewallahbypw (2,800,000 views)"
       ],
       "flops": [
+        "The useful insight (a jeweller charges you three things: gold price, wastage, making) arrives only at 24-34s behind a rambling setup. (7,652 views, YT)",
         "beautiful golden wedding set for bride 💖😘✨ #bridal #foryou to d #gold (984 views)",
         "Elegance redefined ✨ Complete your bridal look with our exquisite antique gold bridal coll (1,500 views)"
       ],
@@ -457,6 +471,7 @@
     },
     "optician": {
       "do": [
+        "[deep-seen] Name the viewer's exact situation in the first words ('high prescription?') and give the fix in one sentence; 8 seconds total.",
         "[seen] Lens-education demos that answer a buyer's doubt ('How to check blue-cut lenses at home' 1M; 'anti-glare vs blue-cut' 975k; 'thin hi-index lenses' 2.1M).",
         "[seen] Comparisons ('Lenskart vs local store', 1.5M) and a frame-for-face-size tip (1.4M)."
       ],
@@ -465,6 +480,7 @@
         "Eyesight cure claims"
       ],
       "winning": [
+        "Name the viewer's exact situation in the first words ('high prescription?') and give the fix in one sentence; 8 seconds total. (2,100,000 views, YT)",
         "High Glasses Prescription? Choose Hi-Index for thinner and lighter lenses! (2,100,000 views)",
         "Get Eyes Tested From The Comfort Of Your Home | Lenskart At Home (1,900,000 views)",
         "Making Process of Spectacle Lenses (CR39) #eyewear #glasses #spectacle (1,800,000 views)",
@@ -482,6 +498,7 @@
         "[seen] Margin and stock reveals ('dry fruits margin reveal' 2.3M; 'top 5 most selling products' 506k)."
       ],
       "avoid": [
+        "[deep-seen] A deals video where no price is spoken in 43 seconds of music; if the prices are only in small on-screen text, nobody waits for them.",
         "[data] 'Sabse sasta supermarket / loot deals' claims with no figure (0.01x, n=21)",
         "False MRP or discount claims"
       ],
@@ -492,6 +509,7 @@
         "गांव का छोटा किराना स्टोर | रोज कमाई का सिक्रेट | Kirana Shop Business Idea (1,100,000 views)"
       ],
       "flops": [
+        "A deals video where no price is spoken in 43 seconds of music; if the prices are only in small on-screen text, nobody waits for them. (48 views, YT)",
         "India's cheapest grocery 😯#shorts #viral (1 views)",
         "Supermarket Mein Aaj Kya Sasta Mila? 😱 Best Deals Today 🛒 (22 views)"
       ],
@@ -566,20 +584,30 @@
       "[seen] Numbered series build a habit: 'Saree mini vlog EP-203' (14M), 'Day-32 dry fruits margin reveal' (2.3M), 'Day 5/100 fat to fit' (2.2M). Give each script a series hook the creator can repeat.",
       "[seen] Personal milestones with a time span: 'My 6-year guitar progress' (9M), '2020 vs 2024' (8.2M), 'My first 10th board exam' (39M).",
       "[seen] An honest number about your own life (money, kg, marks, budget) beats a vague claim, the same rule as the business data.",
-      "[seen] Flops: pity/begging hooks, 'Hello doston, welcome back' intros, and generic tip lists with no demo."
+      "[seen] Flops: pity/begging hooks, 'Hello doston, welcome back' intros, and generic tip lists with no demo.",
+      "[deep-seen] Where creator flops went wrong (reviewer read of 4 transcripts, not blind): generic copy (3), too long (1). Example: A magic spoon solves everything, so there is no real stake or payoff, and AI-cartoon versions of famous characters are a flooded format with no 'ye toh main hoon' moment."
     ],
     "niches": {
       "c_comedy": {
         "do": [
+          "[deep-seen] Play a shared school memory as a near-silent skit on music; one line of dialogue lands the twist.",
+          "[deep-seen] Collide two everyday worlds everyone knows (classroom plus delivery-app rating culture) in one absurd scene.",
           "[seen] One relatable archetype per reel ('That one teacher', 'Students vs Teachers') played by the creator, payoff in the last 3 seconds.",
           "[seen] Shop or workplace POVs ('POV of a mobile repair shop' 40M; 'First day of my dry clean shop' 3.1M)."
         ],
         "avoid": [
+          "[deep-seen] A magic spoon solves everything, so there is no real stake or payoff, and AI-cartoon versions of famous characters are a flooded format with no 'ye toh main hoon' moment.",
+          "[deep-seen] A forwarded WhatsApp joke acted out word for word; no new character, twist or visual, so there is nothing to share.",
           "Punching down",
           "[seen] Long setups before the first laugh"
         ],
-        "winning": [],
-        "flops": []
+        "winning": [
+          "Play a shared school memory as a near-silent skit on music; one line of dialogue lands the twist. (232,000,000 views, YT)",
+          "Collide two everyday worlds everyone knows (classroom plus delivery-app rating culture) in one absurd scene. (194,000,000 views, YT)"
+        ],
+        "flops": [
+          "A magic spoon solves everything, so there is no real stake or payoff, and AI-cartoon versions of famous characters are a flooded format with no 'ye toh main hoon' moment. (69 views, YT)"
+        ]
       },
       "c_lifestyle": {
         "do": [
@@ -587,14 +615,19 @@
           "[seen] Firsts ('My first board exam' 39M) told as a mini story."
         ],
         "avoid": [
+          "[deep-seen] A tour opener, vague 'itna sasta' claims, 78 seconds with long music gaps, and an ending that sounds like the store's ad ('sabse sasta Smart Bazaar').",
           "[seen] Slow 'aaj main uthi' openers",
           "Undisclosed sponsorships"
         ],
         "winning": [],
-        "flops": []
+        "flops": [
+          "A tour opener, vague 'itna sasta' claims, 78 seconds with long music gaps, and an ending that sounds like the store's ad ('sabse sasta Smart Bazaar'). (61 views, YT)"
+        ]
       },
       "c_fitness": {
         "do": [
+          "[deep-seen] Exact before/after numbers plus a montage and music; no talking needed.",
+          "[deep-seen] A time-span progress montage on an epic song; the years do the storytelling, no talking needed.",
           "[seen] Exact numbers and dates ('135 kg to 63 kg' 10M; '2020 vs 2024' 8.2M; 'My 5 years of natural bodybuilding' 4.1M).",
           "[seen] Day-counter journeys ('Day 5/100', 2.2M)."
         ],
@@ -602,7 +635,10 @@
           "[seen] Generic 'beginner galti mat karna' lists (dozens under 3k)",
           "Guaranteed results, supplements, body shaming"
         ],
-        "winning": [],
+        "winning": [
+          "Exact before/after numbers plus a montage and music; no talking needed. (10,000,000 views, YT)",
+          "A time-span progress montage on an epic song; the years do the storytelling, no talking needed. (4,099,999 views, YT)"
+        ],
         "flops": []
       },
       "c_food": {
@@ -631,6 +667,7 @@
       },
       "c_beauty_fashion": {
         "do": [
+          "[deep-seen] Identify a common struggle with a traditional item, present a modern 'hack' version of it, and review multiple options while asking the audience for their preference.",
           "[seen] Hauls with a strong verdict ('Myntra ready-to-wear saree haul' 17M; 'Huge saree haul EORS sale' 1.4M).",
           "[seen] Outsider-tries formats ('Foreigner tries a sari in India', 5.6M)."
         ],
@@ -638,11 +675,14 @@
           "[seen] Only-positive reviews",
           "Undisclosed paid collabs"
         ],
-        "winning": [],
+        "winning": [
+          "Identify a common struggle with a traditional item, present a modern 'hack' version of it, and review multiple options while asking the audience for their preference. (17,000,000 views, YT)"
+        ],
         "flops": []
       },
       "c_finance": {
         "do": [
+          "[deep-seen] Open on the money question everyone is curious about, hold the number until the last line, and show the day's grind in between.",
           "[seen] One money question answered with real maths ('How much GST is charged on gold?' 19M; '3 deceptive ways jewellers rip you off' 975k).",
           "[seen] 'How much does X really earn' reveals ('Dukan se kitna kama leta ho?' 2M; 'Kirana store profit reality' 299k)."
         ],
@@ -650,7 +690,9 @@
           "Stock tips or guaranteed returns",
           "Jargon walls"
         ],
-        "winning": [],
+        "winning": [
+          "Open on the money question everyone is curious about, hold the number until the last line, and show the day's grind in between. (2,000,000 views, YT)"
+        ],
         "flops": []
       },
       "c_education": {

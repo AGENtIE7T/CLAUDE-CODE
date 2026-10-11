@@ -1,0 +1,52 @@
+{
+ "video_id": "TzpbszULIpY",
+ "source": "nexlev get_bulk_video_transcripts (YouTube auto captions)",
+ "fetched": "2026-10-11",
+ "caption_language": "en",
+ "lines": [
+  [
+   560,
+   "6 ft spar space"
+  ],
+  [
+   3280,
+   "15x 10 hall size."
+  ],
+  [
+   8639,
+   "This is the first bedroom 10x 10."
+  ],
+  [
+   16800,
+   "This is the kitchen"
+  ],
+  [
+   21680,
+   "access to utility balcony."
+  ],
+  [
+   27359,
+   "Clean up."
+  ],
+  [
+   33200,
+   "Common washroom."
+  ],
+  [
+   36000,
+   "Master bedroom."
+  ],
+  [
+   40960,
+   "Attached washroom."
+  ],
+  [
+   57120,
+   "Third bedroom. Again"
+  ],
+  [
+   61199,
+   "balcony."
+  ]
+ ]
+}

@@ -254,6 +254,7 @@ out = {
     "source": f'{data["total_videos"]} Indian YouTube Shorts across {len(data["niches"])} niches (top results by views, 1-2 searches per niche, collected 2026-10). Titles and view counts, plus 13 usable transcripts.',
     "caveats": "Correlational, not causal. Search results are biased toward already-popular videos and big creators; YouTube Shorts are a proxy for Instagram Reels. Treat [data] lines as strong defaults, [seen] as patterns worth using, [test] as A/B ideas.",
     "cross_niche": CROSS_NICHE,
+    "business_cross": [],
     "niches": {k: {**v, **examples(k), "median_views": data["niches"].get(k, {}).get("median_views")} for k, v in NICHE.items()},
     "creators": {
         "cross": CREATOR_CROSS,
@@ -262,14 +263,19 @@ out = {
 }
 # Deep-watch study (research/instagram: Instagram + YouTube batches), merged in when it exists. Same
 # JSON shape, so the app needs no code change. "everyone" lines go to both
-# businesses and creators; kind-specific lines go only to that kind.
+# businesses and creators; kind-specific lines go only to that kind
+# (business_cross is shown only in business mode, creators.cross only to creators).
 ig_file = HERE / "instagram" / "patterns_ig.json"
 if ig_file.exists():
     ig = json.loads(ig_file.read_text())
     if ig.get("reels"):
-        plat = ig.get("by_platform", {})
-        out["source"] += f' Plus a frame-by-frame deep watch of {ig["reels"]} reels ({plat.get("instagram", 0)} Instagram, {plat.get("youtube", 0)} YouTube Shorts; {ig["by_kind"].get("business", 0)} business, {ig["by_kind"].get("creator", 0)} creator): hook, first frame, cuts, audio, format and CTA, scored against each niche\'s median.'
-        out["cross_niche"] += ig["everyone"] + [f"(businesses) {x}" for x in ig["business"]]
+        plat, ev = ig.get("by_platform", {}), ig.get("by_evidence", {})
+        out["source"] += (f' Plus a deep study of {ig["reels"]} reels ({plat.get("instagram", 0)} Instagram, {plat.get("youtube", 0)} YouTube Shorts;'
+                          f' {ig["by_kind"].get("business", 0)} business, {ig["by_kind"].get("creator", 0)} creator; {ev.get("watch", 0)} full video watch{"es" if ev.get("watch", 0) != 1 else ""},'
+                          f' {ev.get("transcript", 0)} timestamped transcripts), scored against each niche\'s median. [deep-seen] lines from transcripts'
+                          ' are a reviewer\'s read, not statistics.')
+        out["cross_niche"] += ig["everyone"]
+        out["business_cross"] += ig["business"]
         out["creators"]["cross"] += ig["creator"]
         for niche, v in ig["niches"].items():
             tgt = out["creators"]["niches"] if niche.startswith("c_") else out["niches"]

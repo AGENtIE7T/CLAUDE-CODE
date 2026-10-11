@@ -402,6 +402,7 @@ function viralPatternsText(i) {
   const V = DATA.viral, creator = i.kind === "creator", n = (creator ? V.creators.niches : V.niches)[i.niche];
   const L = [`Source: ${V.source}`, `Caveat: ${V.caveats}`, "", "Across niches:", ...V.cross_niche.map((x) => `- ${x}`)];
   if (creator) L.push("", "Across creator content:", ...V.creators.cross.map((x) => `- ${x}`));
+  else if ((V.business_cross || []).length) L.push("", "Across business content:", ...V.business_cross.map((x) => `- ${x}`));
   if (n) L.push("", "This niche: do", ...n.do.map((x) => `- ${x}`), "", "This niche: avoid", ...n.avoid.map((x) => `- ${x}`), "", "Real top performers (for pattern only, never copy):", ...n.winning.map((x) => `- ${x}`), "Real flops:", ...n.flops.map((x) => `- ${x}`));
   return L.join("\n");
 }

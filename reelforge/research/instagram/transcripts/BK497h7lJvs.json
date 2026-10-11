@@ -1,0 +1,32 @@
+{
+ "video_id": "BK497h7lJvs",
+ "source": "nexlev get_bulk_video_transcripts (YouTube auto captions)",
+ "fetched": "2026-10-11",
+ "caption_language": "hi",
+ "lines": [
+  [
+   240,
+   "[संगीत]"
+  ],
+  [
+   6400,
+   "ऑल द बेस्ट।"
+  ],
+  [
+   8000,
+   "[संगीत]"
+  ],
+  [
+   13679,
+   "इतनी प्रैक्टिस करने के बाद भी कैसे पकड़े"
+  ],
+  [
+   16160,
+   "गए?"
+  ],
+  [
+   19439,
+   "थैंक यू।"
+  ]
+ ]
+}

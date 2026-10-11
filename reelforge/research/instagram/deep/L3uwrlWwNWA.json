@@ -1,0 +1,20 @@
+{
+  "evidence": "transcript",
+  "length_sec": 18,
+  "length_is_estimate": true,
+  "speech": "dialogue",
+  "spoken_first_2s": "कितने का है ये? ₹15,000।",
+  "first_speech_sec": 0.2,
+  "cta": "none",
+  "series_marker": false,
+  "language": "hindi",
+  "notes": {
+    "format": "skit",
+    "hook": "'Kitne ka hai ye?' '₹15,000.' '₹5,000.' 'Chhotu, pack kar.' in the first 4 seconds",
+    "payoff_in_last_3s": true,
+    "what_goes_wrong": "Almost nothing; at 19 seconds the only risk is the 8-second gap with no line (4-12s).",
+    "failure_mode": "none",
+    "swipe_risk_sec": 6,
+    "reusable_pattern": "A 15-20 second shop-counter haggling skit with real prices said out loud; the punchline is the shopkeeper's reaction."
+  }
+}

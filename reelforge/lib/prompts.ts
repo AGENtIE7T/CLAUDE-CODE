@@ -56,6 +56,7 @@ export function viralPatternsText(inputs: Pick<BusinessInput, "niche"> & { kind?
   const n = ((creator ? viralData.creators.niches : viralData.niches) as Record<string, P>)[inputs.niche];
   const lines = [`Source: ${viralData.source}`, `Caveat: ${viralData.caveats}`, "", "Across niches:", ...viralData.cross_niche.map((x) => `- ${x}`)];
   if (creator) lines.push("", "Across creator content:", ...viralData.creators.cross.map((x) => `- ${x}`));
+  else if (viralData.business_cross.length) lines.push("", "Across business content:", ...viralData.business_cross.map((x) => `- ${x}`));
   if (n) {
     lines.push("", "This niche: do", ...n.do.map((x) => `- ${x}`), "", "This niche: avoid", ...n.avoid.map((x) => `- ${x}`));
     lines.push("", "Real top performers (for pattern only, never copy):", ...n.winning.map((x) => `- ${x}`), "Real flops:", ...n.flops.map((x) => `- ${x}`));

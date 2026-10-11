@@ -1,0 +1,20 @@
+{
+  "evidence": "transcript",
+  "length_sec": 63,
+  "length_is_estimate": true,
+  "speech": "monologue",
+  "spoken_first_2s": "6 ft spar space",
+  "first_speech_sec": 0.6,
+  "cta": "none",
+  "series_marker": false,
+  "language": "english",
+  "notes": {
+    "format": "other",
+    "hook": "room-by-room voiceover ('15x10 hall size... first bedroom 10x10')",
+    "payoff_in_last_3s": false,
+    "what_goes_wrong": "63 seconds of room sizes with no rent, no price and no standout feature in the opening; it reads like a listing, not a reel.",
+    "failure_mode": "no_story",
+    "swipe_risk_sec": 2,
+    "reusable_pattern": "Avoid: room-by-room walkthroughs; lead with the rent and the one feature that's unusual for that price."
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "evidence": "transcript",
+  "length_sec": 37,
+  "length_is_estimate": true,
+  "speech": "monologue",
+  "spoken_first_2s": "अस्सलाम वालेकुम इस वीडियो के अंदर दो चीज",
+  "first_speech_sec": 0.4,
+  "cta": "spoken",
+  "series_marker": false,
+  "language": "regional",
+  "notes": {
+    "format": "tutorial",
+    "hook": "'Assalam walekum, is video ke andar do cheez share karunga, gaur se dekhna'",
+    "payoff_in_last_3s": false,
+    "what_goes_wrong": "Greeting plus an agenda fills the first 5 seconds, then jargon about piston rings with no visible cost of getting it wrong.",
+    "failure_mode": "slow_start",
+    "swipe_risk_sec": 1,
+    "reusable_pattern": "Avoid: greeting + 'is video mein do cheezein' openers; lead with the costly symptom (engine smoke, a ₹ repair bill)."
+  }
+}
