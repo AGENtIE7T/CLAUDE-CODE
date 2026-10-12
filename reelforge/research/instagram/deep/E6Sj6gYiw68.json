@@ -1,0 +1,20 @@
+{
+  "evidence": "transcript",
+  "length_sec": null,
+  "length_is_estimate": true,
+  "speech": "none",
+  "spoken_first_2s": "",
+  "first_speech_sec": null,
+  "cta": "none",
+  "series_marker": false,
+  "language": "none",
+  "notes": {
+    "format": "tutorial",
+    "hook": "silent wiring repair (title hashtags: #garenafreefire #funny)",
+    "payoff_in_last_3s": null,
+    "what_goes_wrong": "A silent 33-second repair clip tagged with unrelated hashtags (#garenafreefire, #funny); nothing says what problem is being fixed or what it costs (visuals unchecked).",
+    "failure_mode": "unclear_hook",
+    "swipe_risk_sec": null,
+    "reusable_pattern": "Avoid: silent repair clips with no stated problem; say the symptom and the cost in the first line."
+  }
+}

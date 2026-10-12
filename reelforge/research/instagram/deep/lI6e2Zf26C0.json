@@ -1,0 +1,20 @@
+{
+  "evidence": "transcript",
+  "length_sec": null,
+  "length_is_estimate": true,
+  "speech": "none",
+  "spoken_first_2s": "",
+  "first_speech_sec": null,
+  "cta": "none",
+  "series_marker": false,
+  "language": "none",
+  "notes": {
+    "format": "process",
+    "hook": "music-only 'deep clean satisfaction: restoring your AC unit'",
+    "payoff_in_last_3s": null,
+    "what_goes_wrong": "Music-only 'satisfying AC deep clean', the exact pattern the 25-niche data found saturated ('dirty AC / satisfying' ~0.01x, n=18); no problem, price or twist is stated (visuals unchecked).",
+    "failure_mode": "generic_copy",
+    "swipe_risk_sec": null,
+    "reusable_pattern": "Avoid: generic 'satisfying AC cleaning' clips; add the stake (bill saved, 10-year-old AC, what was inside)."
+  }
+}

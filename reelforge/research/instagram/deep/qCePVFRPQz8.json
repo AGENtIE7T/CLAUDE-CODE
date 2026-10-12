@@ -1,0 +1,20 @@
+{
+  "evidence": "transcript",
+  "length_sec": 41,
+  "length_is_estimate": true,
+  "speech": "dialogue",
+  "spoken_first_2s": "आज अगर ₹5,000 नहीं कमाए तो यह ढाबा हमेशा",
+  "first_speech_sec": 0.2,
+  "cta": "none",
+  "series_marker": false,
+  "language": "hindi",
+  "notes": {
+    "format": "story",
+    "hook": "'Aaj agar ₹5,000 nahi kamaye to yeh dhaba hamesha ke liye band'",
+    "payoff_in_last_3s": null,
+    "what_goes_wrong": "A real stake and a number in the first line, but a stock 'garib dhaba' turnaround plot with a 10-second silent gap (28-38s); the hook can't save a story viewers have seen a hundred times (visuals unchecked).",
+    "failure_mode": "generic_copy",
+    "swipe_risk_sec": 28,
+    "reusable_pattern": "Avoid: stock rags-to-riches plots; a strong first-line stake still needs a story people haven't seen."
+  }
+}

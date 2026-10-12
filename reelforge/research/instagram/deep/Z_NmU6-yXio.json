@@ -1,0 +1,20 @@
+{
+  "evidence": "transcript",
+  "length_sec": 25,
+  "length_is_estimate": true,
+  "speech": "monologue",
+  "spoken_first_2s": "നിങ്ങൾ ഷാർജയിലോ ദുബായിലോ അജ്മാനിലോ ഉള്ളവരാണെങ്കിൽ എന്തായാലും നിങ്ങൾക്ക്",
+  "first_speech_sec": 0.1,
+  "cta": "spoken",
+  "series_marker": false,
+  "language": "regional",
+  "notes": {
+    "format": "other",
+    "hook": "'If you're in Sharjah, Dubai or Ajman, this video is useful for you, don't skip'",
+    "payoff_in_last_3s": false,
+    "what_goes_wrong": "A 'useful video, don't skip' opener, a vague 'great price' with no number, and two CTAs at the end (follow and save): an ad, not a reel.",
+    "failure_mode": "hard_sell",
+    "swipe_risk_sec": 2,
+    "reusable_pattern": "Avoid: 'useful video, don't skip' openers and 'great price' with no number; show the cracked screen and say the price."
+  }
+}

@@ -1,0 +1,20 @@
+{
+ "video_id": "ucJr66foT4w",
+ "source": "nexlev get_bulk_video_transcripts (YouTube auto captions)",
+ "fetched": "2026-10-12",
+ "caption_language": "hi",
+ "lines": [
+  [
+   2320,
+   "इश्क [संगीत] दे पनियर लड़ गए मेरी जान के"
+  ],
+  [
+   6080,
+   "पीछे पड़ गए [संगीत]"
+  ],
+  [
+   8080,
+   "सीढ़ी ला के देखो को"
+  ]
+ ]
+}

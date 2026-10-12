@@ -1,0 +1,20 @@
+{
+  "evidence": "transcript",
+  "length_sec": null,
+  "length_is_estimate": true,
+  "speech": "none",
+  "spoken_first_2s": "",
+  "first_speech_sec": null,
+  "cta": "none",
+  "series_marker": false,
+  "language": "none",
+  "notes": {
+    "format": "tutorial",
+    "hook": "music-only 'step-by-step makeup tutorial | glam makeup transformation'",
+    "payoff_in_last_3s": null,
+    "what_goes_wrong": "A generic 'transformation tutorial', the label the 25-niche data found weak for salons (0.26x, n=20); no client, occasion or twist is named (visuals unchecked).",
+    "failure_mode": "generic_copy",
+    "swipe_risk_sec": null,
+    "reusable_pattern": "Avoid: generic 'glam transformation tutorial' titles; name the client and the twist."
+  }
+}

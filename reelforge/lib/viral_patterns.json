@@ -1,5 +1,5 @@
 {
-  "source": "1169 Indian YouTube Shorts across 25 niches (top results by views, 1-2 searches per niche, collected 2026-10). Titles and view counts, plus 13 usable transcripts. Plus a deep study of 18 reels (0 Instagram, 18 YouTube Shorts; 7 business, 11 creator; 1 full video watch, 17 timestamped transcripts), scored against each niche's median. [deep-seen] lines from transcripts are a reviewer's read, not statistics.",
+  "source": "1169 Indian YouTube Shorts across 25 niches (top results by views, 1-2 searches per niche, collected 2026-10). Titles and view counts, plus 13 usable transcripts. Plus a deep study of 39 reels (0 Instagram, 39 YouTube Shorts; 14 business, 25 creator; 2 full video watches, 37 timestamped transcripts), scored against each niche's median. [deep-seen] lines from transcripts are a reviewer's read, not statistics.",
   "caveats": "Correlational, not causal. Search results are biased toward already-popular videos and big creators; YouTube Shorts are a proxy for Instagram Reels. Treat [data] lines as strong defaults, [seen] as patterns worth using, [test] as A/B ideas.",
   "cross_niche": [
     "[data] A specific number in the first line beats an adjective. Price, quantity, kg, years or rupee-per-unit. Real estate (price in hook ~7x median views, n=26), wholesale (~4.8x, n=11) and interior (~4.4x, n=13).",
@@ -11,10 +11,11 @@
     "[seen] Real shop moments staged as a 15-second skit can explode. A bargaining skit in a Surat boutique ('Kitne ka hai? ₹15,000. ₹5,000. Pack kar.') got 55M.",
     "[seen] Flops share openers: pity begging ('video pe views nahi aa rahe… comment karo hum saath hain'), slow vlog intros ('Hello doston, welcome to day six'), and 3-minute walkthroughs with no stake in the first 2 seconds.",
     "[data] Hashtag count showed no consistent effect across 25 niches. Keep 6-8 relevant tags in the caption and spend the effort on the hook.",
-    "[deep-seen] Where all flops went wrong (reviewer read of 8 transcripts, not blind): generic copy (3), slow start (2), too long (1), no payoff (1), no story (1). Example: A magic spoon solves everything, so there is no real stake or payoff, and AI-cartoon versions of famous characters are a flooded format with no 'ye toh main hoon' moment."
+    "[deep-seen] In this deep study (39 business and creator reels), none of these separated hits from flops: speech in the first 2 seconds; a number in the first spoken line; a question in the first spoken line; a greeting or 'in this video...' opener; dialogue between 2+ voices; no speech at all (music + visuals); a series marker (Part/EP/Day N); over 45 seconds; no CTA. Treat formula tricks as hygiene, not as the reason a reel works.",
+    "[deep-seen] Where all flops went wrong (reviewer read of 17 transcripts, not blind): generic copy (9), slow start (3), too long (1), unclear hook (1), no payoff (1), hard sell (1), no story (1). Example: A magic spoon solves everything, so there is no real stake or payoff, and AI-cartoon versions of famous characters are a flooded format with no 'ye toh main hoon' moment."
   ],
   "business_cross": [
-    "[deep-seen] Where business flops went wrong (reviewer read of 4 transcripts, not blind): slow start (2), no payoff (1), no story (1). Example: Greeting plus an agenda fills the first 5 seconds, then jargon about piston rings with no visible cost of getting it wrong."
+    "[deep-seen] Where business flops went wrong (reviewer read of 9 transcripts, not blind): generic copy (4), slow start (2), no payoff (1), hard sell (1), no story (1). Example: A seasonal hook, but 51 seconds of 'affordable' and 'bahut accha lagta hai' with no single price and a comment-for-link ask: a catalogue, not a story."
   ],
   "niches": {
     "salon": {
@@ -25,6 +26,7 @@
         "[seen] Near-silent before/after with trending audio is a valid format. Keep on-screen text to the twist."
       ],
       "avoid": [
+        "[deep-seen] A generic 'transformation tutorial', the label the 25-niche data found weak for salons (0.26x, n=20); no client, occasion or twist is named (visuals unchecked).",
         "[data] Leaning on the word 'transformation' alone",
         "[seen] Heavy filters on the reveal",
         "[test] A bare price-list post with no story (0.44x in the price search)"
@@ -36,6 +38,7 @@
         "SHOCKING😱😱 TRANSFORMATION CONTACT: 9003069771 #groommakeup #hairstyle #groom (16,000,000 views)"
       ],
       "flops": [
+        "A generic 'transformation tutorial', the label the 25-niche data found weak for salons (0.26x, n=20); no client, occasion or twist is named (visuals unchecked). (1,000 views, YT)",
         "💄 FREE Bridal Makeup Course for Girls | Learn Bridal Makeup Step by Step✨ (254 views)",
         "✨ Garba Makeup Transition | Navratri Glam Look 💃🔥 | Garba Makeup Transformation #garbamake (405 views)"
       ],
@@ -208,6 +211,7 @@
         "[seen] Fast, specific installation tricks ('how to clamp a faucet in a tight space', 19M) work when they look like expert skill, not a manual."
       ],
       "avoid": [
+        "[deep-seen] Music-only 'satisfying AC deep clean', the exact pattern the 25-niche data found saturated ('dirty AC / satisfying' ~0.01x, n=18); no problem, price or twist is stated (visuals unchecked).",
         "[data] Generic 'dirty AC cleaning / satisfying' titles (~0.01x, n=18)",
         "[seen] 3-minute walkthroughs about labour charges",
         "Unsafe DIY electrical or gas steps"
@@ -219,6 +223,7 @@
         "My Lungs Hurt Watching This! 😷 Cleaning a 100-Year-Old AC Unit?! #satisfying #hvaclife #om (16,000,000 views)"
       ],
       "flops": [
+        "Music-only 'satisfying AC deep clean', the exact pattern the 25-niche data found saturated ('dirty AC / satisfying' ~0.01x, n=18); no problem, price or twist is stated (visuals unchecked). (404 views, YT)",
         "Cleaning dirty AC outdoor unit #acservice #dubai #diy (11 views)",
         "Plumbing Pipe Fitting कैसे करें? | Pipe Fitting Step by Step | Plumber Work #pipeWalaji (273 views)"
       ],
@@ -231,6 +236,7 @@
         "[test] A 'guess the price?' question on a showpiece cake (20M, n=4)."
       ],
       "avoid": [
+        "[deep-seen] Starts on step one of a coconut-ladoo recipe with no reason to watch; 'halwai jaisi' recipe clones were already flagged as crowded in the 25-niche data.",
         "[seen] 'Halwai jaisi mithai at home' recipe clones (most under 30k)",
         "Unbacked '100% pure' claims"
       ],
@@ -241,6 +247,7 @@
         "Amazing Bomb Cake💣🎂 Guess the price?🤔 #shorts (20,000,000 views)"
       ],
       "flops": [
+        "Starts on step one of a coconut-ladoo recipe with no reason to watch; 'halwai jaisi' recipe clones were already flagged as crowded in the 25-niche data. (1,800 views, YT)",
         "Mouth-Watering Kalakand Sweets | Perfect Halwai Style Kalakand 🤤#shorts #kalakand #ytshort (466 views)",
         "Juicy Mouth Melting Sweet ASMR 🤤 | Halwai Style Desi Mithai #shorts #ytshorts #asmr #food  (1,100 views)"
       ],
@@ -389,6 +396,7 @@
         "[seen] An honest money or reality angle ('Mobile repair shop earning' 1.8M; 'Reality of service centre' 893k)."
       ],
       "avoid": [
+        "[deep-seen] A 'useful video, don't skip' opener, a vague 'great price' with no number, and two CTAs at the end (follow and save): an ad, not a reel.",
         "[test] Discount-price-led hooks (0.14x, n=4)",
         "Customer data visible on screen",
         "Fake 'original part' claims"
@@ -400,6 +408,7 @@
         "Samsung Galaxy S23 Ultra Replacement Screen (4,500,000 views)"
       ],
       "flops": [
+        "A 'useful video, don't skip' opener, a vague 'great price' with no number, and two CTAs at the end (follow and save): an ad, not a reel. (582 views, YT)",
         "Samsung S24 Ultra Service Pack LCD Replacement | Original Display Change (15 views)",
         "aaaj hamri shop par Vivo y300 pro mobile repair ke liya aaya he 😱please (129 views)"
       ],
@@ -411,6 +420,7 @@
         "[seen] An empty-to-decorated reveal of a real setup (day wedding at a farm house, 3.4M)."
       ],
       "avoid": [
+        "[deep-seen] A seasonal hook, but 51 seconds of 'affordable' and 'bahut accha lagta hai' with no single price and a comment-for-link ask: a catalogue, not a story.",
         "[seen] Final-photo-only posts with no reveal",
         "Copyrighted cartoon themes"
       ],
@@ -421,6 +431,7 @@
         "Birthday decoration ideas at home | easy balloon decoration ideas at home (7,900,000 views)"
       ],
       "flops": [
+        "A seasonal hook, but 51 seconds of 'affordable' and 'bahut accha lagta hai' with no single price and a comment-for-link ask: a catalogue, not a story. (20,000 views, YT)",
         "Dreamy South Indian Wedding Setup ✨ #FeaturebrightEventPlanner #Shorts (151 views)",
         "Elegant Birthday Balloon Decoration | Gold & White Theme ✨ #balloon (2,600 views)"
       ],
@@ -558,6 +569,7 @@
     },
     "laundry": {
       "do": [
+        "[deep-seen] Demonstrating a professional solution to a common, relatable problem using satisfying close-up shots.",
         "[seen] The stain-removal or pressing process with a clear before/after ('removing blood stains at a dry cleaner' 36M; 'how shirts get pressed' 6.8M).",
         "[seen] Shop-life comedy ('First day of my dry clean shop', 3.1M)."
       ],
@@ -566,6 +578,7 @@
         "Unsafe chemical DIY"
       ],
       "winning": [
+        "Demonstrating a professional solution to a common, relatable problem using satisfying close-up shots. (36,000,000 views, YT)",
         "The process of removing 🩸 stains at a dry cleaners. #stainremoval #howto (36,000,000 views)",
         "How shirts get pressed & ironed at the dry cleaner #behindthescenes (6,800,000 views)",
         "First Day Of My Dry Clean Shop 😂 (3,100,000 views)",
@@ -585,7 +598,8 @@
       "[seen] Personal milestones with a time span: 'My 6-year guitar progress' (9M), '2020 vs 2024' (8.2M), 'My first 10th board exam' (39M).",
       "[seen] An honest number about your own life (money, kg, marks, budget) beats a vague claim, the same rule as the business data.",
       "[seen] Flops: pity/begging hooks, 'Hello doston, welcome back' intros, and generic tip lists with no demo.",
-      "[deep-seen] Where creator flops went wrong (reviewer read of 4 transcripts, not blind): generic copy (3), too long (1). Example: A magic spoon solves everything, so there is no real stake or payoff, and AI-cartoon versions of famous characters are a flooded format with no 'ye toh main hoon' moment."
+      "[deep-seen] In this deep study (25 creator reels), none of these separated hits from flops: speech in the first 2 seconds; a number in the first spoken line; a question in the first spoken line; dialogue between 2+ voices; no speech at all (music + visuals); a series marker (Part/EP/Day N); over 45 seconds; no CTA. Treat formula tricks as hygiene, not as the reason a reel works.",
+      "[deep-seen] Where creator flops went wrong (reviewer read of 8 transcripts, not blind): generic copy (5), too long (1), unclear hook (1), slow start (1). Example: A magic spoon solves everything, so there is no real stake or payoff, and AI-cartoon versions of famous characters are a flooded format with no 'ye toh main hoon' moment."
     ],
     "niches": {
       "c_comedy": {
@@ -611,15 +625,19 @@
       },
       "c_lifestyle": {
         "do": [
+          "[deep-seen] A tiny-budget challenge in a big store ('sirf ₹5 mein DMart'): a price limit plus other people's reactions.",
           "[seen] Numbered episodes with an on-screen counter ('EP-203' 14M, 'Day-32' 2.3M).",
           "[seen] Firsts ('My first board exam' 39M) told as a mini story."
         ],
         "avoid": [
           "[deep-seen] A tour opener, vague 'itna sasta' claims, 78 seconds with long music gaps, and an ending that sounds like the store's ad ('sabse sasta Smart Bazaar').",
+          "[deep-seen] Six seconds with no words, then a greeting, then 'complete video dekhiyega': the reel is a trailer for another video.",
           "[seen] Slow 'aaj main uthi' openers",
           "Undisclosed sponsorships"
         ],
-        "winning": [],
+        "winning": [
+          "A tiny-budget challenge in a big store ('sirf ₹5 mein DMart'): a price limit plus other people's reactions. (31,000 views, YT)"
+        ],
         "flops": [
           "A tour opener, vague 'itna sasta' claims, 78 seconds with long music gaps, and an ending that sounds like the store's ad ('sabse sasta Smart Bazaar'). (61 views, YT)"
         ]
@@ -697,15 +715,21 @@
       },
       "c_education": {
         "do": [
+          "[deep-seen] Open with the dumb question a beginner is scared to ask, flip it into a money stake ('ignore kiya to paise udayegi'), then teach one thing as Day N of a series.",
           "[seen] Concrete marks hacks with a target ('Secret study trick to score 95%+' 34M; 'Hacks to increase your marks' 15M).",
           "[seen] Insider 'how papers are checked' content (step marking, 2.9M)."
         ],
         "avoid": [
+          "[deep-seen] A silent 33-second repair clip tagged with unrelated hashtags (#garenafreefire, #funny); nothing says what problem is being fixed or what it costs (visuals unchecked).",
           "Fake paper-leak claims",
           "[seen] AI-tool gimmicks (300 views)"
         ],
-        "winning": [],
-        "flops": []
+        "winning": [
+          "Open with the dumb question a beginner is scared to ask, flip it into a money stake ('ignore kiya to paise udayegi'), then teach one thing as Day N of a series. (1,200,000 views, YT)"
+        ],
+        "flops": [
+          "A silent 33-second repair clip tagged with unrelated hashtags (#garenafreefire, #funny); nothing says what problem is being fixed or what it costs (visuals unchecked). (450 views, YT)"
+        ]
       },
       "c_tech": {
         "do": [
@@ -728,6 +752,16 @@
         ],
         "winning": [],
         "flops": []
+      },
+      "c_motivation": {
+        "do": [],
+        "avoid": [
+          "[deep-seen] A real stake and a number in the first line, but a stock 'garib dhaba' turnaround plot with a 10-second silent gap (28-38s); the hook can't save a story viewers have seen a hundred times (visuals unchecked)."
+        ],
+        "winning": [],
+        "flops": [
+          "A real stake and a number in the first line, but a stock 'garib dhaba' turnaround plot with a 10-second silent gap (28-38s); the hook can't save a story viewers have seen a hundred times (visuals unchecked). (1,700 views, YT)"
+        ]
       }
     }
   }

@@ -1,0 +1,20 @@
+{
+  "evidence": "transcript",
+  "length_sec": 50,
+  "length_is_estimate": true,
+  "speech": "monologue",
+  "spoken_first_2s": "फेस्टिवल्स आ रहे हैं इसलिए मैंने कुछ बैक",
+  "first_speech_sec": 0.1,
+  "cta": "spoken",
+  "series_marker": false,
+  "language": "hindi",
+  "notes": {
+    "format": "review",
+    "hook": "'Festivals aa rahe hain isliye maine kuch backdrop mangaye hain'",
+    "payoff_in_last_3s": false,
+    "what_goes_wrong": "A seasonal hook, but 51 seconds of 'affordable' and 'bahut accha lagta hai' with no single price and a comment-for-link ask: a catalogue, not a story.",
+    "failure_mode": "generic_copy",
+    "swipe_risk_sec": 5,
+    "reusable_pattern": "Avoid: 'affordable' with no price; show one room before and after and say what the backdrop cost."
+  }
+}

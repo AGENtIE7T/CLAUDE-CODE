@@ -27,12 +27,15 @@ Method
            (business, creator) and across everyone.
   [deep-data] needs >= 8 reels each side, lift >= 1.6 or <= 0.6, AND a permutation
            p-value (shuffle the feature 2,000 times) that survives a
-           Benjamini-Hochberg correction at 10% across every feature defined.
+           Benjamini-Hochberg correction at 10% across every (group, feature)
+           pair: everyone, business and creator overlap and are reported together.
            Without the correction, pure random test data produced fake "rules".
   Lines report the share of reels that beat their niche median (with vs
   without the feature), because hit/flop batches make raw ratios meaningless.
-  [deep-test] the rest of the signals with lift >= 1.3 or <= 0.75, p < 0.25 and
-           at least 16 reels where the feature is known.
+  [deep-test] lift >= 1.3 or <= 0.75, at least 16 reels where the feature is
+           known, and the same Benjamini-Hochberg 10% correction as rules: a
+           test idea is a smaller effect or a smaller sample, never weaker
+           evidence.
 Run: python3 research/instagram/analyze_ig.py
 """
 import csv, json, math, random, re, statistics as st
@@ -99,8 +102,10 @@ def first_line(r):
 
 NUMBER = re.compile(r"\d")
 QUESTION = re.compile(r"\?|\b(kya|kitna|kitne|kitni|kaise|kyun|kyon|kaun|why|what|how|which)\b|क्या|कितन|कैसे|क्यों|कौन", re.I)
-INTRO = re.compile(r"assalam|namaste|namaskar|\bhello\b|\bhi guys|\bhey guys|doston?|welcome|aaj main|aaj hum|is video|this video"
-                   r"|इस वीडियो|आज मैं|आज हम|दोस्तों|दोस्तो|नमस्ते|नमस्कार|अस्सलाम|हेलो|वेलकम", re.I)
+# Greeting or agenda opener. "aaj main aapko..." (I'll show you) counts; a bare
+# "aaj main..." doesn't: "aaj main dekhne wala hoon..." sets up a challenge.
+INTRO = re.compile(r"assalam|namaste|namaskar|\bhello\b|\bhi guys|\bhey guys|doston?|welcome|aaj main aapko|aaj hum aapko|is video|this video|today i('ll| will) show"
+                   r"|इस वीडियो|आज मैं आपको|आज हम आपको|दोस्तों|दोस्तो|नमस्ते|नमस्कार|अस्सलाम|हेलो|वेलकम|हाय गाइज", re.I)
 SERIES = re.compile(r"\b(day|ep|episode|part)\s*[-.]?\s*\d+", re.I)
 
 
@@ -171,7 +176,7 @@ def perm_p(a, b, lift, rounds=2000):
     return (hits + 1) / (rounds + 1)
 
 
-def lifts(group):
+def candidates(group):
     cand = []
     for name, fn in FEATURES.items():
         vals = [(fn(r), r["score"]) for r in group]
@@ -181,23 +186,50 @@ def lifts(group):
             continue
         lift = st.median(a) / (st.median(b) or 1e-9)
         beat = lambda xs: round(100 * sum(x > 1 for x in xs) / len(xs))
-        cand.append({"feature": name, "lift": round(lift, 2), "n_with": len(a), "n_without": len(b), "p": round(perm_p(a, b, lift), 3), "beat_with": beat(a), "beat_without": beat(b)})
-    # Benjamini-Hochberg: largest rank k with p_k <= k/m * 0.10 sets the cut-off.
-    # m = every feature defined, not just the measurable ones, otherwise a
-    # sparse batch makes the correction too lenient.
-    ps, m = sorted(c["p"] for c in cand), len(FEATURES)
+        cand.append({"feature": name, "lift": round(lift, 2), "n_with": len(a), "n_without": len(b), "p": round(perm_p(a, b, lift), 4), "beat_with": beat(a), "beat_without": beat(b)})
+    return cand
+
+
+def lifts_all(groups):
+    """Tag lines for all groups at once. Benjamini-Hochberg at 10% over every
+    (group, feature) pair that could be tested: m = groups x features, not just
+    the measurable ones, because the groups overlap (everyone = business +
+    creator) and are reported together. Per-group correction let a noise line
+    through in 3 of 10 fake runs."""
+    cand = {g: candidates(rows_) for g, rows_ in groups.items()}
+    ps, m = sorted(c["p"] for cs in cand.values() for c in cs), len(groups) * len(FEATURES)
     cut = max([p for k, p in enumerate(ps, 1) if p <= k / m * 0.10], default=-1)
-    out = []
-    for c in cand:
-        big = c["lift"] >= 1.6 or c["lift"] <= 0.6
-        if big and c["n_with"] >= 8 and c["n_without"] >= 8 and c["p"] <= cut:
-            out.append({**c, "tag": "deep-data"})
-        elif (c["lift"] >= 1.3 or c["lift"] <= 0.75) and c["p"] < 0.25 and c["n_with"] + c["n_without"] >= 16:
-            # Below 16 known reels a "test idea" is noise; on the first real
-            # batch it produced "dialogue hurts creators" (n=5 vs 6) while the
-            # two biggest hits were dialogue skits.
-            out.append({**c, "tag": "deep-test"})
-    return sorted(out, key=lambda x: (x["tag"] != "deep-data", -abs(math.log(x["lift"] or 1e-9))))
+    out = {}
+    for g, cs in cand.items():
+        lines = []
+        for c in cs:
+            if c["p"] > cut:
+                continue
+            big = c["lift"] >= 1.6 or c["lift"] <= 0.6
+            if big and c["n_with"] >= 8 and c["n_without"] >= 8:
+                lines.append({**c, "tag": "deep-data"})
+            elif (c["lift"] >= 1.3 or c["lift"] <= 0.75) and c["n_with"] + c["n_without"] >= 16:
+                # A test idea passes the same correction; it only differs by a
+                # smaller effect or sample. A plain p < 0.25 let up to 9
+                # pure-noise "ideas" through per run, and below 16 known reels
+                # one said "dialogue hurts creators" (n=5 vs 6) while the two
+                # biggest hits were dialogue skits.
+                lines.append({**c, "tag": "deep-test"})
+        out[g] = sorted(lines, key=lambda x: (x["tag"] != "deep-data", -abs(math.log(x["lift"] or 1e-9))))
+    return out
+
+
+def null_line(group, label, found):
+    """Say so when nothing separated hits from flops: the generator should not
+    over-trust formula tricks the data didn't back."""
+    if found or len(group) < 20:
+        return []
+    tested = [name for name, fn in FEATURES.items()
+              if sum(fn(r) is True for r in group) >= 3 and sum(fn(r) is False for r in group) >= 3]
+    if not tested:
+        return []
+    return [f"[deep-seen] In this deep study ({len(group)} {label} reels), none of these separated hits from flops: "
+            f"{'; '.join(tested)}. Treat formula tricks as hygiene, not as the reason a reel works."]
 
 
 def line(l):
@@ -266,11 +298,16 @@ res = {
     "by_kind": {k: len(v) for k, v in kinds.items()},
     "by_platform": {p: sum(r["platform"] == p for r in rows) for p in ("instagram", "youtube")},
     "by_evidence": {e: sum(r["d"].get("evidence", "watch") == e for r in rows) for e in ("watch", "transcript")},
-    "everyone": [line(l) for l in lifts(rows)] + failure_lines(rows, "all") + reviewer_lines(rows, "all"),
-    "business": [line(l) for l in lifts(kinds["business"])] + failure_lines(kinds["business"], "business") + reviewer_lines(kinds["business"], "business"),
-    "creator": [line(l) for l in lifts(kinds["creator"])] + failure_lines(kinds["creator"], "creator") + reviewer_lines(kinds["creator"], "creator"),
+    "everyone": [], "business": [], "creator": [],
     "niches": {},
 }
+GROUPS = (("everyone", rows, "all"), ("business", kinds["business"], "business"), ("creator", kinds["creator"], "creator"))
+tagged = lifts_all({key: grp for key, grp, _ in GROUPS})
+for key, grp, label in GROUPS:
+    found = tagged[key]
+    res[key] = [line(l) for l in found] + null_line(grp, label if label != "all" else "business and creator", found) \
+        + failure_lines(grp, label) + reviewer_lines(grp, label)
+
 # Per niche: "do" only from reels that beat their niche median, "avoid" only
 # from reels that didn't, so a flop is never taught as a "do".
 for niche in sorted({r["target_niche"] for r in rows}):

@@ -1,0 +1,20 @@
+{
+  "evidence": "transcript",
+  "length_sec": 40,
+  "length_is_estimate": true,
+  "speech": "monologue",
+  "spoken_first_2s": "तो आज मैं देखने वाला हूं इतने बड़े डीमार्ट में सिर्फ ₹5 की चीज खरीदता उनका",
+  "first_speech_sec": 0.0,
+  "cta": "spoken",
+  "series_marker": false,
+  "language": "hindi",
+  "notes": {
+    "format": "vlog",
+    "hook": "'Aaj main dekhne wala hoon itne bade DMart mein sirf ₹5 ki cheez khareedta, unka reaction kaisa hoga?'",
+    "payoff_in_last_3s": false,
+    "what_goes_wrong": "The payoff (the cashier counting coins) is narrated instead of shown, and it ends on a throwaway 'like kar dena'.",
+    "failure_mode": "none",
+    "swipe_risk_sec": 15,
+    "reusable_pattern": "A tiny-budget challenge in a big store ('sirf ₹5 mein DMart'): a price limit plus other people's reactions."
+  }
+}

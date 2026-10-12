@@ -1,0 +1,20 @@
+{
+  "evidence": "transcript",
+  "length_sec": null,
+  "length_is_estimate": true,
+  "speech": "none",
+  "spoken_first_2s": "",
+  "first_speech_sec": null,
+  "cta": "none",
+  "series_marker": false,
+  "language": "none",
+  "notes": {
+    "format": "before_after",
+    "hook": "music-only 'Fat Loss Journey | Before After Transformation' with no numbers in the title",
+    "payoff_in_last_3s": null,
+    "what_goes_wrong": "A generic 'fat loss journey before after' with no kg or time span; the 25-niche data had vague 'transformation' labels at 0.21x while '135 kg to 63 kg' got 10M (visuals unchecked).",
+    "failure_mode": "generic_copy",
+    "swipe_risk_sec": null,
+    "reusable_pattern": "Avoid: 'transformation journey' with no numbers; put the kg and the months in the first frame."
+  }
+}

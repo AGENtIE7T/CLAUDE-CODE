@@ -60,20 +60,22 @@
 
 The research is the starting prior. **Your own data overrides it.** `lib/learning.ts` adds your posted-reel results (computed insights per niche, once 3+ are logged), your 👍/👎 hooks with notes, and saved client learnings. The prompt tells the model your data wins when the two disagree.
 
-## Deep study, batch 1 (in progress: 18 of 50 coded)
-Coded so far: 1 full watch and 17 timestamped transcripts (7 business, 11 creator). That's too few for any `[deep-data]` rule, so the output is qualitative and labelled.
+## Deep study, batch 1 (in progress: 39 of 50 coded)
+Coded so far: 2 full watches and 37 timestamped transcripts (14 business, 25 creator).
 
-- **Where flops went wrong** (reviewer read of 8 transcripts, not blind):
-  - generic copy (3): an AI-cartoon Hulk story, recycled textbook jokes, a forwarded WhatsApp joke
-  - slow start (2): "Assalam walekum, is video ke andar do cheez…", a podcast clip whose insight arrives at 24s
-  - one each of: a 78-second store tour, a "what's cheap today" reel that never says a price, a room-by-room flat walkthrough
+- **No surface trick separated hits from flops** (all p > 0.4): speaking in the first 2 seconds, a number or question in the first spoken line, a greeting opener, dialogue, length, a CTA. The app now tells the generator to treat these as hygiene, not as the reason a reel works.
+- **Where flops went wrong** (reviewer read of 17 transcripts, not blind):
+  - generic copy (9): AI-cartoon stories, recycled jokes, stock "garib dhaba" plots, "satisfying AC cleaning", "transformation" with no numbers, catalogue-style "affordable" reels
+  - slow start (3): greeting or agenda openers, a podcast clip with its insight at 24s, a vlog that says nothing for 6 seconds
+  - one each of: too long, unclear hook, no payoff, hard sell, no story
 - **What the hits did:**
-  - prices said out loud in the first 2 seconds: the haggling skit at 55M
-  - the viewer's situation named in the first words: "If you have a high prescription…", 8 seconds, 2.1M
-  - a character whose fear is exactly what the product fixes: the PPF skit at 12M
-  - exact starting numbers plus a daily promise: "44 saal, 85 kilo… phir milte hain kal"
-  - a money question held until the last line: "dukan se kitna kama leta hoon?" at 2M
-- **Music-only hits** (135 kg→63 kg, 5-year bodybuilding) can't be judged from transcripts. They're queued for full watches.
+  - prices said out loud in the first seconds: the haggling skit at 55M
+  - the viewer's situation in the first words: "If you have a high prescription…", 2.1M
+  - a beginner's "dumb" question flipped into a money stake: "gaadi ud to nahi jayegi?" → "ignore kiya to paise udayegi", Day 22 of a series, 1.2M
+  - a tiny-budget challenge: ₹5 in DMart
+  - a teacher archetype vs kids who only know this month's song
+  - a satisfying professional fix of a dramatic problem: blood-stain removal, 36M, full watch
+- **Counter-example:** an old "7 ate 9" joke still got 43M. Delivery can rescue old material, but generic copy is the most common way to flop.
 
 ## Next: a deep Instagram study
 `instagram/` holds a 208-reel plan (104 business, 104 creator, hits and flops in every niche), the watch prompt, and a stricter analyzer (permutation test + false-discovery correction). It is waiting on a data source: Instagram is blocked from this environment and Nexlev's free tier resets on 2026-10-11. See `instagram/README.md`.

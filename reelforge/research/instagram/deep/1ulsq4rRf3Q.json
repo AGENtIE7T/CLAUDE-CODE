@@ -1,0 +1,20 @@
+{
+  "evidence": "transcript",
+  "length_sec": 30,
+  "length_is_estimate": true,
+  "speech": "dialogue",
+  "spoken_first_2s": "हिस्ट्री जानते हो?",
+  "first_speech_sec": 0.2,
+  "cta": "none",
+  "series_marker": false,
+  "language": "hindi",
+  "notes": {
+    "format": "skit",
+    "hook": "'History jaante ho? Gandhi ji ke bete ka naam?' -> 'Dineshan'",
+    "payoff_in_last_3s": true,
+    "what_goes_wrong": "A decades-old 'father of the nation' pun acted out by AI characters; nothing new to share.",
+    "failure_mode": "generic_copy",
+    "swipe_risk_sec": 3,
+    "reusable_pattern": "Avoid: famous old puns acted out by AI characters."
+  }
+}

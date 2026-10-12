@@ -1,0 +1,20 @@
+{
+  "evidence": "transcript",
+  "length_sec": 48,
+  "length_is_estimate": true,
+  "speech": "dialogue",
+  "spoken_first_2s": "अरे गुड्डू भाई हां गाड़ी पे हेलीकॉप्टर",
+  "first_speech_sec": 0.6,
+  "cta": "spoken",
+  "series_marker": true,
+  "language": "hindi",
+  "notes": {
+    "format": "tutorial",
+    "hook": "'Guddu bhai, gaadi pe helicopter sign jalta hai, gaadi ud to nahi jayegi?' flipped into 'ignore kiya to bahut paise uda degi'",
+    "payoff_in_last_3s": false,
+    "what_goes_wrong": "After the joke, seconds 13-30 are a sensor lecture; one real symptom and one real repair bill would keep the money stake alive.",
+    "failure_mode": "none",
+    "swipe_risk_sec": 14,
+    "reusable_pattern": "Open with the dumb question a beginner is scared to ask, flip it into a money stake ('ignore kiya to paise udayegi'), then teach one thing as Day N of a series."
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "evidence": "transcript",
+  "length_sec": 42,
+  "length_is_estimate": true,
+  "speech": "dialogue",
+  "spoken_first_2s": "Ryan answer four Franklin four Nicholas",
+  "first_speech_sec": 0.1,
+  "cta": "none",
+  "series_marker": false,
+  "language": "english",
+  "notes": {
+    "format": "skit",
+    "hook": "teacher's roll-call of answers ('four, four, six...') building to the '7 8 9' joke",
+    "payoff_in_last_3s": true,
+    "what_goes_wrong": "The punchline is the old '7 ate 9' joke; it hit 43M anyway, so casting and delivery carried it (visuals unchecked). Old jokes are not automatically dead, but they need a stronger performance.",
+    "failure_mode": "none",
+    "swipe_risk_sec": null,
+    "reusable_pattern": "A roll-call build-up where one pattern repeats until someone breaks it; the break is the punchline."
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "evidence": "transcript",
+  "length_sec": null,
+  "length_is_estimate": true,
+  "speech": "none",
+  "spoken_first_2s": "",
+  "first_speech_sec": null,
+  "cta": "none",
+  "series_marker": false,
+  "language": "none",
+  "notes": {
+    "format": "other",
+    "hook": "music-only pre-wedding couple film (Tamil song)",
+    "payoff_in_last_3s": null,
+    "what_goes_wrong": null,
+    "failure_mode": null,
+    "swipe_risk_sec": null,
+    "reusable_pattern": null
+  }
+}

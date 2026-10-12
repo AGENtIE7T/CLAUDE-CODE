@@ -1,0 +1,48 @@
+{
+ "video_id": "Kl2qMXXWP60",
+ "source": "nexlev get_bulk_video_transcripts (YouTube auto captions)",
+ "fetched": "2026-10-12",
+ "caption_language": "en",
+ "lines": [
+  [
+   1920,
+   "video"
+  ],
+  [
+   3070,
+   "[Music]"
+  ],
+  [
+   20020,
+   "[Applause]"
+  ],
+  [
+   20900,
+   "[Music]"
+  ],
+  [
+   21840,
+   "[Applause]"
+  ],
+  [
+   27270,
+   "[Music]"
+  ],
+  [
+   36770,
+   "[Music]"
+  ],
+  [
+   40920,
+   "foreign"
+  ],
+  [
+   45480,
+   "[Music]"
+  ],
+  [
+   53420,
+   "[Music]"
+  ]
+ ]
+}

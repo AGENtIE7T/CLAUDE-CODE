@@ -1,0 +1,20 @@
+{
+  "evidence": "transcript",
+  "length_sec": 65,
+  "length_is_estimate": true,
+  "speech": "dialogue",
+  "spoken_first_2s": "बच्चों जाओ मेरा हारमोनियम ले आप भी चले",
+  "first_speech_sec": 0.4,
+  "cta": "none",
+  "series_marker": false,
+  "language": "hindi",
+  "notes": {
+    "format": "skit",
+    "hook": "'That one music teacher': harmonium and sa-re-ga-ma vs kids asking for the trending song",
+    "payoff_in_last_3s": null,
+    "what_goes_wrong": "66 seconds; the joke (kids know Diljit, not sa-re-ga-ma) is clear by 30s and then repeats.",
+    "failure_mode": "none",
+    "swipe_risk_sec": 30,
+    "reusable_pattern": "A 'that one teacher' archetype: the old-school teacher vs kids who only know the song trending this month; name the real song."
+  }
+}

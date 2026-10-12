@@ -18,14 +18,21 @@ So batch 1 runs on two kinds of evidence:
 
 The analyzer treats unknown fields as unknown, not as "no". A transcript can't see the first frame, so that reel is left out of first-frame comparisons.
 
-## Batch 1 status
+## Batch 1 status (2026-10-12)
 | | Reels |
 |---|---|
-| Coded | 18 (1 full watch + 17 transcripts): 7 business, 11 creator |
-| No captions, needs a full watch | 3 (cB7qffhC5R4, wsU0BJ3kmkY, x-zfV8cMVfw) |
-| Not fetched yet | 29 (transcripts first; 5 of them showed no captions, so they likely need watches) |
+| Coded | 39 (2 full watches + 37 transcripts): 14 business, 25 creator |
+| Transcript not fetched yet | 4 (JxWrZv1g7MM, b4TLToQ8glg, I6jdSU2MMS0, luGqlkpwuKs) |
+| No captions; needs a full watch | 7 (cB7qffhC5R4, wsU0BJ3kmkY, x-zfV8cMVfw, uIoDuoyYBMo, PVrYMT2cBHo, xdCXH1g3Hjk, lQ-hkmGBt1k) |
 
-Hand review moved 5 reels to the other side. For example, a forwarded-joke "doctor" skit is creator content, not a clinic's reel, and a mechanic explaining his own job is a business reel. The split is now 22 business / 28 creator. `pick_yt_batch.py` records each move and its reason.
+Twelve coded reels are music-only. Their transcripts are song lyrics or noise, so they carry no reviewer lesson until a full watch; music-only flops are judged only on facts in the title. Full watches run at 1 a day on the free plan.
+
+**What 39 reels show so far:**
+- **No surface feature separated hits from flops:** speech in the first 2 seconds, a number or question in the first spoken line, a greeting opener, dialogue, length or a CTA.
+- **What did separate them was originality,** which is a judgement. In the reviewer read, 9 of 17 flops were generic copy: AI-cartoon stories, recycled jokes, stock rags-to-riches plots, "satisfying AC cleaning", "transformation" with no numbers, catalogue-style "affordable" reels.
+- **Counter-example:** an old "7 ate 9" joke still got 43M, so delivery can rescue old material.
+
+Hand review moved 5 reels to the other side (`pick_yt_batch.py` records each move and its reason).
 
 ## Where reels go wrong
 Every reel, hit or flop, gets:
@@ -53,6 +60,7 @@ The analyzer turns these into "avoid" lines in three ways:
   - In a dry run with random data plus one planted effect, a plain p<0.05 cut-off produced 4 fake rules.
   - With the correction, only the planted effect came through.
 - **Everything weaker becomes `[deep-test]`**: an A/B idea, never a rule. It also needs at least 16 reels where the feature is known. On the first real batch, 11 creator reels produced "dialogue hurts" while the two biggest hits were dialogue skits.
+- **One correction across all groups.** Everyone, business and creator overlap and are reported together, so Benjamini-Hochberg runs once over every (group, feature) pair. On 12 fake runs with one planted effect, it was found in 35 of 36 groups. 3 noise lines got through in total (about 8% of lines, matching the 10% target). A plain p < 0.25 for test ideas had let up to 9 noise lines through per run.
 - **Small niches are partially pooled.** A niche holds 4-8 reels, so its baseline leans on its kind's baseline (in log space, K = 4). Mixing views÷followers with raw views in one median was a real bug: it scored every follower-normalised reel at about 0.
 - **The swipe-away line** needs at least 8 blind watches on each side, a gap of at least 2 seconds, and p < 0.01. On pure noise it fired once in 15 checks at p < 0.05.
 - **Lines report "% of reels that beat their niche median, with vs without the feature".** Batches are picked from both extremes, so a raw median ratio blew up to fake 10,000x figures in the dry run.
