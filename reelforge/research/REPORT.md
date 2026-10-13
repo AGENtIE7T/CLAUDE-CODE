@@ -60,14 +60,15 @@
 
 The research is the starting prior. **Your own data overrides it.** `lib/learning.ts` adds your posted-reel results (computed insights per niche, once 3+ are logged), your 👍/👎 hooks with notes, and saved client learnings. The prompt tells the model your data wins when the two disagree.
 
-## Deep study, batch 1 (in progress: 39 of 50 coded)
-Coded so far: 2 full watches and 37 timestamped transcripts (14 business, 25 creator).
+## Deep study, batch 1 (in progress: 40 of 50 coded)
+Coded so far: 2 full watches and 38 timestamped transcripts (15 business, 25 creator). The last 10 have no captions and wait for full watches.
 
 - **No surface trick separated hits from flops** (all p > 0.4): speaking in the first 2 seconds, a number or question in the first spoken line, a greeting opener, dialogue, length, a CTA. The app now tells the generator to treat these as hygiene, not as the reason a reel works.
 - **Where flops went wrong** (reviewer read of 17 transcripts, not blind):
   - generic copy (9): AI-cartoon stories, recycled jokes, stock "garib dhaba" plots, "satisfying AC cleaning", "transformation" with no numbers, catalogue-style "affordable" reels
   - slow start (3): greeting or agenda openers, a podcast clip with its insight at 24s, a vlog that says nothing for 6 seconds
-  - one each of: too long, unclear hook, no payoff, hard sell, no story
+  - hard sell (2): a Sharjah repair ad ('useful video, don't skip… great price… follow, save'), and a 12-second Thailand price list ('from ₹52,999, only 10 seats, WhatsApp now'), which had a price in its first line and still got 137 views
+  - one each of: too long, unclear hook, no payoff, no story
 - **What the hits did:**
   - prices said out loud in the first seconds: the haggling skit at 55M
   - the viewer's situation in the first words: "If you have a high prescription…", 2.1M

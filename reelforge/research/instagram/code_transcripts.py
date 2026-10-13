@@ -35,6 +35,8 @@ SPEECH = {
     "ucJr66foT4w": "none", "gtk8KvbXcZg": "dialogue", "Wsl2dhxO-WM": "none", "lI6e2Zf26C0": "none",
     "Z_NmU6-yXio": "monologue", "tvnXdMNGLXM": "none", "PBimy3IHFOI": "monologue", "pRCd1TrZpWY": "none",
     "IRYmRTYlSag": "monologue", "yHJ08miFRo4": "monologue", "UmExGFoYCh4": "none", "Lx3qaNNolG8": "monologue",
+    # day 3
+    "I6jdSU2MMS0": "monologue",
 }
 LANG = {"mGVq0ULuyqA": "none", "3g7YXCG-3IY": "none", "fBA62_WNim0": "none", "1Bsrmhjlud4": "english",
         "ZhQ7M6QJ154": "english", "TzpbszULIpY": "english", "cz-88P-QQc0": "regional",
@@ -182,6 +184,11 @@ NOTES = {
         what_goes_wrong="A seasonal hook, but 51 seconds of 'affordable' and 'bahut accha lagta hai' with no single price and a comment-for-link ask: a catalogue, not a story.",
         failure_mode="generic_copy", swipe_risk_sec=5,
         reusable_pattern="Avoid: 'affordable' with no price; show one room before and after and say what the backdrop cost."),
+    # ---- day 3 (2026-10-13) ----
+    "I6jdSU2MMS0": dict(format="other", hook="'Thailand is calling: 3 nights Pattaya, 1 night Bangkok from just ₹52,999 per person, only 10 seats, WhatsApp now'", payoff_in_last_3s=False,
+        what_goes_wrong="The whole 12-second reel is a spoken price list with 'only 10 seats' and a WhatsApp ask: a price in the first line doesn't help when the reel is only an ad.",
+        failure_mode="hard_sell", swipe_risk_sec=2,
+        reusable_pattern="Avoid: price-list ads ('from ₹52,999, only 10 seats, WhatsApp now'); put the price inside a story or a comparison."),
 }
 
 for f in sorted((HERE / "transcripts").glob("*.json")):

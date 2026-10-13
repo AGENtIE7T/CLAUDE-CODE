@@ -1,0 +1,20 @@
+{
+  "evidence": "transcript",
+  "length_sec": 11,
+  "length_is_estimate": true,
+  "speech": "monologue",
+  "spoken_first_2s": "थाईलैंड इज कॉलिंग  3 नाइट्स पटाया",
+  "first_speech_sec": 0.6,
+  "cta": "none",
+  "series_marker": false,
+  "language": "hindi",
+  "notes": {
+    "format": "other",
+    "hook": "'Thailand is calling: 3 nights Pattaya, 1 night Bangkok from just ₹52,999 per person, only 10 seats, WhatsApp now'",
+    "payoff_in_last_3s": false,
+    "what_goes_wrong": "The whole 12-second reel is a spoken price list with 'only 10 seats' and a WhatsApp ask: a price in the first line doesn't help when the reel is only an ad.",
+    "failure_mode": "hard_sell",
+    "swipe_risk_sec": 2,
+    "reusable_pattern": "Avoid: price-list ads ('from ₹52,999, only 10 seats, WhatsApp now'); put the price inside a story or a comparison."
+  }
+}
