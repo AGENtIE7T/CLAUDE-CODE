@@ -313,7 +313,10 @@ for key, grp, label in GROUPS:
 for niche in sorted({r["target_niche"] for r in rows}):
     g = [r for r in rows if r["target_niche"] == niche]
     hits = sorted([r for r in g if r["score"] > 1], key=lambda r: -r["score"])
-    flops = sorted([r for r in g if r["score"] < 1], key=lambda r: r["score"])
+    # A flop teaches an "avoid" only when its coder found a real failure: a
+    # blind watch of a 295-view grooming reel found nothing wrong ("none")
+    # but a nitpick, and that nitpick isn't why it flopped.
+    flops = sorted([r for r in g if r["score"] < 1 and note(r["d"], "failure_mode") not in (None, "none")], key=lambda r: r["score"])
     v = {
         "do": [f'[deep-seen] {note(r["d"], "reusable_pattern")}' for r in hits[:2] if note(r["d"], "reusable_pattern")],
         "winning": [f'{note(r["d"], "reusable_pattern")} ({views_tag(r)})' for r in hits[:2] if note(r["d"], "reusable_pattern")],

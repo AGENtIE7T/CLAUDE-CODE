@@ -18,13 +18,13 @@ So batch 1 runs on two kinds of evidence:
 
 The analyzer treats unknown fields as unknown, not as "no". A transcript can't see the first frame, so that reel is left out of first-frame comparisons.
 
-## Batch 1 status (2026-10-14)
+## Batch 1 status (2026-10-16)
 | | Reels |
 |---|---|
-| Coded | 41 (3 full watches + 38 transcripts): 16 business, 25 creator |
-| No captions; needs a full watch | 9 (lQ-hkmGBt1k, luGqlkpwuKs, wsU0BJ3kmkY, PVrYMT2cBHo, b4TLToQ8glg, JxWrZv1g7MM, uIoDuoyYBMo, cB7qffhC5R4, x-zfV8cMVfw) |
+| Coded | 42 (4 full watches + 38 transcripts): 17 business, 25 creator |
+| No captions; needs a full watch | 8 (luGqlkpwuKs, wsU0BJ3kmkY, PVrYMT2cBHo, b4TLToQ8glg, JxWrZv1g7MM, uIoDuoyYBMo, cB7qffhC5R4, x-zfV8cMVfw) |
 
-Every transcript has now been fetched. The 9 left are mostly big music-only reels (matchstick factory 41M, blouse cutting 20M, Korean kids head massage 28M), so a full watch is the only way to study them, at 1 a day on the free plan. Refused attempts seem to count toward the 24-hour window (refused at 24h09m and again at 25h19m after a success), so each run makes exactly one attempt, about 26 hours after the previous one.
+Every transcript has now been fetched. The 8 left are mostly big music-only reels (matchstick factory 41M, blouse cutting 20M, Korean kids head massage 28M), so a full watch is the only way to study them, at 1 a day on the free plan. Refused attempts seem to count toward the 24-hour window (refused at 24h09m and again at 25h19m after a success), so each run makes exactly one attempt, about 26 hours after the previous one.
 
 Twelve coded reels are music-only. Their transcripts are song lyrics or noise, so they carry no reviewer lesson until a full watch; music-only flops are judged only on facts in the title. Full watches run at 1 a day on the free plan.
 
@@ -61,6 +61,7 @@ The analyzer turns these into "avoid" lines in three ways:
   - In a dry run with random data plus one planted effect, a plain p<0.05 cut-off produced 4 fake rules.
   - With the correction, only the planted effect came through.
 - **Everything weaker becomes `[deep-test]`**: an A/B idea, never a rule. It also needs at least 16 reels where the feature is known. On the first real batch, 11 creator reels produced "dialogue hurts" while the two biggest hits were dialogue skits.
+- **A flop teaches an "avoid" only when its coder found a real failure.** A blind watch of a 295-view dog-grooming reel found nothing wrong except a long end card. Some flops are about distribution (account size, timing), not the script, and a nitpick shouldn't be taught as the cause.
 - **One correction across all groups.** Everyone, business and creator overlap and are reported together, so Benjamini-Hochberg runs once over every (group, feature) pair. On 12 fake runs with one planted effect, it was found in 35 of 36 groups. 3 noise lines got through in total (about 8% of lines, matching the 10% target). A plain p < 0.25 for test ideas had let up to 9 noise lines through per run.
 - **Small niches are partially pooled.** A niche holds 4-8 reels, so its baseline leans on its kind's baseline (in log space, K = 4). Mixing views÷followers with raw views in one median was a real bug: it scored every follower-normalised reel at about 0.
 - **The swipe-away line** needs at least 8 blind watches on each side, a gap of at least 2 seconds, and p < 0.01. On pure noise it fired once in 15 checks at p < 0.05.
