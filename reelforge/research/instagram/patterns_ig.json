@@ -1,19 +1,19 @@
 {
-  "reels": 42,
+  "reels": 43,
   "by_kind": {
-    "business": 17,
+    "business": 18,
     "creator": 25
   },
   "by_platform": {
     "instagram": 0,
-    "youtube": 42
+    "youtube": 43
   },
   "by_evidence": {
-    "watch": 4,
+    "watch": 5,
     "transcript": 38
   },
   "everyone": [
-    "[deep-seen] In this deep study (42 business and creator reels), none of these separated hits from flops: speech in the first 2 seconds; a number in the first spoken line; a question in the first spoken line; a greeting or 'in this video...' opener; dialogue between 2+ voices; no speech at all (music + visuals); a series marker (Part/EP/Day N); under 15 seconds; over 45 seconds; no CTA. Treat formula tricks as hygiene, not as the reason a reel works.",
+    "[deep-seen] In this deep study (43 business and creator reels), none of these separated hits from flops: speech in the first 2 seconds; a number in the first spoken line; a question in the first spoken line; a greeting or 'in this video...' opener; dialogue between 2+ voices; no speech at all (music + visuals); a series marker (Part/EP/Day N); under 15 seconds; over 45 seconds; no CTA. Treat formula tricks as hygiene, not as the reason a reel works.",
     "[deep-seen] Where all flops went wrong (reviewer read of 18 transcripts, not blind): generic copy (9), slow start (3), hard sell (2), too long (1), unclear hook (1), no payoff (1), no story (1). Example: A magic spoon solves everything, so there is no real stake or payoff, and AI-cartoon versions of famous characters are a flooded format with no 'ye toh main hoon' moment."
   ],
   "business": [
@@ -255,6 +255,16 @@
       "avoid": [
         "[deep-seen] The whole 12-second reel is a spoken price list with 'only 10 seats' and a WhatsApp ask: a price in the first line doesn't help when the reel is only an ad."
       ]
+    },
+    "wholesale": {
+      "do": [
+        "[deep-seen] Documenting the complete lifecycle of a common product from raw material to finished good using only ambient sounds."
+      ],
+      "winning": [
+        "Documenting the complete lifecycle of a common product from raw material to finished good using only ambient sounds. (41,000,000 views, YT)"
+      ],
+      "flops": [],
+      "avoid": []
     }
   }
 }
