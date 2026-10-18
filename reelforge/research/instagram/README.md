@@ -18,13 +18,13 @@ So batch 1 runs on two kinds of evidence:
 
 The analyzer treats unknown fields as unknown, not as "no". A transcript can't see the first frame, so that reel is left out of first-frame comparisons.
 
-## Batch 1 status (2026-10-17)
+## Batch 1 status (2026-10-18)
 | | Reels |
 |---|---|
-| Coded | 43 (5 full watches + 38 transcripts): 18 business, 25 creator |
-| No captions; needs a full watch | 7 (wsU0BJ3kmkY, PVrYMT2cBHo, b4TLToQ8glg, JxWrZv1g7MM, uIoDuoyYBMo, cB7qffhC5R4, x-zfV8cMVfw) |
+| Coded | 44 (6 full watches + 38 transcripts): 19 business, 25 creator |
+| No captions; needs a full watch | 6 (PVrYMT2cBHo, b4TLToQ8glg, JxWrZv1g7MM, uIoDuoyYBMo, cB7qffhC5R4, x-zfV8cMVfw) |
 
-Every transcript has now been fetched. The 7 left are mostly big music-only reels (blouse cutting 20M, Korean kids head massage 28M, 3BHK interior 13M), so a full watch is the only way to study them, at 1 a day on the free plan. Refused attempts seem to count toward the 24-hour window (refused at 24h09m and again at 25h19m after a success), so each run makes exactly one attempt, about 26 hours after the previous one.
+Every transcript has now been fetched. The 6 left are mostly big music-only reels (blouse cutting 20M, Korean kids head massage 28M, 3BHK interior 13M), so a full watch is the only way to study them, at 1 a day on the free plan. Refused attempts seem to count toward the 24-hour window (refused at 24h09m and again at 25h19m after a success), so each run makes exactly one attempt, about 26 hours after the previous one.
 
 Twelve coded reels are music-only. Their transcripts are song lyrics or noise, so they carry no reviewer lesson until a full watch; music-only flops are judged only on facts in the title. Full watches run at 1 a day on the free plan.
 
