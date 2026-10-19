@@ -1,5 +1,5 @@
 {
-  "source": "1169 Indian YouTube Shorts across 25 niches (top results by views, 1-2 searches per niche, collected 2026-10). Titles and view counts, plus 13 usable transcripts. Plus a deep study of 44 reels (0 Instagram, 44 YouTube Shorts; 19 business, 25 creator; 6 full video watches, 38 timestamped transcripts), scored against each niche's median. [deep-seen] lines from transcripts are a reviewer's read, not statistics.",
+  "source": "1169 Indian YouTube Shorts across 25 niches (top results by views, 1-2 searches per niche, collected 2026-10). Titles and view counts, plus 13 usable transcripts. Plus a deep study of 45 reels (0 Instagram, 45 YouTube Shorts; 20 business, 25 creator; 7 full video watches, 38 timestamped transcripts), scored against each niche's median. [deep-seen] lines from transcripts are a reviewer's read, not statistics.",
   "caveats": "Correlational, not causal. Search results are biased toward already-popular videos and big creators; YouTube Shorts are a proxy for Instagram Reels. Treat [data] lines as strong defaults, [seen] as patterns worth using, [test] as A/B ideas.",
   "cross_niche": [
     "[data] A specific number in the first line beats an adjective. Price, quantity, kg, years or rupee-per-unit. Real estate (price in hook ~7x median views, n=26), wholesale (~4.8x, n=11) and interior (~4.4x, n=13).",
@@ -11,10 +11,11 @@
     "[seen] Real shop moments staged as a 15-second skit can explode. A bargaining skit in a Surat boutique ('Kitne ka hai? ₹15,000. ₹5,000. Pack kar.') got 55M.",
     "[seen] Flops share openers: pity begging ('video pe views nahi aa rahe… comment karo hum saath hain'), slow vlog intros ('Hello doston, welcome to day six'), and 3-minute walkthroughs with no stake in the first 2 seconds.",
     "[data] Hashtag count showed no consistent effect across 25 niches. Keep 6-8 relevant tags in the caption and spend the effort on the hook.",
-    "[deep-seen] In this deep study (44 business and creator reels), none of these separated hits from flops: speech in the first 2 seconds; a number in the first spoken line; a question in the first spoken line; a greeting or 'in this video...' opener; dialogue between 2+ voices; no speech at all (music + visuals); a series marker (Part/EP/Day N); under 15 seconds; over 45 seconds; no CTA; 3+ cuts in the first 5 seconds; 2+ people on screen; the process format. Treat formula tricks as hygiene, not as the reason a reel works.",
+    "[deep-seen] In this deep study (45 business and creator reels), none of these separated hits from flops: speech in the first 2 seconds; a number in the first spoken line; a question in the first spoken line; a greeting or 'in this video...' opener; dialogue between 2+ voices; no speech at all (music + visuals); a series marker (Part/EP/Day N); under 15 seconds; over 45 seconds; no CTA; 3+ cuts in the first 5 seconds; 2+ people on screen; the process format. Treat formula tricks as hygiene, not as the reason a reel works.",
     "[deep-seen] Where all flops went wrong (reviewer read of 18 transcripts, not blind): generic copy (9), slow start (3), hard sell (2), too long (1), unclear hook (1), no payoff (1), no story (1). Example: A magic spoon solves everything, so there is no real stake or payoff, and AI-cartoon versions of famous characters are a flooded format with no 'ye toh main hoon' moment."
   ],
   "business_cross": [
+    "[deep-seen] In this deep study (20 business reels), none of these separated hits from flops: speech in the first 2 seconds; a number in the first spoken line; dialogue between 2+ voices; no speech at all (music + visuals); under 15 seconds; over 45 seconds; no CTA; 2+ people on screen; the process format. Treat formula tricks as hygiene, not as the reason a reel works.",
     "[deep-seen] Where business flops went wrong (reviewer read of 10 transcripts, not blind): generic copy (4), slow start (2), hard sell (2), no payoff (1), no story (1). Example: A seasonal hook, but 51 seconds of 'affordable' and 'bahut accha lagta hai' with no single price and a comment-for-link ask: a catalogue, not a story."
   ],
   "niches": {
@@ -355,6 +356,7 @@
     },
     "interior": {
       "do": [
+        "[deep-seen] A slow-reveal walkthrough of a luxury space paired with atmospheric, non-lyrical music to build aesthetic appeal.",
         "[data] Price in the hook, about 4.4x within its own search (n=13). 'Luxury modular kitchen in just ₹3.5 lakh?' got 6.5M; '₹1 lakh vs ₹10 lakh kitchen' 662k.",
         "[seen] A real before/after of a client home (Ahmedabad agency, 4.4M) or an old-flat renovation ('20-year-old apartment', 438k)."
       ],
@@ -363,6 +365,7 @@
         "[seen] 'Top 5 designs 2026' render compilations (under 1k)"
       ],
       "winning": [
+        "A slow-reveal walkthrough of a luxury space paired with atmospheric, non-lyrical music to build aesthetic appeal. (13,000,000 views, YT)",
         "Luxury interior design | 3bhk interior By Surekh Interior #shortvideo (13,000,000 views)",
         "Sleek & Modern Modular Kitchen with Acrylic Finish & Smart Storage | Kitchenlane (9,600,000 views)",
         "Most Beautiful Modular Kitchen 2025 #interiordesign #modularkitchen (6,800,000 views)",

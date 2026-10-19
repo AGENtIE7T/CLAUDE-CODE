@@ -60,14 +60,14 @@
 
 The research is the starting prior. **Your own data overrides it.** `lib/learning.ts` adds your posted-reel results (computed insights per niche, once 3+ are logged), your 👍/👎 hooks with notes, and saved client learnings. The prompt tells the model your data wins when the two disagree.
 
-## Deep study, batch 1 (in progress: 40 of 50 coded)
-Coded so far: 2 full watches and 38 timestamped transcripts (15 business, 25 creator). The last 10 have no captions and wait for full watches.
+## Deep study, batch 1 (45 of 50 coded; paused 2026-10-19)
+Coded: 7 blind full watches and 38 timestamped transcripts (20 business, 25 creator). The 5 left have no captions and wait for full watches, at 1 a day on Nexlev's free plan.
 
-- **No surface trick separated hits from flops** (all p > 0.4): speaking in the first 2 seconds, a number or question in the first spoken line, a greeting opener, dialogue, length, a CTA. The app now tells the generator to treat these as hygiene, not as the reason a reel works.
-- **Where flops went wrong** (reviewer read of 17 transcripts, not blind):
+- **No surface trick separated hits from flops** (all p > 0.4): speaking in the first 2 seconds, a number or question in the first spoken line, a greeting opener, dialogue, length, a CTA. The app tells the generator to treat these as hygiene, not as the reason a reel works.
+- **Where flops went wrong** (reviewer read of 18 transcripts, not blind):
   - generic copy (9): AI-cartoon stories, recycled jokes, stock "garib dhaba" plots, "satisfying AC cleaning", "transformation" with no numbers, catalogue-style "affordable" reels
   - slow start (3): greeting or agenda openers, a podcast clip with its insight at 24s, a vlog that says nothing for 6 seconds
-  - hard sell (2): a Sharjah repair ad ('useful video, don't skip… great price… follow, save'), and a 12-second Thailand price list ('from ₹52,999, only 10 seats, WhatsApp now'), which had a price in its first line and still got 137 views
+  - hard sell (2): a Sharjah repair ad ("useful video, don't skip… great price… follow, save"), and a 12-second Thailand price list ("from ₹52,999, only 10 seats, WhatsApp now"), which had a price in its first line and still got 137 views
   - one each of: too long, unclear hook, no payoff, no story
 - **What the hits did:**
   - prices said out loud in the first seconds: the haggling skit at 55M
@@ -75,7 +75,15 @@ Coded so far: 2 full watches and 38 timestamped transcripts (15 business, 25 cre
   - a beginner's "dumb" question flipped into a money stake: "gaadi ud to nahi jayegi?" → "ignore kiya to paise udayegi", Day 22 of a series, 1.2M
   - a tiny-budget challenge: ₹5 in DMart
   - a teacher archetype vs kids who only know this month's song
-  - a satisfying professional fix of a dramatic problem: blood-stain removal, 36M, full watch
+- **What the 7 blind full watches added:**
+  - 4 of the 5 watched hits had no speech at all, just a satisfying process or reveal on music or raw sound:
+    - blood-stain removal, 36M: opens on the stain
+    - an egg-roti skill loop, 9 seconds, 28M
+    - a 178-second matchstick factory, log to matchstick, 41M: length didn't hurt a full transformation
+    - a slow luxury-interior reveal, 13M
+  - a guitar-class snippet with no hook flopped (6,200 views, swipe risk at 2s)
+  - a 295-view dog-grooming reel had no clear content failure: some flops are distribution (account size, timing), not the script
+  - even a blind AI watcher's verdicts didn't separate hits from flops (it marked a 13M hit "unclear hook" and the 295-view flop "none"). Predicting virality from content alone is weak, which is why the app's critic scores are labelled as potential, not a guarantee.
 - **Counter-example:** an old "7 ate 9" joke still got 43M. Delivery can rescue old material, but generic copy is the most common way to flop.
 
 ## Next: a deep Instagram study

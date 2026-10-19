@@ -1,22 +1,23 @@
 {
-  "reels": 44,
+  "reels": 45,
   "by_kind": {
-    "business": 19,
+    "business": 20,
     "creator": 25
   },
   "by_platform": {
     "instagram": 0,
-    "youtube": 44
+    "youtube": 45
   },
   "by_evidence": {
-    "watch": 6,
+    "watch": 7,
     "transcript": 38
   },
   "everyone": [
-    "[deep-seen] In this deep study (44 business and creator reels), none of these separated hits from flops: speech in the first 2 seconds; a number in the first spoken line; a question in the first spoken line; a greeting or 'in this video...' opener; dialogue between 2+ voices; no speech at all (music + visuals); a series marker (Part/EP/Day N); under 15 seconds; over 45 seconds; no CTA; 3+ cuts in the first 5 seconds; 2+ people on screen; the process format. Treat formula tricks as hygiene, not as the reason a reel works.",
+    "[deep-seen] In this deep study (45 business and creator reels), none of these separated hits from flops: speech in the first 2 seconds; a number in the first spoken line; a question in the first spoken line; a greeting or 'in this video...' opener; dialogue between 2+ voices; no speech at all (music + visuals); a series marker (Part/EP/Day N); under 15 seconds; over 45 seconds; no CTA; 3+ cuts in the first 5 seconds; 2+ people on screen; the process format. Treat formula tricks as hygiene, not as the reason a reel works.",
     "[deep-seen] Where all flops went wrong (reviewer read of 18 transcripts, not blind): generic copy (9), slow start (3), hard sell (2), too long (1), unclear hook (1), no payoff (1), no story (1). Example: A magic spoon solves everything, so there is no real stake or payoff, and AI-cartoon versions of famous characters are a flooded format with no 'ye toh main hoon' moment."
   ],
   "business": [
+    "[deep-seen] In this deep study (20 business reels), none of these separated hits from flops: speech in the first 2 seconds; a number in the first spoken line; dialogue between 2+ voices; no speech at all (music + visuals); under 15 seconds; over 45 seconds; no CTA; 2+ people on screen; the process format. Treat formula tricks as hygiene, not as the reason a reel works.",
     "[deep-seen] Where business flops went wrong (reviewer read of 10 transcripts, not blind): generic copy (4), slow start (2), hard sell (2), no payoff (1), no story (1). Example: A seasonal hook, but 51 seconds of 'affordable' and 'bahut accha lagta hai' with no single price and a comment-for-link ask: a catalogue, not a story."
   ],
   "creator": [
@@ -175,6 +176,16 @@
       "avoid": [
         "[deep-seen] Music-only 'satisfying AC deep clean', the exact pattern the 25-niche data found saturated ('dirty AC / satisfying' ~0.01x, n=18); no problem, price or twist is stated (visuals unchecked)."
       ]
+    },
+    "interior": {
+      "do": [
+        "[deep-seen] A slow-reveal walkthrough of a luxury space paired with atmospheric, non-lyrical music to build aesthetic appeal."
+      ],
+      "winning": [
+        "A slow-reveal walkthrough of a luxury space paired with atmospheric, non-lyrical music to build aesthetic appeal. (13,000,000 views, YT)"
+      ],
+      "flops": [],
+      "avoid": []
     },
     "jewellery": {
       "do": [],
