@@ -1,0 +1,808 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}img{max-width:100%}</style>
+</head>
+<body>
+<title>Rajashree's Birthday</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Mukta:wght@400;600;700&family=Rozha+One&display=swap">
+<style>
+/* Layout: a dark full-screen candle room; once the wish is made the lights flick on into a rani-pink single-column scroll (hero, letter, gifts, redeem). Deliberately single-theme: the story itself goes from dark to light. */
+:root{
+  --night:#140A16;
+  --night-soft:#2A1626;
+  --dim:#B9A2B4;
+  --glow:#FFC46B;
+  --flame:#FFE6A8;
+  --hot:#FFFDF6;
+  --rani:#C8175D;
+  --rani-deep:#8A0D41;
+  --marigold:#FFB627;
+  --marigold-deep:#E0890B;
+  --marigold-soft:#FFE0A3;
+  --blush:#FFF0F5;
+  --blush-soft:#FCE4EC;
+  --paper:#FFF7EE;
+  --paper-edge:#F3E2D2;
+  --rule:#EBCFC0;
+  --ink:#3A0B2B;
+  --font-display:"Rozha One","Tiro Devanagari Hindi",Georgia,"Times New Roman",serif;
+  --font-body:"Mukta","Segoe UI",system-ui,-apple-system,sans-serif;
+  --font-hand:"Kalam","Segoe Print","Bradley Hand",cursive;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+body{
+  margin:0;
+  background:var(--night);
+  color:var(--blush);
+  font-family:var(--font-body);
+  font-size:17px;
+  line-height:1.55;
+  overflow-x:clip;
+  transition:background-color .6s ease;
+}
+body.lights-on{background:var(--rani)}
+
+/* ---------- Buttons ---------- */
+.btn{
+  appearance:none;
+  font:600 1.02rem/1 var(--font-body);
+  letter-spacing:.01em;
+  padding:17px 28px;
+  border-radius:999px;
+  border:1.5px solid var(--glow);
+  color:var(--glow);
+  background:transparent;
+  cursor:pointer;
+  transition:transform .15s ease, background-color .2s ease;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn:hover{background:color-mix(in srgb,var(--glow) 12%,transparent)}
+.btn:active{transform:scale(.97)}
+.btn:focus-visible{outline:3px solid var(--hot);outline-offset:4px}
+.btn-hold,.btn-hold:hover{
+  --p:0;
+  min-width:min(16rem,100%);
+  background:linear-gradient(90deg,color-mix(in srgb,var(--glow) 42%,transparent) calc(var(--p)*100%),transparent calc(var(--p)*100%));
+  user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
+  touch-action:none;
+}
+.btn-light{border-color:var(--blush);background:var(--blush);color:var(--ink)}
+.btn-light:hover{background:var(--paper)}
+.btn-light:focus-visible{outline-color:var(--marigold-soft)}
+
+/* ---------- Stage: the dark room ---------- */
+.stage{
+  --light:0;
+  position:relative;isolation:isolate;overflow:hidden;
+  min-height:100vh;
+  min-height:calc(100svh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));
+  display:grid;place-items:center;text-align:center;
+  padding-block:40px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+}
+.stage::before{
+  content:"";position:absolute;z-index:-1;left:50%;top:60%;
+  width:min(1000px,180vw);aspect-ratio:1;transform:translate(-50%,-50%);
+  background:radial-gradient(closest-side,color-mix(in srgb,var(--glow) 34%,transparent),color-mix(in srgb,var(--glow) 9%,transparent) 42%,transparent 72%);
+  opacity:var(--light);transition:opacity .9s ease;pointer-events:none;
+}
+.stage-inner{width:100%;max-width:34rem;display:grid;justify-items:center;gap:clamp(22px,4vh,36px)}
+.stage-copy{display:grid;gap:10px;min-height:7.5rem;align-content:end;transition:opacity .32s ease}
+.stage-copy.fade{opacity:0}
+.stage-eyebrow{margin:0;font-weight:600;font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;color:var(--glow)}
+.stage-line{margin:0;font-family:var(--font-display);font-size:clamp(1.6rem,6vw,2.4rem);line-height:1.15;text-wrap:balance;color:var(--blush)}
+.stage-controls{display:grid;gap:12px;justify-items:center;min-height:5.6rem;width:100%}
+.hint{margin:0;font-size:.92rem;color:var(--dim);min-height:1.5em}
+
+/* Cake */
+.cake{width:min(250px,70vw);display:flex;flex-direction:column;align-items:center}
+.wax,.tier,.plate{filter:brightness(calc(.3 + var(--light)*.75)) saturate(calc(.35 + var(--light)*.75));transition:filter .9s ease}
+.candles{display:flex;justify-content:center;align-items:flex-end;gap:clamp(10px,3.4vw,16px);height:86px;position:relative;z-index:2;margin-bottom:-4px}
+.candle{position:relative;width:10px;height:44px}
+.wax{position:absolute;inset:0;border-radius:3px 3px 2px 2px;background:repeating-linear-gradient(160deg,var(--blush) 0 5px,var(--marigold) 5px 10px)}
+.candle::before{content:"";position:absolute;left:50%;top:-7px;width:2px;height:8px;margin-left:-1px;border-radius:1px;background:var(--night-soft)}
+.flame{
+  position:absolute;left:50%;bottom:calc(100% + 3px);width:13px;height:24px;margin-left:-6.5px;
+  border-radius:50% 50% 50% 50%/62% 62% 38% 38%;
+  background:radial-gradient(ellipse 50% 60% at 50% 72%,var(--hot) 0 18%,var(--flame) 34%,var(--glow) 62%,transparent 78%);
+  transform-origin:50% 95%;opacity:0;transform:scale(.1);
+  transition:opacity .3s ease, transform .2s ease;
+  filter:drop-shadow(0 0 6px var(--glow)) drop-shadow(0 0 16px color-mix(in srgb,var(--glow) 60%,transparent));
+}
+.candle.lit .flame{opacity:1;transform:scale(1);animation:ignite .4s ease-out, flicker 1.1s .4s ease-in-out infinite alternate}
+.stage.blowing .candle.lit .flame{animation:gust .14s ease-in-out infinite alternate}
+.candle.out .flame{opacity:0;transform:scale(.1) translateY(-6px);animation:none;transition:opacity .18s, transform .2s}
+@keyframes ignite{from{transform:scale(.1)}70%{transform:scale(1.2,1.1)}to{transform:scale(1)}}
+@keyframes flicker{0%{transform:scale(1,1) rotate(-2deg)}40%{transform:scale(.94,1.06) rotate(1.5deg)}100%{transform:scale(1.04,.96) rotate(-1deg)}}
+@keyframes gust{from{transform:scale(.85,.8) skewX(-18deg) rotate(-10deg)}to{transform:scale(.7,.65) skewX(-26deg) rotate(-16deg)}}
+.smoke{position:absolute;left:50%;bottom:100%;width:0;height:0;pointer-events:none}
+.smoke i{position:absolute;left:-4px;bottom:6px;width:8px;height:8px;border-radius:50%;background:var(--dim);opacity:0;filter:blur(3px)}
+.candle.out .smoke i{animation:smoke 2.2s ease-out forwards}
+.candle.out .smoke i:nth-child(2){animation-delay:.25s}
+.candle.out .smoke i:nth-child(3){animation-delay:.5s}
+@keyframes smoke{0%{opacity:.7;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--dx,10px),-90px) scale(3.2)}}
+.tier{position:relative;overflow:hidden;border-radius:12px 12px 6px 6px}
+.tier-top{width:64%;height:58px;background:var(--rani);z-index:1}
+.tier-bottom{width:100%;height:76px;margin-top:-3px;background:radial-gradient(circle,var(--marigold) 0 2px,transparent 2.6px) 6px 34px/26px 18px,var(--rani-deep)}
+.tier::before{content:"";position:absolute;left:0;right:0;top:0;height:18px;background:var(--blush)}
+.tier::after{content:"";position:absolute;left:0;right:0;top:12px;height:16px;background:radial-gradient(circle at 50% 0,var(--blush) 0 8px,transparent 8.6px) 0 0/18px 16px repeat-x}
+.plate{width:116%;height:14px;margin-top:-5px;border-radius:50%;background:var(--night-soft);box-shadow:inset 0 2px 0 color-mix(in srgb,var(--dim) 45%,transparent)}
+
+/* Lights flicking on */
+.lights{position:fixed;inset:0;background:var(--rani);opacity:0;pointer-events:none;z-index:50}
+.lights.on{animation:lightsOn 1s steps(1,end) forwards}
+.lights.on-calm{opacity:1;transition:opacity .35s ease}
+@keyframes lightsOn{0%{opacity:0}8%{opacity:1}14%{opacity:0}24%{opacity:.85}30%{opacity:.1}44%{opacity:1}100%{opacity:1}}
+
+/* ---------- Party: lights on ---------- */
+.wrap{
+  max-width:46rem;margin-inline:auto;display:grid;gap:14px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+}
+.section{padding-block:clamp(56px,10vw,104px)}
+.section-deep{background:var(--rani-deep)}
+.eyebrow{margin:0;font-size:.78rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--marigold-soft)}
+h2{margin:0;font-family:var(--font-display);font-weight:400;font-size:clamp(2rem,6.4vw,3.2rem);line-height:1.05;text-wrap:balance;color:var(--blush)}
+.lede{margin:0;max-width:40ch;color:var(--blush-soft)}
+
+.hero{position:relative;overflow:clip;text-align:center;padding-block:clamp(118px,16vh,150px) clamp(48px,8vh,80px)}
+.toran{
+  position:absolute;inset:0 0 auto 0;height:96px;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(circle,var(--marigold-deep) 0 3px,var(--marigold) 3.6px 11px,transparent 11.6px) 0 -4px/26px 26px repeat-x,
+    radial-gradient(circle,var(--marigold) 0 8px,transparent 8.6px) 13px 24px/104px 20px repeat-x,
+    radial-gradient(circle,var(--marigold-deep) 0 7px,transparent 7.6px) 13px 42px/104px 18px repeat-x,
+    radial-gradient(circle,var(--marigold) 0 6px,transparent 6.6px) 13px 58px/104px 16px repeat-x,
+    radial-gradient(circle,var(--blush) 0 3px,transparent 3.6px) 13px 74px/104px 10px repeat-x;
+}
+.deva{
+  position:absolute;left:50%;top:clamp(96px,14vh,130px);transform:translateX(-50%);
+  font-family:var(--font-display);font-size:clamp(6rem,30vw,17rem);line-height:1;white-space:nowrap;
+  color:color-mix(in srgb,var(--marigold) 24%,transparent);
+  pointer-events:none;user-select:none;z-index:0;
+}
+.hero-inner{position:relative;z-index:1;justify-items:center;gap:18px}
+.hero-title{margin:0;display:grid;justify-items:center;gap:2px;font-weight:400}
+.hb{display:inline-block;font-family:var(--font-hand);font-weight:700;font-size:clamp(1.5rem,5.4vw,2.4rem);color:var(--marigold);transform:rotate(-3deg)}
+.name{font-family:var(--font-display);font-size:clamp(3.2rem,15vw,8.6rem);line-height:.98;color:var(--blush);text-shadow:.045em .05em 0 var(--rani-deep)}
+.name span{display:inline-block;animation:rise .7s cubic-bezier(.2,.8,.2,1.2) both;animation-delay:calc(var(--i)*60ms + 200ms)}
+@keyframes rise{from{opacity:0;transform:translateY(.4em) scale(.8)}to{opacity:1;transform:none}}
+.lyric{margin:0;min-height:1.7em;font-family:var(--font-hand);font-size:1.2rem;color:var(--marigold-soft)}
+.definition{
+  width:100%;max-width:26rem;margin-top:6px;padding:20px 22px 18px;border-radius:6px;
+  background:var(--paper);color:var(--ink);text-align:left;transform:rotate(-1.4deg);
+  box-shadow:0 18px 40px -12px color-mix(in srgb,var(--rani-deep) 85%,transparent);
+}
+.def-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin:0 0 10px;padding-bottom:10px;border-bottom:1px solid var(--rule)}
+.def-word{font-family:var(--font-display);font-size:1.9rem;line-height:1;color:var(--rani)}
+.def-roman{font-style:italic;color:color-mix(in srgb,var(--ink) 72%,var(--paper))}
+.def-pos{font-size:.74rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--rani-deep)}
+.definition ol{margin:0;padding-left:1.3em;display:grid;gap:6px}
+.def-eg{margin:12px 0 0;font-family:var(--font-hand);font-size:1.05rem;color:var(--rani-deep)}
+.scroll-cue{margin:14px 0 0;font-size:.82rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--blush-soft)}
+
+/* Letter */
+.envelope{
+  appearance:none;border:0;padding:0;cursor:pointer;position:relative;justify-self:start;
+  width:min(380px,100%);aspect-ratio:3/2;max-width:100%;margin-top:14px;
+  background:var(--paper);border-radius:10px;transform:rotate(1.2deg);
+  box-shadow:0 22px 44px -16px color-mix(in srgb,var(--rani-deep) 90%,transparent);
+  transition:transform .3s ease, opacity .4s ease;
+}
+.envelope:hover{transform:rotate(0) translateY(-3px)}
+.envelope:focus-visible{outline:3px solid var(--marigold-soft);outline-offset:5px}
+.env-fold{position:absolute;inset:0;border-radius:10px;background:var(--paper-edge);clip-path:polygon(0 100%,50% 44%,100% 100%)}
+.env-flap{position:absolute;inset:0 0 auto 0;height:58%;border-radius:10px 10px 0 0;background:var(--paper-edge);clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:transform .6s ease}
+.env-seal{
+  position:absolute;left:50%;top:58%;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;z-index:2;
+  background:var(--rani-deep);color:var(--blush);font-family:var(--font-display);font-size:1.6rem;line-height:56px;text-align:center;
+  box-shadow:inset 0 0 0 4px var(--rani);transition:transform .4s ease, opacity .4s ease;
+}
+.env-label{position:absolute;left:0;right:0;bottom:12px;z-index:2;font-family:var(--font-hand);font-size:1.05rem;color:var(--ink)}
+.envelope.opening .env-flap{transform:rotateX(180deg)}
+.envelope.opening .env-seal{transform:scale(.4);opacity:0}
+.envelope.gone{opacity:0;transform:translateY(20px) rotate(1.2deg)}
+.letter{
+  --lh:1.75em;
+  position:relative;max-width:38rem;margin-top:14px;cursor:default;
+  padding-block:var(--lh);padding-inline:clamp(30px,7vw,52px) clamp(20px,5vw,40px);
+  border-radius:6px;background-color:var(--paper);color:var(--ink);
+  font-family:var(--font-hand);font-size:clamp(1.08rem,3.6vw,1.25rem);line-height:var(--lh);
+  background-image:repeating-linear-gradient(to bottom,transparent 0,transparent calc(var(--lh) - 1px),var(--rule) calc(var(--lh) - 1px),var(--rule) var(--lh));
+  box-shadow:0 26px 50px -18px color-mix(in srgb,var(--rani-deep) 90%,transparent);
+  animation:letterIn .6s ease both;
+}
+.letter::before{content:"";position:absolute;top:0;bottom:0;left:clamp(16px,4vw,30px);width:1.5px;background:color-mix(in srgb,var(--rani) 40%,transparent)}
+.letter p{margin:0 0 var(--lh)}
+.letter p:last-child{margin-bottom:0}
+.letter .sign{text-align:right;font-weight:700;color:var(--rani-deep)}
+.caret{display:inline-block;width:2px;height:1.05em;margin-left:2px;vertical-align:-.15em;background:var(--rani);animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+@keyframes letterIn{from{opacity:0;transform:translateY(24px) rotate(-1deg)}to{opacity:1;transform:none}}
+.letter-hint{margin:4px 0 0;font-size:.9rem;color:var(--blush-soft)}
+
+/* Gifts */
+.gifts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:16px;margin-top:18px;align-items:start}
+.gift{display:grid;justify-items:center;align-content:center;gap:12px;min-height:214px;padding:22px 18px;border-radius:18px;text-align:center;background:color-mix(in srgb,var(--rani) 50%,var(--rani-deep))}
+.gift.opened{min-height:0;padding:0;background:none}
+.box{appearance:none;border:0;padding:0;background:transparent;cursor:pointer;position:relative;width:128px;height:120px}
+.box:hover{animation:wiggle .5s ease}
+.box:focus-visible{outline:3px solid var(--marigold-soft);outline-offset:6px;border-radius:12px}
+.box-body{
+  position:absolute;left:10px;right:10px;bottom:0;height:78px;border-radius:5px;
+  background:linear-gradient(90deg,transparent calc(50% - 9px),var(--c2) 0 calc(50% + 9px),transparent 0),var(--c1);
+  transition:transform .4s ease .2s, opacity .4s ease .2s;
+}
+.box-lid{
+  position:absolute;left:2px;right:2px;top:26px;height:24px;border-radius:5px;
+  background:linear-gradient(90deg,transparent calc(50% - 10px),var(--c2) 0 calc(50% + 10px),transparent 0),var(--c1);
+  box-shadow:0 4px 0 color-mix(in srgb,var(--ink) 28%,transparent);
+  transition:transform .55s cubic-bezier(.3,.7,.3,1), opacity .55s ease;
+}
+.box-lid::before,.box-lid::after{content:"";position:absolute;bottom:calc(100% - 4px);width:26px;height:20px;border:6px solid var(--c2);border-radius:50%}
+.box-lid::before{right:50%;transform:rotate(-24deg);transform-origin:right bottom}
+.box-lid::after{left:50%;transform:rotate(24deg);transform-origin:left bottom}
+.gift.opening .box-lid{transform:translateY(-70px) rotate(-28deg);opacity:0}
+.gift.opening .box-body{transform:scale(.85);opacity:0}
+@keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-5deg)}75%{transform:rotate(5deg)}}
+.gift-label{margin:0;font-weight:600;color:var(--blush)}
+.coupon{
+  --notch:radial-gradient(circle 11px at 0 50%,transparent 98%,#000 100%) left/51% 100% no-repeat,radial-gradient(circle 11px at 100% 50%,transparent 98%,#000 100%) right/51% 100% no-repeat;
+  width:100%;display:grid;gap:6px;padding:20px 26px 16px;border-radius:12px;text-align:left;
+  background:var(--paper);color:var(--ink);
+  -webkit-mask:var(--notch);mask:var(--notch);
+  animation:couponIn .5s cubic-bezier(.2,.8,.2,1.15) both;
+}
+.coupon:focus{outline:none}
+@keyframes couponIn{from{opacity:0;transform:scale(.8) translateY(14px)}to{opacity:1;transform:none}}
+.coupon-no{margin:0;font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;font-variant-numeric:tabular-nums;color:var(--rani)}
+.coupon h3{margin:0;font-family:var(--font-display);font-weight:400;font-size:1.55rem;line-height:1.1;color:var(--rani-deep)}
+.coupon .desc{margin:0;line-height:1.45}
+.coupon-valid{margin:8px 0 0;padding-top:10px;border-top:2px dashed var(--rule);font-family:var(--font-hand);font-size:.98rem;color:color-mix(in srgb,var(--ink) 78%,var(--paper))}
+.gifts-status{margin:6px 0 0;color:var(--blush-soft);min-height:1.5em}
+
+/* Redeem + footer */
+.close-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px}
+.foot{padding-block:28px 96px;text-align:center;font-size:.9rem;color:var(--blush-soft)}
+.foot p{margin:0}
+
+/* Song chip */
+.chip{
+  position:fixed;z-index:40;
+  right:max(16px,calc(env(safe-area-inset-right,0px) + 12px));
+  bottom:calc(16px + env(safe-area-inset-bottom,0px));
+  display:inline-flex;align-items:center;gap:10px;padding:11px 16px 11px 14px;
+  border:0;border-radius:999px;cursor:pointer;
+  background:var(--ink);color:var(--blush);font:600 .9rem/1 var(--font-body);
+  box-shadow:0 10px 24px -8px color-mix(in srgb,var(--ink) 70%,transparent);
+}
+.chip:focus-visible{outline:3px solid var(--marigold-soft);outline-offset:3px}
+.bars{display:inline-flex;align-items:flex-end;gap:2px;height:14px}
+.bars i{width:3px;height:4px;border-radius:1px;background:var(--marigold)}
+.chip.playing .bars i{animation:eq .7s ease-in-out infinite alternate}
+.chip.playing .bars i:nth-child(2){animation-delay:.2s}
+.chip.playing .bars i:nth-child(3){animation-delay:.4s}
+.chip.playing .bars i:nth-child(4){animation-delay:.1s}
+@keyframes eq{from{height:3px}to{height:14px}}
+
+#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:45}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+</style>
+
+<section class="stage" id="stage">
+  <div class="stage-inner">
+    <div class="stage-copy" id="stageCopy" aria-live="polite">
+      <p class="stage-eyebrow" id="stageEyebrow">Psst. Rajashree.</p>
+      <p class="stage-line" id="stageLine">The lights are off. Ek chhota sa surprise ready hai.</p>
+    </div>
+    <div class="cake" aria-hidden="true">
+      <div class="candles" id="candles"></div>
+      <div class="tier tier-top"></div>
+      <div class="tier tier-bottom"></div>
+      <div class="plate"></div>
+    </div>
+    <div class="stage-controls">
+      <button class="btn" id="strike" type="button">Strike a match</button>
+      <button class="btn btn-hold" id="blow" type="button" hidden>Hold to blow out the candles</button>
+      <p class="hint" id="hint">Sound on, if you can.</p>
+    </div>
+  </div>
+</section>
+
+<div class="party" id="party" hidden>
+  <section class="hero" aria-labelledby="heroTitle">
+    <div class="toran" aria-hidden="true"></div>
+    <div class="deva" aria-hidden="true">राजश्री</div>
+    <div class="wrap hero-inner">
+      <p class="eyebrow">Today is officially about you</p>
+      <h1 class="hero-title" id="heroTitle" aria-label="Happy Birthday, Rajashree">
+        <span class="hb" aria-hidden="true">Happy Birthday,</span>
+        <span class="name" id="nameLetters" aria-hidden="true">Rajashree</span>
+      </h1>
+      <p class="lyric" id="lyric" aria-hidden="true"></p>
+      <article class="definition" aria-label="What the name Rajashree means">
+        <p class="def-head"><span class="def-word">राजश्री</span><span class="def-roman">rāja·śrī</span><span class="def-pos">noun</span></p>
+        <ol>
+          <li>From Sanskrit <i>rāja</i>, royal, and <i>śrī</i>, grace, radiance, good fortune.</li>
+          <li>A person who makes an ordinary day feel like an occasion.</li>
+        </ol>
+        <p class="def-eg">“The whole day got better once Rajashree texted back.”</p>
+      </article>
+      <p class="scroll-cue">Scroll down. There's more ↓</p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="letterTitle">
+    <div class="wrap">
+      <p class="eyebrow">Sealed, for you</p>
+      <h2 id="letterTitle">A letter</h2>
+      <p class="lede">Tap the envelope to open it.</p>
+      <button class="envelope" id="envelope" type="button" aria-label="Open the letter">
+        <span class="env-fold"></span>
+        <span class="env-flap"></span>
+        <span class="env-seal">R</span>
+        <span class="env-label">For Rajashree. Open it now.</span>
+      </button>
+      <article class="letter" id="letter" hidden><div id="letterText"></div></article>
+      <p class="letter-hint" id="letterHint" hidden>Tap the letter to show it all at once.</p>
+    </div>
+  </section>
+
+  <section class="section section-deep" aria-labelledby="giftsTitle">
+    <div class="wrap">
+      <p class="eyebrow">Unwrap these</p>
+      <h2 id="giftsTitle">Three gifts. Open all of them.</h2>
+      <p class="lede">It's your birthday. Choosing only one would be silly.</p>
+      <div class="gifts" id="gifts"></div>
+      <p class="gifts-status" id="giftsStatus" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="redeemTitle">
+    <div class="wrap">
+      <p class="eyebrow">The fine print</p>
+      <h2 id="redeemTitle">How to redeem</h2>
+      <p class="lede">Take a screenshot of the coupon you want first and send it to me. No forms. No expiry date. That's the whole process.</p>
+      <p class="lede">You can redeem all three. I'm kind of hoping you do.</p>
+      <div class="close-actions">
+        <button class="btn btn-light" id="replay" type="button">Light the candles again</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot"><div class="wrap"><p>Made by hand for Rajashree, and for nobody else.</p></div></footer>
+</div>
+
+<div class="lights" id="lights" aria-hidden="true"></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+<button class="chip" id="music" type="button" hidden><span class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span id="musicLabel">Play the song</span></button>
+
+<script>
+/* ===== Edit these to make it yours ===== */
+const CONFIG = {
+  name: "Rajashree",
+  candles: 5,
+  letter: [
+    "Dear Rajashree,",
+    "Happy birthday!",
+    "I wanted to give you something nobody else could, so I made this. It's a small corner of the internet that only exists because you do.",
+    "You have a way of making normal days feel a little less normal. Talking to you has quietly become one of the best parts of mine.",
+    "So here's my wish for you this year: the laughing kind of tired, never the stressed kind. Good food, good people, and every single thing you've been secretly hoping for.",
+    "And maybe a few more birthdays with me around to annoy you."
+  ],
+  signOff: "— someone who's really glad you were born",
+  gifts: [
+    { label: "This one?", title: "Coffee, on me", text: "One coffee at a café you pick. I'll show up on time. Mostly.", tone: "marigold" },
+    { label: "Or this one?", title: "The long walk", text: "One evening walk with street food on the way. Pani puri count: unlimited.", tone: "paper" },
+    { label: "Definitely this one", title: "Your day, your rules", text: "One full day where you decide everything. My only job is saying yes.", tone: "ink" }
+  ]
+};
+
+(() => {
+  const $ = s => document.querySelector(s);
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const rootCss = getComputedStyle(document.documentElement);
+  const tok = n => rootCss.getPropertyValue(n).trim();
+
+  const stage = $("#stage"), party = $("#party"), candlesEl = $("#candles");
+  const copyBox = $("#stageCopy"), eyebrowEl = $("#stageEyebrow"), lineEl = $("#stageLine"), hintEl = $("#hint");
+  const strikeBtn = $("#strike"), blowBtn = $("#blow");
+  const musicBtn = $("#music"), musicLabel = $("#musicLabel"), lyricEl = $("#lyric");
+
+  /* ---------- Sound (Web Audio, no files) ---------- */
+  let ac = null, master = null, noise = null;
+  function audio() {
+    if (!ac) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      try {
+        ac = new AC();
+        master = ac.createGain(); master.gain.value = .7; master.connect(ac.destination);
+        const len = Math.floor(ac.sampleRate * 2);
+        noise = ac.createBuffer(1, len, ac.sampleRate);
+        const d = noise.getChannelData(0);
+        for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+      } catch (e) { ac = null; return null; }
+    }
+    if (ac.state === "suspended") ac.resume().catch(() => {});
+    return ac;
+  }
+  function sfxStrike() {
+    if (!audio()) return;
+    const t = ac.currentTime, src = ac.createBufferSource(), bp = ac.createBiquadFilter(), g = ac.createGain();
+    src.buffer = noise;
+    bp.type = "bandpass"; bp.Q.value = .8;
+    bp.frequency.setValueAtTime(3200, t); bp.frequency.exponentialRampToValueAtTime(900, t + .3);
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.5, t + .02); g.gain.exponentialRampToValueAtTime(.001, t + .33);
+    src.connect(bp).connect(g).connect(master); src.start(t); src.stop(t + .36);
+  }
+  let blowNode = null;
+  function blowStart() {
+    if (!audio() || blowNode) return;
+    const t = ac.currentTime, src = ac.createBufferSource(), lp = ac.createBiquadFilter(), g = ac.createGain();
+    src.buffer = noise; src.loop = true;
+    lp.type = "lowpass"; lp.frequency.value = 700;
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.35, t + .15);
+    src.connect(lp).connect(g).connect(master); src.start(t);
+    blowNode = { src, g };
+  }
+  function blowStop() {
+    if (!blowNode) return;
+    const { src, g } = blowNode, t = ac.currentTime;
+    blowNode = null;
+    g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value, t); g.gain.linearRampToValueAtTime(0, t + .18);
+    src.stop(t + .2);
+  }
+  function sfxPop() {
+    if (!audio()) return;
+    const t = ac.currentTime, o = ac.createOscillator(), g = ac.createGain();
+    o.type = "sine"; o.frequency.setValueAtTime(720, t); o.frequency.exponentialRampToValueAtTime(180, t + .16);
+    g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.35, t + .01); g.gain.exponentialRampToValueAtTime(.001, t + .2);
+    o.connect(g).connect(master); o.start(t); o.stop(t + .22);
+  }
+
+  /* Happy Birthday, played on a little music box */
+  const HZ = { G4: 392, A4: 440, B4: 493.88, C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46, G5: 783.99 };
+  const SONG = [
+    [["G4", .75], ["G4", .25], ["A4", 1], ["G4", 1], ["C5", 1], ["B4", 2]],
+    [["G4", .75], ["G4", .25], ["A4", 1], ["G4", 1], ["D5", 1], ["C5", 2]],
+    [["G4", .75], ["G4", .25], ["G5", 1], ["E5", 1], ["C5", 1], ["B4", 1], ["A4", 2]],
+    [["F5", .75], ["F5", .25], ["E5", 1], ["C5", 1], ["D5", 1], ["C5", 3]]
+  ];
+  const LYRICS = ["Happy birthday to you", "Happy birthday to you", `Happy birthday, dear ${CONFIG.name}`, "Happy birthday to you"];
+  const BEAT = .46;
+  let song = null;
+  function bell(bus, freq, t, dur) {
+    const g = ac.createGain(), o1 = ac.createOscillator(), o2 = ac.createOscillator(), g2 = ac.createGain();
+    const end = t + Math.max(dur, .3) + .5;
+    o1.type = "triangle"; o1.frequency.value = freq;
+    o2.type = "sine"; o2.frequency.value = freq * 2; g2.gain.value = .25;
+    g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.28, t + .012); g.gain.exponentialRampToValueAtTime(.0008, end);
+    o1.connect(g); o2.connect(g2).connect(g); g.connect(bus);
+    o1.start(t); o2.start(t); o1.stop(end + .05); o2.stop(end + .05);
+  }
+  function musicUI(on) {
+    musicBtn.classList.toggle("playing", on);
+    musicLabel.textContent = on ? "Stop the song" : "Play the song";
+  }
+  function playSong() {
+    if (!audio()) return;
+    stopSong();
+    const bus = ac.createGain(); bus.connect(master);
+    song = { bus, timers: [] };
+    const now = ac.currentTime;
+    let t = now + .15;
+    SONG.forEach((phrase, i) => {
+      song.timers.push(setTimeout(() => { lyricEl.textContent = "♪ " + LYRICS[i]; }, (t - now) * 1000));
+      phrase.forEach(([n, beats]) => { bell(bus, HZ[n], t, beats * BEAT); t += beats * BEAT; });
+      t += BEAT * .25;
+    });
+    song.timers.push(setTimeout(stopSong, (t - now) * 1000 + 700));
+    musicUI(true);
+  }
+  function stopSong() {
+    if (!song) return;
+    const s = song; song = null;
+    s.timers.forEach(clearTimeout);
+    try {
+      const t = ac.currentTime;
+      s.bus.gain.cancelScheduledValues(t); s.bus.gain.setValueAtTime(s.bus.gain.value, t); s.bus.gain.linearRampToValueAtTime(0, t + .2);
+    } catch (e) {}
+    setTimeout(() => { try { s.bus.disconnect(); } catch (e) {} }, 300);
+    lyricEl.textContent = "";
+    musicUI(false);
+  }
+  musicBtn.addEventListener("click", () => { song ? stopSong() : playSong(); });
+
+  /* ---------- Confetti and marigold petals ---------- */
+  const fx = $("#fx"), ctx = fx.getContext("2d");
+  const COLORS = ["--marigold", "--marigold-deep", "--blush", "--paper", "--rani-deep", "--glow"].map(tok);
+  let W = 0, H = 0, parts = [], raf = 0;
+  function size() {
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    W = innerWidth; H = innerHeight;
+    fx.width = W * dpr; fx.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  addEventListener("resize", size); size();
+  function spawn(x, y, vx, vy) {
+    parts.push({ x, y, vx, vy, rot: Math.random() * 6.28, vr: (Math.random() - .5) * .3,
+      w: 6 + Math.random() * 6, h: 8 + Math.random() * 8, sway: Math.random() * 6.28,
+      c: COLORS[(Math.random() * COLORS.length) | 0], petal: Math.random() < .4 });
+  }
+  function burst(x, y, n, spread, dir, power) {
+    for (let i = 0; i < n; i++) {
+      const a = dir + (Math.random() - .5) * spread, s = power * (.45 + Math.random() * .75);
+      spawn(x, y, Math.cos(a) * s, Math.sin(a) * s);
+    }
+    run();
+  }
+  function rain(n) {
+    for (let i = 0; i < n; i++) spawn(Math.random() * W, -20 - Math.random() * H * .6, (Math.random() - .5) * 1.2, 1 + Math.random() * 2);
+    run();
+  }
+  function run() { if (!raf) raf = requestAnimationFrame(step); }
+  function step() {
+    ctx.clearRect(0, 0, W, H);
+    for (let i = parts.length - 1; i >= 0; i--) {
+      const p = parts[i];
+      p.vy = Math.min(3.6, p.vy + .16); p.vx *= .985; p.vy *= .99;
+      p.sway += .05; p.x += p.vx + Math.sin(p.sway) * .6; p.y += p.vy; p.rot += p.vr;
+      if (p.y > H + 30) { parts.splice(i, 1); continue; }
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.fillStyle = p.c;
+      if (p.petal) { ctx.beginPath(); ctx.ellipse(0, 0, p.w * .55, p.h * .7, 0, 0, Math.PI * 2); ctx.fill(); }
+      else { const flip = Math.cos(p.sway * 1.7); ctx.fillRect(-p.w / 2, -p.h * flip / 2, p.w, p.h * flip); }
+      ctx.restore();
+    }
+    raf = parts.length ? requestAnimationFrame(step) : 0;
+  }
+  function celebrate() {
+    if (reduceMotion) return;
+    burst(0, H, 90, Math.PI / 3, -Math.PI / 3, 16);
+    burst(W, H, 90, Math.PI / 3, -Math.PI * 2 / 3, 16);
+    setTimeout(() => rain(80), 600);
+  }
+
+  /* ---------- Candles ---------- */
+  let candles = [], order = [], state = "intro", holding = false, progress = 0, lastT = 0;
+  const HOLD_MS = 2000;
+  function buildCandles() {
+    candlesEl.innerHTML = "";
+    candles = Array.from({ length: CONFIG.candles }, () => {
+      const c = document.createElement("div");
+      c.className = "candle";
+      c.style.setProperty("--dx", Math.round(Math.random() * 24 - 12) + "px");
+      c.innerHTML = '<span class="wax"></span><span class="flame"></span><span class="smoke"><i></i><i></i><i></i></span>';
+      candlesEl.appendChild(c);
+      return c;
+    });
+  }
+  const litCount = () => candles.filter(c => c.classList.contains("lit")).length;
+  function setLight() { stage.style.setProperty("--light", (litCount() / candles.length).toFixed(3)); }
+  function setCopy(eyebrow, line) {
+    if (reduceMotion) { eyebrowEl.textContent = eyebrow; lineEl.textContent = line; return Promise.resolve(); }
+    copyBox.classList.add("fade");
+    return new Promise(res => setTimeout(() => {
+      eyebrowEl.textContent = eyebrow; lineEl.textContent = line;
+      copyBox.classList.remove("fade"); res();
+    }, 320));
+  }
+
+  strikeBtn.addEventListener("click", () => {
+    if (state !== "intro") return;
+    state = "lighting";
+    audio(); sfxStrike();
+    strikeBtn.hidden = true; hintEl.textContent = "";
+    setCopy("Hold on", "Lighting them, one by one…");
+    candles.forEach((c, i) => setTimeout(() => {
+      c.classList.add("lit"); setLight();
+      if (i === candles.length - 1) setTimeout(readyToBlow, 500);
+    }, 450 + i * 320));
+  });
+  function readyToBlow() {
+    state = "lit";
+    order = candles.slice();
+    for (let i = order.length - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0; [order[i], order[j]] = [order[j], order[i]]; }
+    setCopy(`${candles.length} candles. One wish.`, "Close your eyes and make it count. Then blow.").then(() => {
+      blowBtn.hidden = false;
+      hintEl.textContent = "Press and hold the button.";
+      blowBtn.focus({ preventScroll: true });
+    });
+  }
+  function startHold() {
+    if (state !== "lit" || holding) return;
+    holding = true; lastT = performance.now();
+    stage.classList.add("blowing"); blowStart();
+    hintEl.textContent = "Keep blowing…";
+    requestAnimationFrame(tick);
+  }
+  function endHold() {
+    if (!holding) return;
+    holding = false; stage.classList.remove("blowing"); blowStop();
+    if (state !== "lit") return;
+    const left = litCount();
+    hintEl.textContent = left === candles.length ? "Longer than that. Press and hold." : `${left} still lit. One more breath.`;
+  }
+  function tick(now) {
+    if (!holding) return;
+    progress = Math.min(1, progress + (now - lastT) / HOLD_MS); lastT = now;
+    blowBtn.style.setProperty("--p", progress.toFixed(3));
+    const target = Math.floor(progress * candles.length + 1e-6);
+    let out = candles.length - litCount();
+    while (out < target) { const c = order[out]; c.classList.remove("lit"); c.classList.add("out"); out++; }
+    setLight();
+    if (out >= candles.length) { finishBlow(); return; }
+    requestAnimationFrame(tick);
+  }
+  function finishBlow() {
+    holding = false; state = "blown";
+    stage.classList.remove("blowing"); blowStop();
+    blowBtn.hidden = true; hintEl.textContent = "";
+    setCopy("Wish saved", "Okay. Now, lights…");
+    setTimeout(lightsOn, reduceMotion ? 900 : 2200);
+  }
+  blowBtn.addEventListener("pointerdown", e => {
+    e.preventDefault();
+    try { blowBtn.setPointerCapture(e.pointerId); } catch (err) {}
+    startHold();
+  });
+  ["pointerup", "pointercancel", "lostpointercapture"].forEach(t => blowBtn.addEventListener(t, endHold));
+  blowBtn.addEventListener("keydown", e => { if ((e.key === " " || e.key === "Enter") && !e.repeat) { e.preventDefault(); startHold(); } });
+  blowBtn.addEventListener("keyup", e => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); endHold(); } });
+  blowBtn.addEventListener("contextmenu", e => e.preventDefault());
+  blowBtn.addEventListener("blur", endHold);
+  document.addEventListener("visibilitychange", () => { if (document.hidden) endHold(); });
+
+  /* ---------- Lights on ---------- */
+  function splitName() {
+    const el = $("#nameLetters");
+    el.textContent = "";
+    [...CONFIG.name].forEach((ch, i) => {
+      const s = document.createElement("span");
+      s.textContent = ch; s.style.setProperty("--i", i);
+      el.appendChild(s);
+    });
+  }
+  function lightsOn() {
+    const lights = $("#lights");
+    lights.classList.add(reduceMotion ? "on-calm" : "on");
+    setTimeout(() => {
+      document.body.classList.add("lights-on");
+      stage.hidden = true; party.hidden = false;
+      window.scrollTo(0, 0);
+      splitName();
+      lights.classList.remove("on", "on-calm");
+      lights.style.opacity = "1";
+      void lights.offsetWidth;
+      lights.style.transition = "opacity .9s ease";
+      lights.style.opacity = "0";
+      setTimeout(() => { lights.style.transition = ""; lights.style.opacity = ""; }, 950);
+      state = "party";
+      if (audio()) { musicBtn.hidden = false; playSong(); }
+      celebrate();
+    }, reduceMotion ? 400 : 1050);
+  }
+
+  /* ---------- Letter ---------- */
+  const envelope = $("#envelope"), letter = $("#letter"), letterText = $("#letterText"), letterHint = $("#letterHint");
+  let typingTimer = 0;
+  envelope.addEventListener("click", () => {
+    if (envelope.classList.contains("opening")) return;
+    audio(); sfxPop();
+    envelope.classList.add("opening");
+    setTimeout(() => envelope.classList.add("gone"), reduceMotion ? 0 : 650);
+    setTimeout(() => { envelope.hidden = true; letter.hidden = false; typeLetter(); }, reduceMotion ? 50 : 1050);
+  });
+  function typeLetter() {
+    const paras = [...CONFIG.letter, CONFIG.signOff];
+    letterText.textContent = "";
+    const ps = paras.map((_, i) => {
+      const p = document.createElement("p");
+      if (i === paras.length - 1) p.className = "sign";
+      letterText.appendChild(p);
+      return p;
+    });
+    const showAll = () => { clearTimeout(typingTimer); ps.forEach((p, i) => { p.textContent = paras[i]; }); letterHint.hidden = true; };
+    if (reduceMotion) { showAll(); return; }
+    letterHint.hidden = false;
+    letter.addEventListener("click", showAll, { once: true });
+    const caret = document.createElement("span"); caret.className = "caret";
+    let pi = 0, ci = 0;
+    (function next() {
+      if (pi >= paras.length) { caret.remove(); letterHint.hidden = true; return; }
+      const text = paras[pi];
+      ci++;
+      ps[pi].textContent = text.slice(0, ci);
+      ps[pi].appendChild(caret);
+      if (ci >= text.length) { pi++; ci = 0; typingTimer = setTimeout(next, 380); return; }
+      typingTimer = setTimeout(next, /[.,!?:]/.test(text[ci - 1]) ? 200 : 18 + Math.random() * 16);
+    })();
+  }
+
+  /* ---------- Gifts ---------- */
+  const giftsEl = $("#gifts"), giftsStatus = $("#giftsStatus");
+  const TONES = { marigold: ["--marigold", "--rani-deep"], paper: ["--paper", "--rani"], ink: ["--ink", "--marigold"] };
+  function buildGifts() {
+    giftsEl.textContent = "";
+    const total = String(CONFIG.gifts.length).padStart(2, "0");
+    CONFIG.gifts.forEach((g, i) => {
+      const [c1, c2] = TONES[g.tone] || TONES.marigold;
+      const wrap = document.createElement("div");
+      wrap.className = "gift";
+      wrap.innerHTML = `
+        <button class="box" type="button" style="--c1:var(${c1});--c2:var(${c2})" aria-label="Open gift ${i + 1}">
+          <span class="box-body"></span><span class="box-lid"></span>
+        </button>
+        <p class="gift-label"></p>
+        <div class="coupon" hidden>
+          <p class="coupon-no">Birthday coupon · No. ${String(i + 1).padStart(2, "0")} / ${total}</p>
+          <h3></h3>
+          <p class="desc"></p>
+          <p class="coupon-valid">Valid forever. Redeem by sending me a screenshot.</p>
+        </div>`;
+      wrap.querySelector(".gift-label").textContent = g.label;
+      wrap.querySelector("h3").textContent = g.title;
+      wrap.querySelector(".desc").textContent = g.text;
+      const btn = wrap.querySelector(".box");
+      btn.addEventListener("click", () => openGift(wrap, btn));
+      giftsEl.appendChild(wrap);
+    });
+    updateGiftStatus();
+  }
+  function openGift(wrap, btn) {
+    if (wrap.classList.contains("opening")) return;
+    audio(); sfxPop();
+    wrap.classList.add("opening");
+    const r = btn.getBoundingClientRect();
+    if (!reduceMotion) burst(r.left + r.width / 2, r.top + r.height / 2, 60, Math.PI * 1.2, -Math.PI / 2, 10);
+    setTimeout(() => {
+      btn.hidden = true;
+      wrap.querySelector(".gift-label").hidden = true;
+      wrap.classList.add("opened");
+      const c = wrap.querySelector(".coupon");
+      c.hidden = false; c.tabIndex = -1; c.focus({ preventScroll: true });
+      updateGiftStatus();
+    }, reduceMotion ? 50 : 600);
+  }
+  function updateGiftStatus() {
+    const left = giftsEl.querySelectorAll(".gift:not(.opened)").length;
+    giftsStatus.textContent = left === 0 ? "All of them are yours. Scroll down to see how to redeem."
+      : left === CONFIG.gifts.length ? `Tap a box to open it. ${left} to go.`
+      : `${left} left to open.`;
+  }
+
+  /* ---------- Replay ---------- */
+  $("#replay").addEventListener("click", () => {
+    stopSong();
+    document.body.classList.remove("lights-on");
+    party.hidden = true; musicBtn.hidden = true; stage.hidden = false;
+    progress = 0; blowBtn.style.setProperty("--p", 0);
+    buildCandles(); setLight();
+    state = "intro";
+    eyebrowEl.textContent = "Round two";
+    lineEl.textContent = "Lights are off again. Ready for another wish?";
+    strikeBtn.hidden = false; blowBtn.hidden = true; hintEl.textContent = "";
+    window.scrollTo(0, 0);
+    strikeBtn.focus({ preventScroll: true });
+  });
+
+  buildCandles(); setLight(); buildGifts();
+})();
+</script>
+
+</body>
+</html>
