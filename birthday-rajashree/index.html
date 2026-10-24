@@ -175,7 +175,6 @@ h2{margin:0;font-family:var(--font-display);font-weight:400;font-size:clamp(2rem
 .name{font-family:var(--font-display);font-size:clamp(3.2rem,15vw,8.6rem);line-height:.98;color:var(--blush);text-shadow:.045em .05em 0 var(--rani-deep)}
 .name span{display:inline-block;animation:rise .7s cubic-bezier(.2,.8,.2,1.2) both;animation-delay:calc(var(--i)*60ms + 200ms)}
 @keyframes rise{from{opacity:0;transform:translateY(.4em) scale(.8)}to{opacity:1;transform:none}}
-.lyric{margin:0;min-height:1.7em;font-family:var(--font-hand);font-size:1.2rem;color:var(--marigold-soft)}
 .definition{
   width:100%;max-width:26rem;margin-top:6px;padding:20px 22px 18px;border-radius:6px;
   background:var(--paper);color:var(--ink);text-align:left;transform:rotate(-1.4deg);
@@ -217,25 +216,6 @@ h2{margin:0;font-family:var(--font-display);font-weight:400;font-size:clamp(2rem
 .foot{padding-block:28px 96px;text-align:center;font-size:.9rem;color:var(--blush-soft)}
 .foot p{margin:0}
 
-/* Song chip */
-.chip{
-  position:fixed;z-index:40;
-  right:max(16px,calc(env(safe-area-inset-right,0px) + 12px));
-  bottom:calc(16px + env(safe-area-inset-bottom,0px));
-  display:inline-flex;align-items:center;gap:10px;padding:11px 16px 11px 14px;
-  border:0;border-radius:999px;cursor:pointer;
-  background:var(--ink);color:var(--blush);font:600 .9rem/1 var(--font-body);
-  box-shadow:0 10px 24px -8px color-mix(in srgb,var(--ink) 70%,transparent);
-}
-.chip:focus-visible{outline:3px solid var(--marigold-soft);outline-offset:3px}
-.bars{display:inline-flex;align-items:flex-end;gap:2px;height:14px}
-.bars i{width:3px;height:4px;border-radius:1px;background:var(--marigold)}
-.chip.playing .bars i{animation:eq .7s ease-in-out infinite alternate}
-.chip.playing .bars i:nth-child(2){animation-delay:.2s}
-.chip.playing .bars i:nth-child(3){animation-delay:.4s}
-.chip.playing .bars i:nth-child(4){animation-delay:.1s}
-@keyframes eq{from{height:3px}to{height:14px}}
-
 #fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:45}
 
 @media (prefers-reduced-motion:reduce){
@@ -273,7 +253,6 @@ h2{margin:0;font-family:var(--font-display);font-weight:400;font-size:clamp(2rem
         <span class="hb" aria-hidden="true">Happy Birthday,</span>
         <span class="name" id="nameLetters" aria-hidden="true">Rajashree</span>
       </h1>
-      <p class="lyric" id="lyric" aria-hidden="true"></p>
       <article class="definition" aria-label="What the name Rajashree means">
         <p class="def-head"><span class="def-word">राजश्री</span><span class="def-roman">rāja·śrī</span><span class="def-pos">noun</span></p>
         <ol>
@@ -307,7 +286,6 @@ h2{margin:0;font-family:var(--font-display);font-weight:400;font-size:clamp(2rem
 
 <div class="lights" id="lights" aria-hidden="true"></div>
 <canvas id="fx" aria-hidden="true"></canvas>
-<button class="chip" id="music" type="button" hidden><span class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span id="musicLabel">Play the song</span></button>
 
 <script>
 /* ===== Edit these to make it yours ===== */
@@ -327,112 +305,6 @@ const CONFIG = {
   const stage = $("#stage"), party = $("#party"), candlesEl = $("#candles");
   const copyBox = $("#stageCopy"), eyebrowEl = $("#stageEyebrow"), lineEl = $("#stageLine"), hintEl = $("#hint");
   const strikeBtn = $("#strike"), blowBtn = $("#blow");
-  const musicBtn = $("#music"), musicLabel = $("#musicLabel"), lyricEl = $("#lyric");
-
-  /* ---------- Sound (Web Audio, no files) ---------- */
-  let ac = null, master = null, noise = null;
-  function audio() {
-    if (!ac) {
-      const AC = window.AudioContext || window.webkitAudioContext;
-      if (!AC) return null;
-      try {
-        ac = new AC();
-        master = ac.createGain(); master.gain.value = .7; master.connect(ac.destination);
-        const len = Math.floor(ac.sampleRate * 2);
-        noise = ac.createBuffer(1, len, ac.sampleRate);
-        const d = noise.getChannelData(0);
-        for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
-      } catch (e) { ac = null; return null; }
-    }
-    if (ac.state === "suspended") ac.resume().catch(() => {});
-    return ac;
-  }
-  function sfxStrike() {
-    if (!audio()) return;
-    const t = ac.currentTime, src = ac.createBufferSource(), bp = ac.createBiquadFilter(), g = ac.createGain();
-    src.buffer = noise;
-    bp.type = "bandpass"; bp.Q.value = .8;
-    bp.frequency.setValueAtTime(3200, t); bp.frequency.exponentialRampToValueAtTime(900, t + .3);
-    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.5, t + .02); g.gain.exponentialRampToValueAtTime(.001, t + .33);
-    src.connect(bp).connect(g).connect(master); src.start(t); src.stop(t + .36);
-  }
-  let blowNode = null;
-  function blowStart() {
-    if (!audio() || blowNode) return;
-    const t = ac.currentTime, src = ac.createBufferSource(), lp = ac.createBiquadFilter(), g = ac.createGain();
-    src.buffer = noise; src.loop = true;
-    lp.type = "lowpass"; lp.frequency.value = 700;
-    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.35, t + .15);
-    src.connect(lp).connect(g).connect(master); src.start(t);
-    blowNode = { src, g };
-  }
-  function blowStop() {
-    if (!blowNode) return;
-    const { src, g } = blowNode, t = ac.currentTime;
-    blowNode = null;
-    g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value, t); g.gain.linearRampToValueAtTime(0, t + .18);
-    src.stop(t + .2);
-  }
-  function sfxPop() {
-    if (!audio()) return;
-    const t = ac.currentTime, o = ac.createOscillator(), g = ac.createGain();
-    o.type = "sine"; o.frequency.setValueAtTime(720, t); o.frequency.exponentialRampToValueAtTime(180, t + .16);
-    g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.35, t + .01); g.gain.exponentialRampToValueAtTime(.001, t + .2);
-    o.connect(g).connect(master); o.start(t); o.stop(t + .22);
-  }
-
-  /* Happy Birthday, played on a little music box */
-  const HZ = { G4: 392, A4: 440, B4: 493.88, C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46, G5: 783.99 };
-  const SONG = [
-    [["G4", .75], ["G4", .25], ["A4", 1], ["G4", 1], ["C5", 1], ["B4", 2]],
-    [["G4", .75], ["G4", .25], ["A4", 1], ["G4", 1], ["D5", 1], ["C5", 2]],
-    [["G4", .75], ["G4", .25], ["G5", 1], ["E5", 1], ["C5", 1], ["B4", 1], ["A4", 2]],
-    [["F5", .75], ["F5", .25], ["E5", 1], ["C5", 1], ["D5", 1], ["C5", 3]]
-  ];
-  const LYRICS = ["Happy birthday to you", "Happy birthday to you", `Happy birthday, dear ${CONFIG.name}`, "Happy birthday to you"];
-  const BEAT = .46;
-  let song = null;
-  function bell(bus, freq, t, dur) {
-    const g = ac.createGain(), o1 = ac.createOscillator(), o2 = ac.createOscillator(), g2 = ac.createGain();
-    const end = t + Math.max(dur, .3) + .5;
-    o1.type = "triangle"; o1.frequency.value = freq;
-    o2.type = "sine"; o2.frequency.value = freq * 2; g2.gain.value = .25;
-    g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.28, t + .012); g.gain.exponentialRampToValueAtTime(.0008, end);
-    o1.connect(g); o2.connect(g2).connect(g); g.connect(bus);
-    o1.start(t); o2.start(t); o1.stop(end + .05); o2.stop(end + .05);
-  }
-  function musicUI(on) {
-    musicBtn.classList.toggle("playing", on);
-    musicLabel.textContent = on ? "Stop the song" : "Play the song";
-  }
-  function playSong() {
-    if (!audio()) return;
-    stopSong();
-    const bus = ac.createGain(); bus.connect(master);
-    song = { bus, timers: [] };
-    const now = ac.currentTime;
-    let t = now + .15;
-    SONG.forEach((phrase, i) => {
-      song.timers.push(setTimeout(() => { lyricEl.textContent = "♪ " + LYRICS[i]; }, (t - now) * 1000));
-      phrase.forEach(([n, beats]) => { bell(bus, HZ[n], t, beats * BEAT); t += beats * BEAT; });
-      t += BEAT * .25;
-    });
-    song.timers.push(setTimeout(stopSong, (t - now) * 1000 + 700));
-    musicUI(true);
-  }
-  function stopSong() {
-    if (!song) return;
-    const s = song; song = null;
-    s.timers.forEach(clearTimeout);
-    try {
-      const t = ac.currentTime;
-      s.bus.gain.cancelScheduledValues(t); s.bus.gain.setValueAtTime(s.bus.gain.value, t); s.bus.gain.linearRampToValueAtTime(0, t + .2);
-    } catch (e) {}
-    setTimeout(() => { try { s.bus.disconnect(); } catch (e) {} }, 300);
-    lyricEl.textContent = "";
-    musicUI(false);
-  }
-  musicBtn.addEventListener("click", () => { song ? stopSong() : playSong(); });
 
   /* ---------- Confetti and marigold petals ---------- */
   const fx = $("#fx"), ctx = fx.getContext("2d");
@@ -511,7 +383,6 @@ const CONFIG = {
   strikeBtn.addEventListener("click", () => {
     if (state !== "intro") return;
     state = "lighting";
-    audio(); sfxStrike();
     strikeBtn.hidden = true; hintEl.textContent = "";
     setCopy("Hold on", "Lighting them, one by one…");
     candles.forEach((c, i) => setTimeout(() => {
@@ -532,13 +403,13 @@ const CONFIG = {
   function startHold() {
     if (state !== "lit" || holding) return;
     holding = true; lastT = performance.now();
-    stage.classList.add("blowing"); blowStart();
+    stage.classList.add("blowing");
     hintEl.textContent = "Keep blowing…";
     requestAnimationFrame(tick);
   }
   function endHold() {
     if (!holding) return;
-    holding = false; stage.classList.remove("blowing"); blowStop();
+    holding = false; stage.classList.remove("blowing");
     if (state !== "lit") return;
     const left = litCount();
     hintEl.textContent = left === candles.length ? "Longer than that. Press and hold." : `${left} still lit. One more breath.`;
@@ -556,7 +427,7 @@ const CONFIG = {
   }
   function finishBlow() {
     holding = false; state = "blown";
-    stage.classList.remove("blowing"); blowStop();
+    stage.classList.remove("blowing");
     blowBtn.hidden = true; hintEl.textContent = "";
     setCopy("Wish saved", "Okay. Now, lights…");
     setTimeout(lightsOn, reduceMotion ? 900 : 2200);
@@ -598,7 +469,6 @@ const CONFIG = {
       lights.style.opacity = "0";
       setTimeout(() => { lights.style.transition = ""; lights.style.opacity = ""; }, 950);
       state = "party";
-      if (audio()) { musicBtn.hidden = false; playSong(); }
       celebrate();
     }, reduceMotion ? 400 : 1050);
   }
@@ -619,7 +489,7 @@ const CONFIG = {
       video.controls = true;
       video.play().catch(() => {});
     });
-    video.addEventListener("play", () => { stopSong(); filmPlay.hidden = true; video.controls = true; });
+    video.addEventListener("play", () => { filmPlay.hidden = true; video.controls = true; });
     video.addEventListener("ended", () => { if (!reduceMotion) rain(70); });
   }
 
