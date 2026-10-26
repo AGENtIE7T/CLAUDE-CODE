@@ -293,7 +293,9 @@ const CONFIG = {
   name: "Rajashree",
   candles: 5,
   // The video file published next to this page, e.g. "video.mp4". Empty shows the "Video goes here" frame.
-  video: ""
+  video: "video.mp4",
+  // Still image shown in the frame before the video plays.
+  poster: "poster.jpg"
 };
 
 (() => {
@@ -477,7 +479,9 @@ const CONFIG = {
   function setupVideo() {
     const film = $("#film"), video = $("#video"), filmPlay = $("#filmPlay"), filmEmpty = $("#filmEmpty");
     if (!CONFIG.video) return;
-    video.src = CONFIG.video + "#t=0.1";
+    if (CONFIG.poster) video.poster = CONFIG.poster;
+    video.src = CONFIG.poster ? CONFIG.video : CONFIG.video + "#t=0.1";
+    video.muted = false; video.volume = 1;
     video.hidden = false; filmPlay.hidden = false; filmEmpty.hidden = true;
     video.addEventListener("loadedmetadata", () => {
       film.classList.add("ready");
