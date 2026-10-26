@@ -292,10 +292,11 @@ h2{margin:0;font-family:var(--font-display);font-weight:400;font-size:clamp(2rem
 const CONFIG = {
   name: "Rajashree",
   candles: 5,
-  // The video file published next to this page, e.g. "video.mp4". Empty shows the "Video goes here" frame.
-  video: "video.mp4",
-  // Still image shown in the frame before the video plays.
-  poster: "poster.jpg"
+  // Where the video loads from, tried in order: the artifact's asset store, then a file next to the page.
+  // Empty shows the "Video goes here" frame.
+  video: ["/_blob/9b004be80d4bc63d85a24222f4043365", "video.mp4"],
+  // Still image shown in the frame before the video plays, tried in the same order.
+  poster: ["/_blob/8c82fd5e46be38e303c6f8cdc4be9868", "poster.jpg"]
 };
 
 (() => {
@@ -478,23 +479,56 @@ const CONFIG = {
   /* ---------- Video ---------- */
   function setupVideo() {
     const film = $("#film"), video = $("#video"), filmPlay = $("#filmPlay"), filmEmpty = $("#filmEmpty");
-    if (!CONFIG.video) return;
-    if (CONFIG.poster) video.poster = CONFIG.poster;
-    video.src = CONFIG.poster ? CONFIG.video : CONFIG.video + "#t=0.1";
+    const sources = [].concat(CONFIG.video || []).filter(Boolean);
+    if (!sources.length) return;
     video.muted = false; video.volume = 1;
     video.hidden = false; filmPlay.hidden = false; filmEmpty.hidden = true;
+
+    // First poster that loads wins.
+    const posters = [].concat(CONFIG.poster || []).filter(Boolean);
+    (function tryPoster(k) {
+      if (k >= posters.length) return;
+      const img = new Image();
+      img.onload = () => { video.poster = posters[k]; };
+      img.onerror = () => tryPoster(k + 1);
+      img.src = posters[k];
+    })(0);
+
+    // Each source directly first, then the same sources fetched into memory; a message only if all fail.
+    const attempts = [...sources.map(url => ({ url })), ...sources.map(url => ({ url, blob: true }))];
+    let next = 0, wantPlay = false;
+    async function load() {
+      while (next < attempts.length) {
+        const a = attempts[next++];
+        let src = a.url;
+        if (a.blob) {
+          try {
+            const res = await fetch(a.url);
+            if (!res.ok) continue;
+            src = URL.createObjectURL(await res.blob());
+          } catch (e) { continue; }
+        }
+        video.src = src;
+        video.load();
+        if (wantPlay) video.play().catch(() => { filmPlay.hidden = false; });
+        return;
+      }
+      video.hidden = true; filmPlay.hidden = true; filmEmpty.hidden = false;
+      filmEmpty.innerHTML = "<strong>Video didn't load</strong><span>Refresh the page and try once more.</span>";
+    }
+    video.addEventListener("error", load);
     video.addEventListener("loadedmetadata", () => {
       film.classList.add("ready");
       film.classList.toggle("landscape", video.videoWidth > video.videoHeight);
     });
-    // A missing or broken file hides the whole section instead of showing an empty box.
-    video.addEventListener("error", () => { film.closest("section").hidden = true; });
     filmPlay.addEventListener("click", () => {
+      wantPlay = true;
       video.controls = true;
       video.play().catch(() => {});
     });
     video.addEventListener("play", () => { filmPlay.hidden = true; video.controls = true; });
     video.addEventListener("ended", () => { if (!reduceMotion) rain(70); });
+    load();
   }
 
   buildCandles(); setLight(); setupVideo();
